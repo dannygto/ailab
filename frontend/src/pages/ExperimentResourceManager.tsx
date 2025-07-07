@@ -20,7 +20,7 @@ import {
   Alert,
   IconButton,
   Tooltip
-} from '@mui/material';
+, Box} from '@mui/material';
 import { AddIcon as AddIcon, EditIcon as EditIcon, DeleteIcon as DeleteIcon, visibility as ViewIcon, ScienceIcon as ScienceIcon } from '../utils/icons';
 
 // ʵ����Դ����
@@ -179,22 +179,22 @@ const ExperimentResourceManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
         <Typography>������...</Typography>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div sx={{ padding: 3 }}>
+    <Box sx={{ padding: 3 }}>
       {/* ҳ����� */}
       <Typography variant="h4" gutterBottom>
         ʵ����Դ����
       </Typography>
       
       {/* �������� */}
-      <div sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <div sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', gap: 2 }}>
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel>ѧ��</InputLabel>
             <Select
@@ -224,7 +224,7 @@ const ExperimentResourceManager: React.FC = () => {
               <MenuItem value="����">����</MenuItem>
             </Select>
           </FormControl>
-        </div>
+        </Box>
         
         <Button
           variant="contained"
@@ -233,7 +233,7 @@ const ExperimentResourceManager: React.FC = () => {
         >
           ����ʵ����Դ
         </Button>
-      </div>
+      </Box>
 
       {/* ͳ����Ϣ */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -293,14 +293,14 @@ const ExperimentResourceManager: React.FC = () => {
           <Grid item xs={12} sm={6} md={4} key={resource.id}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1 }}>
-                <div sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <ScienceIcon sx={{ mr: 1, color: 'primary.main' }} />
                   <Typography variant="h6" component="div" noWrap>
                     {resource.name}
                   </Typography>
-                </div>
+                </Box>
                 
-                <div sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                   <Chip label={resource.subject} size="small" color="primary" />
                   <Chip label={resource.gradeLevel} size="small" />
                   <Chip 
@@ -313,7 +313,7 @@ const ExperimentResourceManager: React.FC = () => {
                     size="small" 
                     color={getStatusColor(resource.status) as any}
                   />
-                </div>
+                </Box>
                 
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   {resource.description.length > 100 
@@ -367,7 +367,7 @@ const ExperimentResourceManager: React.FC = () => {
         onSave={handleSaveResource}
         resource={editingResource}
       />
-    </div>
+    </Box>
   );
 };
 
@@ -439,7 +439,7 @@ const ResourceDialog: React.FC<ResourceDialogProps> = ({ open, onClose, onSave, 
         {resource ? '�༭ʵ����Դ' : '����ʵ����Դ'}
       </DialogTitle>
       <DialogContent>
-        <div sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <TextField
             fullWidth
             label="ʵ������"
@@ -448,7 +448,7 @@ const ResourceDialog: React.FC<ResourceDialogProps> = ({ open, onClose, onSave, 
             required
           />
           
-          <div sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2 }}>
             <FormControl fullWidth>
               <InputLabel>ѧ��</InputLabel>
               <Select
@@ -476,9 +476,9 @@ const ResourceDialog: React.FC<ResourceDialogProps> = ({ open, onClose, onSave, 
                 <MenuItem value="����">����</MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </Box>
           
-          <div sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2 }}>
             <FormControl fullWidth>
               <InputLabel>ʵ������</InputLabel>
               <Select
@@ -506,7 +506,7 @@ const ResourceDialog: React.FC<ResourceDialogProps> = ({ open, onClose, onSave, 
                 <MenuItem value="advanced">�߼�</MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </Box>
           
           <TextField
             fullWidth
@@ -544,7 +544,7 @@ const ResourceDialog: React.FC<ResourceDialogProps> = ({ open, onClose, onSave, 
             onChange={(e) => setFormData(prev => ({ ...prev, objectives: e.target.value }))}
             placeholder="�˽�����Ļ�������, �۲�ż����໥����"
           />
-        </div>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>ȡ��</Button>

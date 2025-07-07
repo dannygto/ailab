@@ -23,11 +23,11 @@ import ExperimentList from './pages/experiments/ExperimentList';
 import ExperimentListV2 from './pages/experiments/ExperimentListV2';
 import ExperimentDetail from './pages/experiments/ExperimentDetail';
 import ExperimentDetailV2 from './pages/experiments/ExperimentDetailV2';
-import ExperimentCreate from './pages/experiments/./ExperimentCreate';
+import ExperimentCreate from './pages/experiments/ExperimentCreate';
 import ExperimentCreateV2 from './pages/experiments/ExperimentCreateV2';
 import ExperimentCreateNew from './pages/experiments/ExperimentCreateNew';
 import ExperimentCreateFinal from './pages/experiments/ExperimentCreateFinal';
-import ExperimentResults from './pages/experiments/./ExperimentResults';
+import ExperimentResults from './pages/experiments/ExperimentResults';
 
 // ģ�����ҳ��
 import TemplateLibrary from './pages/templates/TemplateLibrary';
@@ -47,13 +47,13 @@ import AdvancedDataAnalysis from './pages/data/AdvancedDataAnalysis';
 
 // �������ҳ��
 import UserManagement from './pages/admin/UserManagement';
-import SystemSettings from './pages/admin/System./settings/Settings';
+import SystemSettings from './pages/admin/SystemSettings';
 
 // �������ҳ��
 import Settings from './pages/SimpleSettings';
-import AIModelSettings from './pages/settings/AIModel./settings/Settings';
+import AIModelSettings from './pages/settings/AIModelSettings';
 import SecuritySettings from './pages/settings/securitySettings';
-import NotificationSettings from './pages/settings/Notification./settings/Settings';
+import NotificationSettings from './pages/settings/NotificationSettings';
 import ThemeSettings from './pages/settings/themeSettings';
 import DataSettings from './pages/settings/dataSettings';
 

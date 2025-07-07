@@ -15,23 +15,23 @@ const ExperimentList = lazy(() => import('./pages/experiments/ExperimentList'));
 const ExperimentListV2 = lazy(() => import('./pages/experiments/ExperimentListV2'));
 const ExperimentDetail = lazy(() => import('./pages/experiments/ExperimentDetail'));
 const ExperimentDetailV2 = lazy(() => import('./pages/experiments/ExperimentDetailV2'));
-const ExperimentCreate = lazy(() => import('./pages/experiments/./ExperimentCreate'));
+const ExperimentCreate = lazy(() => import('./pages/experiments/ExperimentCreate'));
 const ExperimentCreateV2 = lazy(() => import('./pages/experiments/ExperimentCreateV2'));
-const ExperimentResults = lazy(() => import('./pages/experiments/./ExperimentResults'));
+const ExperimentResults = lazy(() => import('./pages/experiments/ExperimentResults'));
 
 const DeviceManagement = lazy(() => import('./pages/devices/DeviceManagement'));
 const DeviceMonitoring = lazy(() => import('./pages/devices/DeviceMonitoring'));
-const DeviceMonitoringV2 = lazy(() => import('./pages/devices/./devices/DeviceMonitoringV2'));
+const DeviceMonitoringV2 = lazy(() => import('./pages/devices/DeviceMonitoringV2'));
 
 const DataCollectionAnalysis = lazy(() => import('./pages/data/DataCollectionAnalysis'));
 const AdvancedDataAnalysis = lazy(() => import('./pages/data/AdvancedDataAnalysis'));
 
 const UserManagement = lazy(() => import('./pages/admin/UserManagement'));
-const SystemSettings = lazy(() => import('./pages/admin/System./settings/Settings'));
+const SystemSettings = lazy(() => import('./pages/admin/SystemSettings'));
 
 // ����״̬���
 const LoadingComponent = () => (
-  <div 
+  <Box 
     sx={{ 
       display: 'flex', 
       justifyContent: 'center', 
@@ -40,7 +40,7 @@ const LoadingComponent = () => (
     }}
   >
     <CircularProgress />
-  </div>
+  </Box>
 );
 
 function App() {

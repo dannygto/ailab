@@ -18,7 +18,7 @@ import {
   IconButton,
   Tooltip,
   SelectChangeEvent
-} from '@mui/material';
+, Box} from '@mui/material';
 import { HelpOutlineIcon as HelpIconIcon, DownloadIcon as DownloadIcon, RefreshIcon as RefreshIcon } from '../../utils/icons';
 import { useQuery } from 'react-query';
 import { toast } from 'react-hot-toast';
@@ -793,12 +793,12 @@ const AdvancedDataAnalysis: React.FC = () => {
   const renderAnalysisResults = () => {
     if (isAnalyzing) {
       return (
-        <div sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
           <CircularProgress />
           <Typography variant="body1" sx={{ ml: 2 }}>
             ����ִ�з���...
           </Typography>
-        </div>
+        </Box>
       );
     }
     
@@ -811,8 +811,8 @@ const AdvancedDataAnalysis: React.FC = () => {
     }
     
     return (
-      <div sx={{ mt: 2 }}>
-        <div sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
+      <Box sx={{ mt: 2 }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs 
             value={activeResultTab} 
             onChange={(_, newValue) => setActiveResultTab(newValue)}
@@ -823,7 +823,7 @@ const AdvancedDataAnalysis: React.FC = () => {
               <Tab key={index} label={result.title} />
             ))}
           </Tabs>
-        </div>
+        </Box>
         
         {analysisResults.map((result, index) => (
           <div 
@@ -834,14 +834,14 @@ const AdvancedDataAnalysis: React.FC = () => {
             }}
           >
             {/* ������������ */}
-            <div sx={{ mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
               <Typography variant="h6">{result.title}</Typography>
               {result.description && (
                 <Typography variant="body2" color="text.secondary">
                   {result.description}
                 </Typography>
               )}
-            </div>
+            </Box>
             
             {/* ��Ⱦ��ͬ���͵Ľ�� */}
             {result.type === 'text' && (
@@ -881,7 +881,7 @@ const AdvancedDataAnalysis: React.FC = () => {
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   ͼ������������ʾ����ʵ��Ӧ���У�������������������Ⱦ��Ӧ��ͼ����
                 </Typography>
-                <div sx={{ 
+                <Box sx={{ 
                   height: '80%', 
                   display: 'flex', 
                   alignItems: 'center', 
@@ -895,13 +895,13 @@ const AdvancedDataAnalysis: React.FC = () => {
                     {result.data.type === 'scatter' && 'ɢ��ͼ'}
                     {result.data.type === 'timeseries' && 'ʱ������ͼ'}
                   </Typography>
-                </div>
+                </Box>
               </Paper>
             )}
-          </div>
+          </Box>
         ))}
         
-        <div sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
           <Button 
             variant="outlined" 
             startIcon={<DownloadIcon />} 
@@ -909,22 +909,22 @@ const AdvancedDataAnalysis: React.FC = () => {
           >
             �������
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   };
   
   return (
-    <div sx={{ p: 3 }}>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
         �߼����ݷ���
       </Typography>
       
-      <div sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3 }}>
         <Typography variant="body1" color="text.secondary" paragraph>
           ʹ�ø���ͳ�ƺͻ���ѧϰ������ʵ�����ݽ������������ѡ�����ݼ����������������������ϵͳ���Զ�ִ�з��������ɿ��ӻ������
         </Typography>
-      </div>
+      </Box>
       
       <Grid container spacing={3}>
         <Grid item xs={12} lg={4}>
@@ -970,11 +970,11 @@ const AdvancedDataAnalysis: React.FC = () => {
             
             {/* �������� */}
             {selectedMethodDetails && (
-              <div sx={{ mb: 2 }}>
+              <Box sx={{ mb: 2 }}>
                 <Typography variant="body2" color="text.secondary">
                   {selectedMethodDetails.description}
                 </Typography>
-              </div>
+              </Box>
             )}
             
             {/* ����ѡ�� */}
@@ -1001,7 +1001,7 @@ const AdvancedDataAnalysis: React.FC = () => {
             )}
             
             {/* �������� */}
-            <div sx={{ mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
                 ��������
                 <Tooltip title="���÷�����������Ĳ���">
@@ -1012,7 +1012,7 @@ const AdvancedDataAnalysis: React.FC = () => {
               </Typography>
               
               {renderParameterInputs()}
-            </div>
+            </Box>
             
             {/* ���а�ť */}
             <Button
@@ -1029,18 +1029,18 @@ const AdvancedDataAnalysis: React.FC = () => {
         
         <Grid item xs={12} lg={8}>
           <Paper sx={{ p: 2 }}>
-            <div sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6">
                 �������
               </Typography>
-            </div>
+            </Box>
             <Divider sx={{ mb: 2 }} />
             
             {renderAnalysisResults()}
           </Paper>
         </Grid>
       </Grid>
-    </div>
+    </Box>
   );
 };
 

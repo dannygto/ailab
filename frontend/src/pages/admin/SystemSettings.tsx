@@ -22,7 +22,7 @@ import {
   Card,
   CardContent,
   Snackbar
-} from '@mui/material';
+, Box} from '@mui/material';
 
 import { SaveIcon } from '../../utils/icons';
 import { restore } from '../../utils/icons';
@@ -365,33 +365,33 @@ const Systemsettings: React.FC = () => {
   
   if (loading) {
     return (
-      <div sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
         <CircularProgress />
         <Typography variant="body1" sx={{ ml: 2 }}>
           ����ϵͳ����...
         </Typography>
-      </div>
+      </Box>
     );
   }
   
   if (!config) {
     return (
-      <div sx={{ p: 3 }}>
+      <Box sx={{ p: 3 }}>
         <Alert severity="error">
           �޷�����ϵͳ���á���ˢ��ҳ�����ϵϵͳ����Ա��
         </Alert>
-      </div>
+      </Box>
     );
   }
   
   return (
-    <div sx={{ p: 3 }}>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
         ϵͳ����
       </Typography>
       
       <Paper variant="outlined" sx={{ mb: 3 }}>
-        <div sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
@@ -406,11 +406,11 @@ const Systemsettings: React.FC = () => {
             <Tab icon={<LanguageIcon />} iconPosition="start" label="���ػ�" />
             <Tab icon={<BackupIcon />} iconPosition="start" label="����" />
           </Tabs>
-        </div>
+        </Box>
         
         {/* �������� */}
         <TabPanel value={tabValue} index={0}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -488,12 +488,12 @@ const Systemsettings: React.FC = () => {
                 </Typography>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
         
         {/* ��ȫ���� */}
         <TabPanel value={tabValue} index={1}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Typography variant="subtitle1" gutterBottom>
@@ -527,7 +527,7 @@ const Systemsettings: React.FC = () => {
                   �������
                 </Typography>
                 
-                <div sx={{ mb: 2 }}>
+                <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" gutterBottom>
                     ��С���볤��: {config.security.passwordPolicy.minLength}
                   </Typography>
@@ -540,7 +540,7 @@ const Systemsettings: React.FC = () => {
                     marks
                     valueLabelDisplay="auto"
                   />
-                </div>
+                </Box>
                 
                 <FormGroup>
                   <FormControlLabel
@@ -602,12 +602,12 @@ const Systemsettings: React.FC = () => {
                 </Typography>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
         
         {/* �洢���� */}
         <TabPanel value={tabValue} index={2}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -684,12 +684,12 @@ const Systemsettings: React.FC = () => {
                 </Alert>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
         
         {/* ֪ͨ���� */}
         <TabPanel value={tabValue} index={3}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Typography variant="subtitle1" gutterBottom>
@@ -780,12 +780,12 @@ const Systemsettings: React.FC = () => {
                 </Card>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
         
         {/* ���ػ����� */}
         <TabPanel value={tabValue} index={4}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth sx={{ mb: 2 }}>
@@ -858,7 +858,7 @@ const Systemsettings: React.FC = () => {
                       Ԥ��
                     </Typography>
                     
-                    <div sx={{ mb: 1 }}>
+                    <Box sx={{ mb: 1 }}>
                       <Typography variant="body2" color="text.secondary">
                         ���ڸ�ʽ:
                       </Typography>
@@ -868,16 +868,16 @@ const Systemsettings: React.FC = () => {
                          config.localization.dateFormat === 'MM/DD/YYYY' ? '07/05/2025' :
                          config.localization.dateFormat === 'YYYY��MM��DD��' ? '2025��07��05��' : '2025-07-05'}
                       </Typography>
-                    </div>
+                    </Box>
                     
-                    <div sx={{ mb: 1 }}>
+                    <Box sx={{ mb: 1 }}>
                       <Typography variant="body2" color="text.secondary">
                         ʱ���ʽ:
                       </Typography>
                       <Typography variant="body1">
                         {config.localization.timeFormat === '24h' ? '14:30:00' : '2:30:00 PM'}
                       </Typography>
-                    </div>
+                    </Box>
                     
                     <div>
                       <Typography variant="body2" color="text.secondary">
@@ -890,17 +890,17 @@ const Systemsettings: React.FC = () => {
                          config.localization.currency === 'GBP' ? '��1,234.56' :
                          config.localization.currency === 'JPY' ? '��1,235' : '��1,234.56'}
                       </Typography>
-                    </div>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
         
         {/* �������� */}
         <TabPanel value={tabValue} index={5}>
-          <div sx={{ p: 2 }}>
+          <Box sx={{ p: 2 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControlLabel
@@ -986,12 +986,12 @@ const Systemsettings: React.FC = () => {
                 </Alert>
               </Grid>
             </Grid>
-          </div>
+          </Box>
         </TabPanel>
       </Paper>
       
       {/* ������ť */}
-      <div sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button
           variant="outlined"
           startIcon={<RestoreIcon />}
@@ -1009,7 +1009,7 @@ const Systemsettings: React.FC = () => {
         >
           {saving ? '������...' : '��������'}
         </Button>
-      </div>
+      </Box>
       
       {/* �ɹ���ʾ */}
       <Snackbar
