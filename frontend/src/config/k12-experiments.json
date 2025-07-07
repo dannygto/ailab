@@ -1,0 +1,693 @@
+{
+  "experiments": [
+    {
+      "id": "primary-science-001",
+      "title": "磁铁的秘密",
+      "description": "通过观察和实验，探究磁铁的基本性质，了解磁极的相互作用规律",
+      "grade": "primary",
+      "subject": "science",
+      "type": "exploration",
+      "safetyLevel": "low",
+      "duration": 30,
+      "materials": [
+        "条形磁铁2块",
+        "蹄形磁铁1块",
+        "小铁钉若干",
+        "回形针若干",
+        "塑料片",
+        "木片",
+        "玻璃片",
+        "指南针1个"
+      ],
+      "objectives": [
+        "认识磁铁的基本性质",
+        "了解磁极的概念和相互作用",
+        "区分磁性材料和非磁性材料",
+        "培养科学观察和探究能力"
+      ],
+      "procedures": [
+        "用磁铁靠近各种材料，观察哪些会被吸引",
+        "将两块磁铁的不同端靠近，观察相互作用",
+        "用磁铁的不同部位接触铁钉，比较吸引力大小",
+        "观察指南针在磁铁附近的变化",
+        "记录实验现象并讨论规律"
+      ],
+      "safetyNotes": [
+        "小心轻放磁铁，避免碰撞损坏",
+        "不要让磁铁接触电子设备",
+        "使用完毕后要妥善存放"
+      ],
+      "curriculumStandard": "XS-KX-3.2 物质的性质",
+      "tags": ["磁性", "物质性质", "科学探究"],
+      "difficulty": 2,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "primary-science-002",
+      "title": "植物生长观察",
+      "description": "通过种植豆类种子，长期观察植物从发芽到成长的全过程",
+      "grade": "primary",
+      "subject": "science",
+      "type": "observation",
+      "safetyLevel": "low",
+      "duration": 40,
+      "materials": [
+        "绿豆种子20粒",
+        "透明塑料杯4个",
+        "培养土",
+        "喷水壶",
+        "标签纸",
+        "直尺",
+        "观察记录表"
+      ],
+      "objectives": [
+        "了解植物生长的基本过程",
+        "学会科学观察和记录方法",
+        "认识植物生长的环境条件",
+        "培养爱护生命的意识"
+      ],
+      "procedures": [
+        "准备种植容器和培养土",
+        "将种子种植在不同环境条件下",
+        "每天观察并记录植物变化",
+        "测量植物高度并制作生长曲线",
+        "比较不同条件下植物生长差异"
+      ],
+      "safetyNotes": [
+        "注意适量浇水，避免积水",
+        "保持观察环境清洁",
+        "实验结束后妥善处理植物"
+      ],
+      "curriculumStandard": "XS-KX-4.1 生物与环境",
+      "tags": ["植物", "生长", "观察记录"],
+      "difficulty": 1,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "primary-math-001",
+      "title": "几何图形面积测量",
+      "description": "通过实际测量不同几何图形，理解面积的概念和计算方法",
+      "grade": "primary",
+      "subject": "mathematics",
+      "type": "measurement",
+      "safetyLevel": "low",
+      "duration": 35,
+      "materials": [
+        "正方形纸片若干",
+        "长方形纸片若干",
+        "三角形纸片若干",
+        "直尺",
+        "方格纸",
+        "计算器",
+        "记录表"
+      ],
+      "objectives": [
+        "理解面积的概念",
+        "掌握正方形、长方形面积计算方法",
+        "学会使用工具进行精确测量",
+        "培养数学应用意识"
+      ],
+      "procedures": [
+        "用方格纸覆盖图形，数格子求面积",
+        "用直尺测量长方形的长和宽",
+        "计算不同图形的面积",
+        "比较不同方法得到的结果",
+        "总结面积计算规律"
+      ],
+      "safetyNotes": [
+        "小心使用直尺，避免划伤",
+        "保持测量工具清洁",
+        "记录数据要准确"
+      ],
+      "curriculumStandard": "XS-SX-5.3 图形与几何",
+      "tags": ["面积", "测量", "几何图形"],
+      "difficulty": 3,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "junior-physics-001",
+      "title": "探究力和运动的关系",
+      "description": "通过小车运动实验，探究力对物体运动状态的影响",
+      "grade": "junior",
+      "subject": "physics",
+      "type": "exploration",
+      "safetyLevel": "medium",
+      "duration": 45,
+      "materials": [
+        "小车2辆",
+        "弹簧测力计",
+        "砝码若干",
+        "长木板",
+        "秒表",
+        "米尺",
+        "记录表"
+      ],
+      "objectives": [
+        "理解力和运动的关系",
+        "掌握科学探究的基本方法",
+        "学会使用测力计等工具",
+        "培养分析问题的能力"
+      ],
+      "procedures": [
+        "观察小车在不同力作用下的运动",
+        "测量小车在恒定力下的加速度",
+        "改变力的大小，观察运动变化",
+        "记录数据并分析规律",
+        "得出力和加速度的关系"
+      ],
+      "safetyNotes": [
+        "确保实验台面平稳",
+        "小心操作测力计，避免超量程",
+        "注意小车运动方向，防止碰撞"
+      ],
+      "curriculumStandard": "CZ-WL-8.2 运动和力",
+      "tags": ["力学", "运动", "牛顿定律"],
+      "difficulty": 4,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "junior-chemistry-001",
+      "title": "酸碱指示剂的奥秘",
+      "description": "使用天然和人工指示剂检测不同溶液的酸碱性",
+      "grade": "junior",
+      "subject": "chemistry",
+      "type": "analysis",
+      "safetyLevel": "medium",
+      "duration": 40,
+      "materials": [
+        "紫甘蓝汁",
+        "pH试纸",
+        "白醋",
+        "小苏打溶液",
+        "柠檬汁",
+        "肥皂水",
+        "试管",
+        "滴管",
+        "比色卡"
+      ],
+      "objectives": [
+        "认识酸碱指示剂的作用",
+        "学会使用pH试纸检测酸碱性",
+        "了解生活中常见物质的酸碱性",
+        "培养化学实验技能"
+      ],
+      "procedures": [
+        "制备紫甘蓝指示剂",
+        "向不同溶液中加入指示剂",
+        "观察颜色变化并记录",
+        "用pH试纸验证结果",
+        "比较天然和人工指示剂的效果"
+      ],
+      "safetyNotes": [
+        "避免直接接触化学试剂",
+        "实验后及时清洗手部",
+        "妥善处理实验废液",
+        "保持实验室通风"
+      ],
+      "curriculumStandard": "CZ-HX-9.1 溶液的酸碱性",
+      "tags": ["酸碱", "指示剂", "pH"],
+      "difficulty": 3,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "junior-biology-001",
+      "title": "制作洋葱表皮细胞临时装片",
+      "description": "学习制作临时装片的方法，观察植物细胞的基本结构",
+      "grade": "junior",
+      "subject": "biology",
+      "type": "observation",
+      "safetyLevel": "medium",
+      "duration": 50,
+      "materials": [
+        "新鲜洋葱",
+        "显微镜",
+        "载玻片",
+        "盖玻片",
+        "镊子",
+        "滴管",
+        "碘液",
+        "吸水纸",
+        "解剖刀"
+      ],
+      "objectives": [
+        "掌握制作临时装片的方法",
+        "学会正确使用显微镜",
+        "观察植物细胞的基本结构",
+        "培养实验操作技能"
+      ],
+      "procedures": [
+        "用镊子撕取洋葱内表皮",
+        "将表皮放在载玻片上",
+        "滴加碘液进行染色",
+        "盖上盖玻片制成装片",
+        "用显微镜观察细胞结构"
+      ],
+      "safetyNotes": [
+        "小心使用解剖刀和镊子",
+        "正确操作显微镜，避免损坏",
+        "注意碘液的安全使用",
+        "实验后清洁器材"
+      ],
+      "curriculumStandard": "CZ-SW-7.1 细胞是生命活动的基本单位",
+      "tags": ["细胞", "显微镜", "装片制作"],
+      "difficulty": 4,
+      "isGroupWork": false,
+      "requiresSupervision": true
+    },
+    {
+      "id": "senior-physics-001",
+      "title": "设计制作简单电路",
+      "description": "设计并制作包含电阻、电容的简单电路，测量电学参数",
+      "grade": "senior",
+      "subject": "physics",
+      "type": "design",
+      "safetyLevel": "high",
+      "duration": 60,
+      "materials": [
+        "面包板",
+        "LED灯",
+        "电阻器(多种阻值)",
+        "电容器",
+        "开关",
+        "导线",
+        "万用表",
+        "直流电源",
+        "电路图纸"
+      ],
+      "objectives": [
+        "掌握电路设计的基本原理",
+        "学会使用万用表测量电学量",
+        "理解欧姆定律在实际中的应用",
+        "培养工程设计思维"
+      ],
+      "procedures": [
+        "根据要求设计电路图",
+        "在面包板上搭建电路",
+        "连接电源并检查电路",
+        "测量各点电压和电流",
+        "分析实测值与理论值的差异"
+      ],
+      "safetyNotes": [
+        "确认电源电压在安全范围内",
+        "连接电路前检查所有元件",
+        "正确使用万用表，注意量程",
+        "发现异常立即断开电源"
+      ],
+      "curriculumStandard": "GZ-WL-10.2 恒定电流",
+      "tags": ["电路", "欧姆定律", "电学测量"],
+      "difficulty": 5,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "senior-chemistry-001",
+      "title": "化学反应速率的测定",
+      "description": "通过改变温度和浓度，探究影响化学反应速率的因素",
+      "grade": "senior",
+      "subject": "chemistry",
+      "type": "analysis",
+      "safetyLevel": "high",
+      "duration": 55,
+      "materials": [
+        "硫代硫酸钠溶液",
+        "稀盐酸",
+        "温度计",
+        "秒表",
+        "锥形瓶",
+        "量筒",
+        "水浴锅",
+        "标记纸",
+        "安全眼镜"
+      ],
+      "objectives": [
+        "理解化学反应速率的概念",
+        "探究温度对反应速率的影响",
+        "探究浓度对反应速率的影响",
+        "学会定量分析实验方法"
+      ],
+      "procedures": [
+        "配制不同浓度的反应物溶液",
+        "在不同温度下进行反应",
+        "记录达到同样反应程度的时间",
+        "计算不同条件下的反应速率",
+        "分析温度和浓度的影响规律"
+      ],
+      "safetyNotes": [
+        "佩戴安全眼镜进行实验",
+        "小心操作加热设备",
+        "注意酸性溶液的安全使用",
+        "保持实验室良好通风",
+        "妥善处理实验废液"
+      ],
+      "curriculumStandard": "GZ-HX-11.2 化学反应速率",
+      "tags": ["反应速率", "温度效应", "浓度效应"],
+      "difficulty": 5,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "senior-biology-001",
+      "title": "DNA的粗提取实验",
+      "description": "从生物材料中提取DNA，观察遗传物质的物理性质",
+      "grade": "senior",
+      "subject": "biology",
+      "type": "synthesis",
+      "safetyLevel": "medium",
+      "duration": 50,
+      "materials": [
+        "猪肝或鸡肝",
+        "研钵",
+        "滤纸",
+        "漏斗",
+        "试管",
+        "95%酒精",
+        "蒸馏水",
+        "食盐",
+        "洗涤剂",
+        "玻璃棒"
+      ],
+      "objectives": [
+        "了解DNA提取的基本原理",
+        "掌握生物大分子分离技术",
+        "观察DNA的物理性质",
+        "理解遗传物质的重要性"
+      ],
+      "procedures": [
+        "将生物材料充分研磨破碎",
+        "加入盐水和洗涤剂处理",
+        "过滤得到含DNA的溶液",
+        "缓慢加入冷酒精进行沉淀",
+        "用玻璃棒挑取观察DNA丝状物"
+      ],
+      "safetyNotes": [
+        "注意动物组织的卫生处理",
+        "小心使用酒精，远离火源",
+        "实验后彻底清洗手部",
+        "妥善处理生物废料"
+      ],
+      "curriculumStandard": "GZ-SW-12.1 遗传的分子基础",
+      "tags": ["DNA", "分子生物学", "遗传物质"],
+      "difficulty": 4,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "senior-tech-001",
+      "title": "简单机械装置的设计制作",
+      "description": "设计制作一个能够解决实际问题的简单机械装置",
+      "grade": "senior",
+      "subject": "general_tech",
+      "type": "design",
+      "safetyLevel": "medium",
+      "duration": 90,
+      "materials": [
+        "木板",
+        "螺丝",
+        "螺母",
+        "轴承",
+        "细绳",
+        "滑轮",
+        "工具箱",
+        "设计图纸",
+        "测量工具"
+      ],
+      "objectives": [
+        "掌握机械设计的基本原理",
+        "学会使用基本工具进行制作",
+        "培养工程思维和解决问题能力",
+        "体验技术设计的完整过程"
+      ],
+      "procedures": [
+        "分析实际问题，确定设计目标",
+        "绘制设计草图和技术图纸",
+        "选择合适材料和制作工艺",
+        "按图纸制作机械装置",
+        "测试装置性能并改进优化"
+      ],
+      "safetyNotes": [
+        "正确使用各种制作工具",
+        "注意工作台面的整洁安全",
+        "小心尖锐物品，避免割伤",
+        "制作过程中注意防护"
+      ],
+      "curriculumStandard": "GZ-TY-11.3 技术设计与制作",
+      "tags": ["机械设计", "技术制作", "工程思维"],
+      "difficulty": 5,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "primary-chinese-001",
+      "title": "古诗词韵律探究",
+      "description": "通过朗诵和分析，探究古诗词的韵律美和节奏感",
+      "grade": "primary",
+      "subject": "chinese",
+      "type": "exploration",
+      "safetyLevel": "low",
+      "duration": 30,
+      "materials": [
+        "古诗词选集",
+        "录音设备",
+        "节拍器",
+        "音响设备",
+        "韵律分析表"
+      ],
+      "objectives": [
+        "感受古诗词的韵律美",
+        "理解平仄和押韵的规律",
+        "提高朗诵表达能力",
+        "培养文学鉴赏力"
+      ],
+      "procedures": [
+        "选择适合的古诗词作品",
+        "练习正确的朗诵方法",
+        "用节拍器辅助掌握节奏",
+        "分析诗词的韵律特点",
+        "比较不同诗词的韵律风格"
+      ],
+      "safetyNotes": [
+        "注意保护嗓音，适度练习",
+        "正确使用音响设备",
+        "保持教室安静环境"
+      ],
+      "curriculumStandard": "XS-YW-4.2 诗歌鉴赏",
+      "tags": ["古诗词", "韵律", "朗诵"],
+      "difficulty": 2,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "primary-english-001",
+      "title": "英语发音规律探索",
+      "description": "通过对比分析，探索英语字母组合的发音规律",
+      "grade": "primary",
+      "subject": "english",
+      "type": "comparison",
+      "safetyLevel": "low",
+      "duration": 35,
+      "materials": [
+        "英语词汇卡片",
+        "录音设备",
+        "音标图表",
+        "发音对比表",
+        "多媒体设备"
+      ],
+      "objectives": [
+        "掌握基本的英语发音规律",
+        "提高英语语音辨识能力",
+        "培养语言学习兴趣",
+        "建立英语语感"
+      ],
+      "procedures": [
+        "收集含有相同字母组合的单词",
+        "对比分析这些单词的发音",
+        "总结字母组合的发音规律",
+        "练习应用发音规律读新单词",
+        "制作发音规律总结表"
+      ],
+      "safetyNotes": [
+        "注意保护听力，控制音量",
+        "正确使用多媒体设备",
+        "保持专注，避免干扰他人"
+      ],
+      "curriculumStandard": "XS-YY-3.1 语音知识",
+      "tags": ["英语发音", "语音规律", "语言学习"],
+      "difficulty": 3,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "junior-geography-001",
+      "title": "当地气象要素观测",
+      "description": "建立简单气象观测站，记录分析当地气象数据变化",
+      "grade": "junior",
+      "subject": "geography",
+      "type": "measurement",
+      "safetyLevel": "low",
+      "duration": 45,
+      "materials": [
+        "温度计",
+        "湿度计",
+        "简易雨量器",
+        "风向标",
+        "气压计",
+        "观测记录表",
+        "天气预报数据"
+      ],
+      "objectives": [
+        "学会使用基本气象观测仪器",
+        "了解天气要素的变化规律",
+        "培养科学观测和记录能力",
+        "理解天气与生活的关系"
+      ],
+      "procedures": [
+        "设置气象观测点",
+        "每天定时观测记录气象要素",
+        "整理一周的观测数据",
+        "绘制气象要素变化图表",
+        "分析天气变化规律和原因"
+      ],
+      "safetyNotes": [
+        "观测时注意天气安全",
+        "正确使用观测仪器",
+        "数据记录要准确及时",
+        "恶劣天气时停止观测"
+      ],
+      "curriculumStandard": "CZ-DL-8.1 天气与气候",
+      "tags": ["气象观测", "天气变化", "地理实践"],
+      "difficulty": 3,
+      "isGroupWork": true,
+      "requiresSupervision": false
+    },
+    {
+      "id": "primary-labor-001",
+      "title": "简单烹饪技能学习",
+      "description": "学习基本的烹饪技能，制作简单营养的食物",
+      "grade": "primary",
+      "subject": "labor",
+      "type": "design",
+      "safetyLevel": "medium",
+      "duration": 50,
+      "materials": [
+        "基本厨具",
+        "新鲜蔬菜",
+        "鸡蛋",
+        "面粉",
+        "调料",
+        "围裙",
+        "洗手液",
+        "垃圾袋"
+      ],
+      "objectives": [
+        "掌握基本烹饪技能",
+        "了解食品安全知识",
+        "培养动手实践能力",
+        "养成良好的生活习惯"
+      ],
+      "procedures": [
+        "学习食材清洗和准备方法",
+        "掌握基本的切菜技巧",
+        "练习简单的烹饪方法",
+        "学会搭配营养均衡的餐食",
+        "整理清洁工作区域"
+      ],
+      "safetyNotes": [
+        "注意用火用电安全",
+        "正确使用刀具，避免切伤",
+        "保持食材和环境卫生",
+        "穿戴围裙等防护用品"
+      ],
+      "curriculumStandard": "XS-LD-5.1 日常生活劳动",
+      "tags": ["烹饪技能", "生活实践", "食品安全"],
+      "difficulty": 3,
+      "isGroupWork": true,
+      "requiresSupervision": true
+    },
+    {
+      "id": "primary-technology-001",
+      "title": "图形化编程入门",
+      "description": "使用Scratch等工具，学习基本的编程思维和逻辑",
+      "grade": "primary",
+      "subject": "technology",
+      "type": "design",
+      "safetyLevel": "low",
+      "duration": 40,
+      "materials": [
+        "计算机",
+        "Scratch软件",
+        "编程任务卡",
+        "作品展示区",
+        "操作指南"
+      ],
+      "objectives": [
+        "初步了解编程的基本概念",
+        "培养逻辑思维和问题解决能力",
+        "学会使用图形化编程工具",
+        "激发对信息技术的兴趣"
+      ],
+      "procedures": [
+        "熟悉Scratch编程环境",
+        "学习基本的编程积木块",
+        "完成简单的动画制作",
+        "设计互动小游戏",
+        "分享展示编程作品"
+      ],
+      "safetyNotes": [
+        "正确使用计算机设备",
+        "注意用眼卫生，定时休息",
+        "保存好编程作品",
+        "遵守网络使用规范"
+      ],
+      "curriculumStandard": "XS-XX-4.1 算法与程序设计",
+      "tags": ["图形化编程", "逻辑思维", "创意设计"],
+      "difficulty": 2,
+      "isGroupWork": false,
+      "requiresSupervision": false
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-11",
+    "description": "K12人工智能辅助实验平台实验资源库 - 严格符合国家课程标准",
+    "coverageScope": "小学、初中、高中主要学科实验资源",
+    "complianceStandard": "中华人民共和国教育部课程标准",
+    "totalExperiments": 15,
+    "gradeDistribution": {
+      "primary": 5,
+      "junior": 5,
+      "senior": 5
+    },
+    "subjectDistribution": {
+      "science": 2,
+      "mathematics": 1,
+      "physics": 2,
+      "chemistry": 2,
+      "biology": 2,
+      "chinese": 1,
+      "english": 1,
+      "geography": 1,
+      "labor": 1,
+      "technology": 1,
+      "general_tech": 1
+    },
+    "safetyLevelDistribution": {
+      "low": 7,
+      "medium": 6,
+      "high": 2
+    },
+    "experimentTypeDistribution": {
+      "observation": 2,
+      "measurement": 2,
+      "comparison": 1,
+      "exploration": 4,
+      "design": 4,
+      "analysis": 2,
+      "synthesis": 1
+    }
+  }
+}

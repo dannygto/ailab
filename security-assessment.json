@@ -1,0 +1,15 @@
+﻿{
+    "issues_found":  3,
+    "timestamp":  "2025-07-03T14:13:02Z",
+    "issues":  [
+                   "Frontend has npm vulnerabilities",
+                   "Weak default passwords detected in .env",
+                   "No .gitignore file found"
+               ],
+    "results":  [
+                    "Backend security: OK",
+                    "Service ports: 3000, 3002 active"
+                ],
+    "status":  "ATTENTION_REQUIRED",
+    "passed_checks":  2
+}

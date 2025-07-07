@@ -1,0 +1,330 @@
+version: '3.8'
+
+services:  # 数据库服务
+  mongodb:
+    image: mongo:7.0
+    container_name: ai-platform-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: ai_platform
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - ai-platform-network
+
+  postgresql:
+    image: postgres:15
+    container_name: ai-platform-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ai_platform
+      POSTGRES_USER: ai_platform_user
+      POSTGRES_PASSWORD: ai_platform123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ./scripts/init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql:ro
+    networks:
+      - ai-platform-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: ai-platform-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-platform-network
+
+  # 对象存储
+  minio:
+    image: minio/minio:latest
+    container_name: aicam-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - aicam-network
+
+  # 消息队列
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: aicam-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - aicam-network
+
+  # 搜索引擎
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: aicam-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - aicam-network
+
+  # AI助手服务
+  ai-assistant:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+    container_name: aicam-ai-assistant
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/aicam?authSource=admin
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      JWT_SECRET: your-super-secret-jwt-key
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/ai-service:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - aicam-network
+
+  # 实验执行引擎
+  experiment-engine:
+    build:
+      context: ./backend/experiment-engine
+      dockerfile: Dockerfile
+    container_name: aicam-experiment-engine
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/aicam?authSource=admin
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:password123@rabbitmq:5672
+      EXPERIMENT_DIR: /app/experiments
+      PYTHON_PATH: python3
+      JWT_SECRET: your-super-secret-jwt-key
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./backend/experiment-engine:/app
+      - ./experiments:/app/experiments
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+    networks:
+      - aicam-network
+
+  # 图像处理服务
+  image-processing:
+    build:
+      context: ./backend/image-processing
+      dockerfile: Dockerfile
+    container_name: aicam-image-processing
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/aicam?authSource=admin
+      REDIS_URL: redis://redis:6379
+      UPLOAD_DIR: /app/uploads
+      PROCESSED_DIR: /app/processed
+      JWT_SECRET: your-super-secret-jwt-key
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./backend/image-processing:/app
+      - ./uploads:/app/uploads
+      - ./processed:/app/processed
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - aicam-network
+
+  # API网关
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+      dockerfile: Dockerfile
+    container_name: aicam-api-gateway
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      AI_ASSISTANT_URL: http://ai-assistant:3001
+      EXPERIMENT_ENGINE_URL: http://experiment-engine:3002
+      IMAGE_PROCESSING_URL: http://image-processing:3003
+      JWT_SECRET: your-super-secret-jwt-key
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/api-gateway:/app
+      - /app/node_modules
+    depends_on:
+      - ai-assistant
+      - experiment-engine
+      - image-processing
+    networks:
+      - aicam-network
+
+  # 前端应用
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: aicam-frontend
+    restart: unless-stopped
+    environment:
+      REACT_APP_API_URL: http://localhost:3000
+      REACT_APP_WS_URL: ws://localhost:3000
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api-gateway
+    networks:
+      - aicam-network
+
+  # Jupyter环境
+  jupyter:
+    image: jupyter/tensorflow-notebook:latest
+    container_name: aicam-jupyter
+    restart: unless-stopped
+    environment:
+      JUPYTER_ENABLE_LAB: yes
+      JUPYTER_TOKEN: aicam123
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./datasets:/home/jovyan/datasets
+    networks:
+      - aicam-network
+
+  # ROS环境（机器人控制实验）
+  ros-gazebo:
+    image: osrf/ros:noetic-desktop-full
+    container_name: aicam-ros-gazebo
+    restart: unless-stopped
+    environment:
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
+    ports:
+      - "11311:11311"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./ros-workspace:/ros-workspace
+    networks:
+      - aicam-network
+
+  # 监控服务
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: aicam-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - aicam-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: aicam-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+    ports:
+      - "3005:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - aicam-network
+
+  # 日志收集
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: aicam-kibana
+    restart: unless-stopped
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - aicam-network
+
+  # 开发工具
+  adminer:
+    image: adminer:latest
+    container_name: aicam-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    networks:
+      - aicam-network
+
+volumes:
+  mongodb_data:
+  postgresql_data:
+  redis_data:
+  minio_data:
+  rabbitmq_data:
+  prometheus_data:
+  grafana_data:
+  elasticsearch_data:
+
+networks:
+  aicam-network:
+    driver: bridge 

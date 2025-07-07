@@ -1,0 +1,4 @@
+// 重新导向到 server.ts
+// 为了保持 package.json 中 main 字段的一致性
+
+import './server';

@@ -1,0 +1,781 @@
+# 人工智能实验平台部署运维指南
+
+## 📋 部署概述
+
+本文档详细介绍了人工智能实验平台的部署流程，包括开发环境、测试环境和生产环境的部署方法。
+
+## 🚀 开发环境快速启动
+
+### Windows开发环境 (当前推荐方式)
+
+#### 方法1: 标准启动脚本 ✅
+```powershell
+# 项目根目录: D:\AICAMV2
+
+# 启动前后端服务
+powershell -ExecutionPolicy Bypass -File "D:\AICAMV2\标准启动脚本.ps1"
+
+# 分别启动服务
+powershell -ExecutionPolicy Bypass -File "D:\AICAMV2\标准启动脚本.ps1" -Frontend  # 仅前端
+powershell -ExecutionPolicy Bypass -File "D:\AICAMV2\标准启动脚本.ps1" -Backend   # 仅后端
+
+# 停止所有服务
+powershell -ExecutionPolicy Bypass -File "D:\AICAMV2\标准启动脚本.ps1" -Stop
+```
+
+#### 方法2: 手动启动 ✅
+```powershell
+# 后端服务 (端口: 3002)
+Set-Location "D:\AICAMV2\backend"
+node "D:\AICAMV2\backend\simple-start.js"
+
+# 前端服务 (端口: 3000) - 新终端
+Set-Location "D:\AICAMV2\frontend"
+node "D:\AICAMV2\frontend\node_modules\react-scripts\bin\react-scripts.js" start
+```
+
+#### 服务验证
+- **前端应用**: http://localhost:3000
+- **后端健康检查**: http://localhost:3002/api/health  
+- **后端数据接口**: http://localhost:3002/api/dashboard/stats
+
+### 开发环境说明
+- **数据库**: 开发模式使用Mock数据，无需配置MongoDB
+- **实时通信**: WebSocket自动启用
+- **热重载**: 前端代码修改自动刷新
+
+## 环境要求
+
+### 硬件要求
+
+#### 最小配置
+- **CPU**: 4核心 2.0GHz
+- **内存**: 8GB RAM
+- **存储**: 100GB SSD
+- **网络**: 100Mbps
+
+#### 推荐配置
+- **CPU**: 8核心 3.0GHz
+- **内存**: 16GB RAM
+- **存储**: 500GB SSD
+- **网络**: 1Gbps
+
+### 软件要求
+
+- **操作系统**: Ubuntu 20.04 LTS 或 CentOS 8
+- **Docker**: 20.10 或更高版本
+- **Docker Compose**: 2.0 或更高版本
+- **Git**: 2.30 或更高版本
+
+## 部署方式
+
+### 1. Docker Compose 部署（推荐）
+
+#### 1.1 准备环境
+
+```bash
+# 更新系统
+sudo apt update && sudo apt upgrade -y
+
+# 安装Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# 安装Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 将当前用户添加到docker组
+sudo usermod -aG docker $USER
+```
+
+#### 1.2 克隆项目
+
+```bash
+git clone https://github.com/your-username/AIExperimentPlatform.git
+cd AIExperimentPlatform
+```
+
+#### 1.3 配置环境变量
+
+```bash
+# 复制环境配置文件
+cp env.example .env
+
+# 编辑配置文件
+nano .env
+```
+
+**重要配置项**:
+```bash
+# 数据库配置
+MONGODB_URI=mongodb://mongodb:27017/aicam
+POSTGRES_URL=postgresql://postgres:password@postgres:5432/aicam
+REDIS_URL=redis://redis:6379
+
+# JWT密钥（生产环境必须修改）
+JWT_SECRET=your-super-secret-jwt-key-change-in-production
+
+# AI服务配置
+OPENAI_API_KEY=your-openai-api-key
+
+# 域名配置（生产环境）
+FRONTEND_URL=https://your-domain.com
+```
+
+#### 1.4 启动服务
+
+```bash
+# 构建并启动所有服务
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+```
+
+#### 1.5 初始化数据库
+
+```bash
+# 运行数据库迁移
+docker-compose exec backend npm run migrate
+
+# 初始化种子数据
+docker-compose exec backend npm run seed
+```
+
+### 2. 手动部署
+
+#### 2.1 安装Node.js
+
+```bash
+# 安装Node.js 18
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# 验证安装
+node --version
+npm --version
+```
+
+#### 2.2 安装Python
+
+```bash
+# 安装Python 3.9
+sudo apt install python3.9 python3.9-pip python3.9-venv
+
+# 创建虚拟环境
+python3.9 -m venv aicam-env
+source aicam-env/bin/activate
+```
+
+#### 2.3 安装数据库
+
+```bash
+# 安装MongoDB
+wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+sudo apt update
+sudo apt install -y mongodb-org
+
+# 启动MongoDB
+sudo systemctl start mongod
+sudo systemctl enable mongod
+
+# 安装PostgreSQL
+sudo apt install postgresql postgresql-contrib
+
+# 配置PostgreSQL
+sudo -u postgres psql
+CREATE DATABASE aicam;
+CREATE USER aicam_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE aicam TO aicam_user;
+\q
+
+# 安装Redis
+sudo apt install redis-server
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+```
+
+#### 2.4 部署应用
+
+```bash
+# 安装前端依赖
+cd frontend
+npm install
+npm run build
+
+# 安装后端依赖
+cd ../backend
+npm install
+npm run build
+
+# 安装AI服务依赖
+cd ../ai
+pip install -r requirements.txt
+```
+
+#### 2.5 启动服务
+
+```bash
+# 启动后端服务
+cd backend
+npm start
+
+# 启动AI服务
+cd ../ai
+python main.py
+
+# 启动前端服务（生产环境使用Nginx）
+cd ../frontend
+npm start
+```
+
+## 生产环境部署
+
+### 1. 使用Nginx反向代理
+
+#### 1.1 安装Nginx
+
+```bash
+sudo apt install nginx
+```
+
+#### 1.2 配置Nginx
+
+创建配置文件 `/etc/nginx/sites-available/aicam`:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    # 重定向到HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+    
+    # SSL证书配置
+    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    
+    # SSL配置
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+    
+    # 前端静态文件
+    location / {
+        root /var/www/aicam/frontend/build;
+        try_files $uri $uri/ /index.html;
+        
+        # 缓存配置
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+    
+    # API代理
+    location /api/ {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+    
+    # AI服务代理
+    location /ai/ {
+        proxy_pass http://localhost:8001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # WebSocket代理
+    location /socket.io/ {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+#### 1.3 启用配置
+
+```bash
+# 创建符号链接
+sudo ln -s /etc/nginx/sites-available/aicam /etc/nginx/sites-enabled/
+
+# 测试配置
+sudo nginx -t
+
+# 重启Nginx
+sudo systemctl restart nginx
+```
+
+### 2. SSL证书配置
+
+#### 2.1 使用Let's Encrypt
+
+```bash
+# 安装Certbot
+sudo apt install certbot python3-certbot-nginx
+
+# 获取SSL证书
+sudo certbot --nginx -d your-domain.com
+
+# 设置自动续期
+sudo crontab -e
+# 添加以下行
+0 12 * * * /usr/bin/certbot renew --quiet
+```
+
+### 3. 使用PM2管理进程
+
+#### 3.1 安装PM2
+
+```bash
+npm install -g pm2
+```
+
+#### 3.2 创建PM2配置文件
+
+创建 `ecosystem.config.js`:
+
+```javascript
+module.exports = {
+  apps: [
+    {
+      name: 'aicam-backend',
+      script: './backend/dist/index.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 8000
+      },
+      error_file: './logs/backend-error.log',
+      out_file: './logs/backend-out.log',
+      log_file: './logs/backend-combined.log',
+      time: true
+    },
+    {
+      name: 'aicam-ai',
+      script: './ai/main.py',
+      interpreter: 'python3',
+      instances: 1,
+      env: {
+        PYTHONPATH: './ai'
+      },
+      error_file: './logs/ai-error.log',
+      out_file: './logs/ai-out.log',
+      log_file: './logs/ai-combined.log',
+      time: true
+    }
+  ]
+};
+```
+
+#### 3.3 启动服务
+
+```bash
+# 启动所有服务
+pm2 start ecosystem.config.js
+
+# 保存PM2配置
+pm2 save
+
+# 设置开机自启
+pm2 startup
+```
+
+## 监控和日志
+
+### 1. 日志配置
+
+#### 1.1 创建日志目录
+
+```bash
+mkdir -p logs
+chmod 755 logs
+```
+
+#### 1.2 配置日志轮转
+
+创建 `/etc/logrotate.d/aicam`:
+
+```
+/var/www/aicam/logs/*.log {
+    daily
+    missingok
+    rotate 30
+    compress
+    delaycompress
+    notifempty
+    create 644 www-data www-data
+    postrotate
+        pm2 reloadLogs
+    endscript
+}
+```
+
+### 2. 监控配置
+
+#### 2.1 使用Prometheus和Grafana
+
+```bash
+# 启动监控服务
+docker-compose -f docker-compose.monitoring.yml up -d
+```
+
+#### 2.2 配置告警
+
+创建告警规则文件 `monitoring/alerts.yml`:
+
+```yaml
+groups:
+  - name: aicam_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: cpu_usage > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU使用率过高"
+          description: "CPU使用率超过80%持续5分钟"
+
+      - alert: HighMemoryUsage
+        expr: memory_usage > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "内存使用率过高"
+          description: "内存使用率超过85%持续5分钟"
+
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "服务不可用"
+          description: "服务 {{ $labels.instance }} 不可用"
+```
+
+## 备份和恢复
+
+### 1. 数据库备份
+
+#### 1.1 MongoDB备份
+
+```bash
+# 创建备份脚本
+cat > backup-mongo.sh << 'EOF'
+#!/bin/bash
+BACKUP_DIR="/backup/mongodb"
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p $BACKUP_DIR
+
+# 备份MongoDB
+docker-compose exec -T mongodb mongodump --out /dump
+docker cp aicam_mongodb_1:/dump $BACKUP_DIR/mongo_$DATE
+
+# 压缩备份
+tar -czf $BACKUP_DIR/mongo_$DATE.tar.gz -C $BACKUP_DIR mongo_$DATE
+rm -rf $BACKUP_DIR/mongo_$DATE
+
+# 删除7天前的备份
+find $BACKUP_DIR -name "mongo_*.tar.gz" -mtime +7 -delete
+EOF
+
+chmod +x backup-mongo.sh
+
+# 添加到定时任务
+crontab -e
+# 添加以下行（每天凌晨2点备份）
+0 2 * * * /path/to/backup-mongo.sh
+```
+
+#### 1.2 PostgreSQL备份
+
+```bash
+# 创建备份脚本
+cat > backup-postgres.sh << 'EOF'
+#!/bin/bash
+BACKUP_DIR="/backup/postgres"
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p $BACKUP_DIR
+
+# 备份PostgreSQL
+docker-compose exec -T postgres pg_dump -U postgres aicam > $BACKUP_DIR/postgres_$DATE.sql
+
+# 压缩备份
+gzip $BACKUP_DIR/postgres_$DATE.sql
+
+# 删除7天前的备份
+find $BACKUP_DIR -name "postgres_*.sql.gz" -mtime +7 -delete
+EOF
+
+chmod +x backup-postgres.sh
+```
+
+### 2. 文件备份
+
+```bash
+# 备份上传文件
+tar -czf /backup/uploads_$(date +%Y%m%d_%H%M%S).tar.gz uploads/
+
+# 备份配置文件
+tar -czf /backup/config_$(date +%Y%m%d_%H%M%S).tar.gz .env ecosystem.config.js
+```
+
+## 安全配置
+
+### 1. 防火墙配置
+
+```bash
+# 安装UFW
+sudo apt install ufw
+
+# 配置防火墙规则
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 22/tcp
+
+# 启用防火墙
+sudo ufw enable
+```
+
+### 2. 系统安全
+
+```bash
+# 更新系统
+sudo apt update && sudo apt upgrade -y
+
+# 安装安全工具
+sudo apt install fail2ban
+
+# 配置fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+```
+
+### 3. 数据库安全
+
+```bash
+# MongoDB安全配置
+sudo nano /etc/mongod.conf
+
+# 添加以下配置
+security:
+  authorization: enabled
+
+# 创建管理员用户
+mongo
+use admin
+db.createUser({
+  user: "admin",
+  pwd: "secure_password",
+  roles: ["userAdminAnyDatabase", "dbAdminAnyDatabase", "readWriteAnyDatabase"]
+})
+
+# PostgreSQL安全配置
+sudo nano /etc/postgresql/13/main/postgresql.conf
+# 修改以下配置
+listen_addresses = 'localhost'
+max_connections = 100
+```
+
+## 性能优化
+
+### 1. 数据库优化
+
+#### 1.1 MongoDB优化
+
+```javascript
+// 创建索引
+db.devices.createIndex({ "status": 1 })
+db.sensors.createIndex({ "deviceId": 1, "timestamp": -1 })
+db.analysis.createIndex({ "deviceId": 1, "createdAt": -1 })
+
+// 配置MongoDB
+sudo nano /etc/mongod.conf
+# 添加以下配置
+storage:
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 2
+    collectionConfig:
+      blockCompressor: snappy
+```
+
+#### 1.2 PostgreSQL优化
+
+```sql
+-- 创建索引
+CREATE INDEX idx_devices_status ON devices(status);
+CREATE INDEX idx_sensors_device_timestamp ON sensors(device_id, timestamp);
+
+-- 配置PostgreSQL
+sudo nano /etc/postgresql/13/main/postgresql.conf
+# 修改以下配置
+shared_buffers = 256MB
+effective_cache_size = 1GB
+work_mem = 4MB
+maintenance_work_mem = 64MB
+```
+
+### 2. 应用优化
+
+#### 2.1 Node.js优化
+
+```bash
+# 设置Node.js环境变量
+export NODE_ENV=production
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+# 使用PM2集群模式
+pm2 start ecosystem.config.js --instances max
+```
+
+#### 2.2 Redis优化
+
+```bash
+# 配置Redis
+sudo nano /etc/redis/redis.conf
+# 修改以下配置
+maxmemory 512mb
+maxmemory-policy allkeys-lru
+save 900 1
+save 300 10
+save 60 10000
+```
+
+## 故障排除
+
+### 1. 常见问题
+
+#### 1.1 服务无法启动
+
+```bash
+# 检查端口占用
+sudo netstat -tulpn | grep :8000
+
+# 检查日志
+docker-compose logs backend
+pm2 logs aicam-backend
+
+# 检查配置文件
+docker-compose config
+```
+
+#### 1.2 数据库连接失败
+
+```bash
+# 检查数据库服务状态
+sudo systemctl status mongod
+sudo systemctl status postgresql
+sudo systemctl status redis-server
+
+# 测试数据库连接
+mongo --eval "db.runCommand('ping')"
+psql -U postgres -d aicam -c "SELECT 1;"
+redis-cli ping
+```
+
+#### 1.3 内存不足
+
+```bash
+# 检查内存使用
+free -h
+htop
+
+# 优化内存使用
+# 1. 减少Docker容器内存限制
+# 2. 调整Node.js内存限制
+# 3. 优化数据库缓存配置
+```
+
+### 2. 性能监控
+
+```bash
+# 监控系统资源
+htop
+iotop
+nethogs
+
+# 监控应用性能
+pm2 monit
+docker stats
+
+# 监控网络连接
+ss -tulpn
+netstat -i
+```
+
+## 更新和升级
+
+### 1. 应用更新
+
+```bash
+# 拉取最新代码
+git pull origin main
+
+# 重新构建镜像
+docker-compose build
+
+# 重启服务
+docker-compose down
+docker-compose up -d
+
+# 运行数据库迁移
+docker-compose exec backend npm run migrate
+```
+
+### 2. 系统升级
+
+```bash
+# 更新系统包
+sudo apt update && sudo apt upgrade -y
+
+# 更新Docker
+sudo apt install docker-ce docker-ce-cli containerd.io
+
+# 更新Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/latest/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+## 联系支持
+
+如果在部署过程中遇到问题，请联系：
+
+- **技术支持**: support@aicam.com
+- **文档**: https://docs.aicam.com
+- **GitHub Issues**: https://github.com/aicam/issues
+- **社区论坛**: https://community.aicam.com 
