@@ -1,0 +1,70 @@
+name: AICAM CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: |
+        cd 源代码/前端 && npm install
+        cd ../后端 && npm install
+        cd ../AI服务 && npm install
+    
+    - name: Run tests
+      run: |
+        cd 源代码/前端 && npm test -- --passWithNoTests
+        cd ../后端 && npm test
+        cd ../AI服务 && npm test
+    
+    - name: Run security scan
+      run: node 脚本/测试脚本/security-scan.js
+    
+    - name: Run performance test
+      run: node 脚本/测试脚本/performance-test.js
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build and push Docker images
+      run: |
+        docker build -t aicam-frontend ./源代码/前端
+        docker build -t aicam-backend ./源代码/后端
+        docker build -t aicam-ai-service ./源代码/AI服务
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to production
+      run: |
+        docker-compose -f 配置/部署配置/docker-compose.yml up -d
+    
+    - name: Health check
+      run: node 脚本/测试脚本/health-check.js

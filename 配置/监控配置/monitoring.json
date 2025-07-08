@@ -1,0 +1,40 @@
+{
+  "version": "v1.0.0",
+  "timestamp": "2025-07-08T01:51:59.899Z",
+  "services": {
+    "frontend": {
+      "port": 3000,
+      "healthCheck": "/health",
+      "metrics": "/metrics"
+    },
+    "backend": {
+      "port": 8000,
+      "healthCheck": "/api/health",
+      "metrics": "/api/metrics"
+    },
+    "aiService": {
+      "port": 8001,
+      "healthCheck": "/health",
+      "metrics": "/metrics"
+    },
+    "database": {
+      "port": 5432,
+      "healthCheck": "SELECT 1"
+    },
+    "redis": {
+      "port": 6379,
+      "healthCheck": "PING"
+    }
+  },
+  "alerts": {
+    "cpuThreshold": 80,
+    "memoryThreshold": 85,
+    "diskThreshold": 90,
+    "responseTimeThreshold": 5000
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "retention": "30d"
+  }
+}

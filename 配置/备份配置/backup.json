@@ -1,0 +1,59 @@
+{
+  "version": "v1.0.0",
+  "timestamp": "2025-07-08T02:13:29.865Z",
+  "backup": {
+    "enabled": true,
+    "schedule": {
+      "frequency": "daily",
+      "time": "02:00",
+      "retention": {
+        "daily": 7,
+        "weekly": 4,
+        "monthly": 12
+      }
+    },
+    "targets": {
+      "database": {
+        "enabled": true,
+        "type": "postgresql",
+        "tables": [
+          "*"
+        ],
+        "exclude": [
+          "temp_*",
+          "cache_*"
+        ]
+      },
+      "files": {
+        "enabled": true,
+        "directories": [
+          "源代码",
+          "配置",
+          "资源",
+          "文档"
+        ],
+        "exclude": [
+          "node_modules",
+          "dist",
+          "build",
+          ".git",
+          "logs"
+        ]
+      }
+    },
+    "storage": {
+      "local": {
+        "enabled": true,
+        "path": "备份"
+      },
+      "remote": {
+        "enabled": false,
+        "type": "s3",
+        "config": {
+          "bucket": "your-backup-bucket",
+          "region": "us-east-1"
+        }
+      }
+    }
+  }
+}

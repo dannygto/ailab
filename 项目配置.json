@@ -1,0 +1,72 @@
+{
+  "name": "ai-experiment-platform",
+  "version": "1.0.0",
+  "description": "人工智能实验平台 - 可扩展的、面向服务的智能实验与决策支持平台",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx concurrently --names \"前端,后端\" --prefix-colors \"blue,green\" --kill-others-on-fail --restart-tries 3 \"cd frontend && npm start\" \"cd backend && npm run dev\"",
+    "start:fast": "powershell -ExecutionPolicy Bypass -File start-now.ps1",
+    "start:universal": "powershell -ExecutionPolicy Bypass -File launch.ps1",
+    "start:anywhere": "powershell -ExecutionPolicy Bypass -File launch.ps1",
+    "stop": "powershell -ExecutionPolicy Bypass -File stop-platform.ps1",
+    "smart-start": "powershell -ExecutionPolicy Bypass -File smart-start.ps1",
+    "simple-start": "powershell -ExecutionPolicy Bypass -File simple-start.ps1",
+    "quick-start": "powershell -ExecutionPolicy Bypass -File quick-start.ps1",
+    "dev": "start-simple.bat",
+    "dev:frontend": "cd frontend && npm start",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "test:ai": "node test-ai-complete.js",
+    "setup:ai": "node setup-ai.js",
+    "delivery-test:basic": "cd frontend && npm run delivery-test:basic",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "format": "npm run format:frontend && npm run format:backend",
+    "format:frontend": "cd frontend && npm run format",
+    "format:backend": "cd backend && npm run format"
+  },
+  "keywords": [
+    "ai",
+    "camera",
+    "monitoring",
+    "agriculture",
+    "iot",
+    "smart-farming",
+    "video-streaming",
+    "machine-learning"
+  ],
+  "author": "AICAM Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/AICAMV2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/AICAMV2/issues"
+  },
+  "homepage": "https://github.com/your-username/AICAMV2#readme",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}

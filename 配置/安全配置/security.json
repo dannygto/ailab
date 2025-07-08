@@ -1,0 +1,62 @@
+{
+  "version": "v1.0.0",
+  "timestamp": "2025-07-08T01:51:59.901Z",
+  "authentication": {
+    "jwtSecret": "change-this-in-production",
+    "jwtExpiresIn": "7d",
+    "refreshTokenExpiresIn": "30d",
+    "passwordMinLength": 8,
+    "passwordRequireSpecialChars": true
+  },
+  "authorization": {
+    "roles": [
+      "admin",
+      "teacher",
+      "student",
+      "guest"
+    ],
+    "permissions": {
+      "admin": [
+        "*"
+      ],
+      "teacher": [
+        "read",
+        "write",
+        "delete"
+      ],
+      "student": [
+        "read",
+        "write"
+      ],
+      "guest": [
+        "read"
+      ]
+    }
+  },
+  "rateLimiting": {
+    "windowMs": 900000,
+    "maxRequests": 100,
+    "skipSuccessfulRequests": false,
+    "skipFailedRequests": false
+  },
+  "cors": {
+    "origin": [
+      "http://localhost:3000",
+      "https://yourdomain.com"
+    ],
+    "credentials": true,
+    "methods": [
+      "GET",
+      "POST",
+      "PUT",
+      "DELETE",
+      "OPTIONS"
+    ]
+  },
+  "securityHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+  }
+}

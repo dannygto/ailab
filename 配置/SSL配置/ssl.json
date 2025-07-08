@@ -1,0 +1,25 @@
+{
+  "version": "v1.0.0",
+  "timestamp": "2025-07-08T02:13:29.863Z",
+  "ssl": {
+    "enabled": true,
+    "certificate": {
+      "type": "letsencrypt",
+      "domain": "yourdomain.com",
+      "email": "admin@yourdomain.com"
+    },
+    "redirect": {
+      "httpToHttps": true,
+      "wwwToNonWww": true
+    },
+    "security": {
+      "hsts": true,
+      "hstsMaxAge": 31536000,
+      "includeSubDomains": true,
+      "preload": false
+    }
+  },
+  "nginx": {
+    "sslConfig": "ssl_certificate /etc/nginx/ssl/cert.pem; ssl_certificate_key /etc/nginx/ssl/key.pem;"
+  }
+}

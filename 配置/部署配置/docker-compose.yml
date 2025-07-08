@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # 前端服务
+  frontend:
+    build:
+      context: ./源代码/前端
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - aicam-network
+
+  # 后端服务
+  backend:
+    build:
+      context: ./源代码/后端
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@db:5432/aicam
+      - JWT_SECRET=your-jwt-secret
+    depends_on:
+      - db
+    networks:
+      - aicam-network
+
+  # AI服务
+  ai-service:
+    build:
+      context: ./源代码/AI服务
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - NODE_ENV=production
+      - AI_MODEL_PATH=/app/models
+    volumes:
+      - ai-models:/app/models
+    networks:
+      - aicam-network
+
+  # 数据库
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=aicam
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - aicam-network
+
+  # Redis缓存
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - aicam-network
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./配置/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./配置/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - aicam-network
+
+volumes:
+  postgres-data:
+  ai-models:
+
+networks:
+  aicam-network:
+    driver: bridge

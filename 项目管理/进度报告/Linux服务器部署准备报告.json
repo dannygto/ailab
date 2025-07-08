@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-07-08T02:23:38.287Z",
+  "version": "v1.0.0",
+  "status": "READY_FOR_DEPLOYMENT",
+  "serverRequirements": {
+    "system": {
+      "os": "Ubuntu 20.04+ / CentOS 8+",
+      "minMemory": "4GB",
+      "minStorage": "20GB",
+      "recommendedCores": 4
+    },
+    "services": {
+      "docker": {
+        "version": "20.10+",
+        "compose": "2.0+"
+      },
+      "nginx": {
+        "version": "1.18+"
+      },
+      "database": {
+        "type": "PostgreSQL",
+        "version": "13+"
+      },
+      "redis": {
+        "version": "6.0+"
+      }
+    },
+    "ports": {
+      "http": 80,
+      "https": 443,
+      "frontend": 3000,
+      "backend": 8000,
+      "aiService": 8001,
+      "database": 5432,
+      "redis": 6379
+    },
+    "domains": {
+      "main": "yourdomain.com",
+      "api": "api.yourdomain.com",
+      "ai": "ai.yourdomain.com"
+    }
+  },
+  "deploymentScripts": [
+    "check-server-env.sh - 服务器环境检查",
+    "install-docker.sh - Docker环境安装",
+    "generate-prod-config.sh - 生产配置生成",
+    "deploy.sh - 应用部署",
+    "health-check.js - 健康检查"
+  ],
+  "configurationFiles": [
+    "配置/环境配置/.env.production",
+    "配置/nginx/nginx.conf",
+    "配置/部署配置/docker-compose.prod.yml",
+    "配置/SSL配置/",
+    "配置/监控配置/",
+    "配置/日志配置/"
+  ],
+  "deploymentSteps": [
+    "1. 上传项目文件到Linux服务器",
+    "2. 运行环境检查脚本",
+    "3. 安装Docker环境",
+    "4. 配置域名和SSL证书",
+    "5. 生成生产环境配置",
+    "6. 运行部署脚本",
+    "7. 验证部署结果"
+  ],
+  "nextActions": [
+    "提供服务器IP和域名信息",
+    "确认服务器配置满足要求",
+    "准备SSL证书",
+    "配置防火墙规则",
+    "开始部署流程"
+  ]
+}

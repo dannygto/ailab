@@ -1,0 +1,46 @@
+{
+  "version": "v1.0.0",
+  "timestamp": "2025-07-08T02:13:29.860Z",
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "destination": "logs",
+    "rotation": {
+      "maxSize": "100m",
+      "maxFiles": 10,
+      "compress": true
+    }
+  },
+  "services": {
+    "frontend": {
+      "logFile": "logs/frontend.log",
+      "level": "info"
+    },
+    "backend": {
+      "logFile": "logs/backend.log",
+      "level": "info"
+    },
+    "aiService": {
+      "logFile": "logs/ai-service.log",
+      "level": "info"
+    },
+    "database": {
+      "logFile": "logs/database.log",
+      "level": "warn"
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": {
+      "cpu": true,
+      "memory": true,
+      "disk": true,
+      "network": true
+    },
+    "alerts": {
+      "cpuThreshold": 80,
+      "memoryThreshold": 85,
+      "diskThreshold": 90
+    }
+  }
+}
