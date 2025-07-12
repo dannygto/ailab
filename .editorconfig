@@ -1,0 +1,33 @@
+# EditorConfig 配置文件
+# http://editorconfig.org
+
+# 顶层配置文件标志
+root = true
+
+# 所有文件的默认设置
+[*]
+charset = utf-8                  # 使用UTF-8编码
+end_of_line = lf                 # 使用LF作为行尾结束符
+indent_style = space             # 使用空格进行缩进
+indent_size = 2                  # 缩进大小为2
+insert_final_newline = true      # 文件末尾插入空行
+trim_trailing_whitespace = true  # 去除行尾空白字符
+
+# 专门为Markdown文件的设置
+[*.md]
+# Markdown文件中尾部空格有特殊含义，所以不去除
+trim_trailing_whitespace = false
+
+# 为shell脚本设置可执行权限
+[*.{sh,bash}]
+end_of_line = lf
+charset = utf-8
+
+# 为Windows特定脚本文件设置
+[*.{cmd,bat,ps1}]
+end_of_line = crlf
+charset = utf-8
+
+# 为中文文档特别指定编码设置
+[docs/**/*.md]
+charset = utf-8
