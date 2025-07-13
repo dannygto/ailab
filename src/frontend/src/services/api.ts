@@ -1,11 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { toast } from 'react-hot-toast';
-import { 
-  apiResponse, 
-  PaginatedResponse, 
-  User, 
-  Experiment, 
-  chatMessage, 
+import {
+  apiResponse,
+  PaginatedResponse,
+  User,
+  Experiment,
+  chatMessage,
   chatSession,
   AIAssistantResponse,
   ImageProcessingOptions,
@@ -31,8 +31,14 @@ import { deviceservice } from './device.service';
 import { GuidanceService } from './guidance.service';
 
 // API基础URL配置
-const api_BASE_URL = process.env.REACT_APP_api_URL || 'http://localhost:3001/api';
-const WS_BASE_URL = process.env.REACT_APP_WS_URL || 'ws://localhost:3001';
+// 生产环境使用相对路径，开发环境使用localhost
+const api_BASE_URL = process.env.REACT_APP_api_URL ||
+  (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api');
+
+const WS_BASE_URL = process.env.REACT_APP_WS_URL ||
+  (process.env.NODE_ENV === 'production' ?
+    `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}` :
+    'ws://localhost:3001');
 
 class apiService {
   private apiClient: AxiosInstance;
@@ -69,7 +75,7 @@ class apiService {
         return Promise.reject(error);
       }
     );
-    
+
     // ��ʼ������
     this.deviceservice = new deviceservice(this);
     this.guidanceService = new GuidanceService(this);
@@ -84,7 +90,7 @@ class apiService {
 
     if (error.response) {
       const { status, data } = error.response;
-      
+
       switch (status) {
         case 401:
           // ���URL����auth/me��˵���Ǽ���û�״̬����Ĭ����
@@ -101,7 +107,7 @@ class apiService {
           break;
         case 404:
           // api不存在时忽略404错误，使用默认数据
-          if (error.config?.url?.includes('health') || 
+          if (error.config?.url?.includes('health') ||
               error.config?.url?.includes('chat') ||
               error.config?.url?.includes('auth/me')) {
             console.warn(`⚠️ api端点 ${error.config.url} 不存在，使用静态模式`);
@@ -114,7 +120,7 @@ class apiService {
           break;
         default:
           // ����api�����صĴ��󣬽�����ʾ����
-          if (error.config?.url?.includes('health') || 
+          if (error.config?.url?.includes('health') ||
               error.config?.url?.includes('chat')) {
             console.warn(`?? api��Ӧ�쳣: ${data?.message || '������ʱ������'}`);
             return;
@@ -213,7 +219,7 @@ class apiService {
       // ��ȡ�����AI����
       const aiConfigStr = localStorage.getItem('ai-config');
       let aiConfig = null;
-      
+
       if (aiConfigStr) {
         try {
           aiConfig = JSON.parse(aiConfigStr);
@@ -221,20 +227,20 @@ class apiService {
           console.warn('AI���ý���ʧ��:', error);
         }
       }
-      
+
       // Ĭ��AIģ������
       const defaultModel = 'deepseek-chat'; // Ĭ��ʹ��DeepSeek
       const modelId = aiConfig?.selectedModel || defaultModel;
-      
+
       console.log('����AI����:', { message: message.substring(0, 50) + '...', modelId });
-      
+
       // ��һ�γ���
       try {
         const response = await this.request({
           method: 'POST',
           url: '/ai-assistant/chat',
-          data: { 
-            message, 
+          data: {
+            message,
             modelId,
             apiKey: aiConfig?.apiKey, // ����api��Կ
             context: {
@@ -252,18 +258,18 @@ class apiService {
           },
           timeout: 20000
         });
-        
+
         // ��ȫ���ͼ��
         const typedResponse = response as {
           message?: string;
           suggestions?: string[];
         };
-        
-        console.log('AI��Ӧ�ɹ�:', { 
+
+        console.log('AI��Ӧ�ɹ�:', {
           length: typedResponse?.message?.length || 0,
-          suggestions: typedResponse?.suggestions?.length || 0 
+          suggestions: typedResponse?.suggestions?.length || 0
         });
-        
+
         return typedResponse as AIAssistantResponse;
       } catch (error) {
         // ����Ǿ�api·����������api·��
@@ -271,25 +277,25 @@ class apiService {
         const response = await this.request({
           method: 'POST',
           url: '/ai/chat',
-          data: { 
-            message, 
+          data: {
+            message,
             modelId,
             sessionId: sessionId || 'default'
           },
           timeout: 20000
         });
-        
+
         // ��ȫ����ת���͸�ʽ����Ӧ
         const typedResponse = response as {
           content?: string;
           response?: string;
           suggestions?: string[];
         };
-        
+
         // ��ʽ����Ӧ��ƥ��Ԥ�ڽṹ
         return {
           message: typedResponse.content || typedResponse.response || '��Ǹ���޷������������⡣',
-          suggestions: Array.isArray(typedResponse.suggestions) 
+          suggestions: Array.isArray(typedResponse.suggestions)
             ? typedResponse.suggestions.map(item => {
                 if (typeof item === 'string') {
                   return { text: item };
@@ -325,7 +331,7 @@ class apiService {
     } catch (error) {
       console.error('��ȡ����Ựʧ��:', error);
       toast.error('�޷���ȡ����Ự��ʹ�ñ��ش洢�ĻỰ');
-      
+
       // ���ر��ش洢�ĻỰ�������
       const localSessions = localStorage.getItem('chat-sessions');
       return localSessions ? JSON.parse(localSessions) : [];
@@ -341,7 +347,7 @@ class apiService {
     } catch (error) {
       console.error('��ȡ������ʷʧ��:', error);
       toast.error('�޷���ȡ������ʷ��ʹ�ñ��ش洢����Ϣ');
-      
+
       // ���ر��ش洢��������ʷ�������
       const localHistory = localStorage.getItem(`chat-history-${sessionId}`);
       return localHistory ? JSON.parse(localHistory) : [];
@@ -354,13 +360,13 @@ class apiService {
         url: '/ai-assistant/sessions',
         data: { title },
       });
-      
+
       // �ɹ������󱣴浽���ش洢
       const localSessions = localStorage.getItem('chat-sessions');
       const sessions = localSessions ? JSON.parse(localSessions) : [];
       sessions.push(session);
       localStorage.setItem('chat-sessions', JSON.stringify(sessions));
-      
+
       return session;
     } catch (error) {
       console.error('��������Ựʧ��:', error);
@@ -374,13 +380,13 @@ class apiService {
         messages: [] as chatMessage[],
         isLocal: true
       } as chatSession;
-      
+
       // ���浽���ش洢
       const localSessions = localStorage.getItem('chat-sessions');
       const sessions = localSessions ? JSON.parse(localSessions) : [];
       sessions.push(tempSession);
       localStorage.setItem('chat-sessions', JSON.stringify(sessions));
-      
+
       return tempSession;
     }
   }
@@ -391,38 +397,38 @@ class apiService {
         method: 'DELETE',
         url: `/ai-assistant/sessions/${sessionId}`,
       });
-      
+
       // �ӱ��ش洢��Ҳɾ��
       const localSessions = localStorage.getItem('chat-sessions');
       if (localSessions) {
         const sessions = JSON.parse(localSessions).filter((s: any) => s.id !== sessionId);
         localStorage.setItem('chat-sessions', JSON.stringify(sessions));
       }
-      
+
       // ɾ����ص�������ʷ
       localStorage.removeItem(`chat-history-${sessionId}`);
     } catch (error) {
       console.error('ɾ������Ựʧ��:', error);
       toast.error('�޷��ӷ�����ɾ������Ự�������ӱ���ɾ��');
-      
+
       // �ӱ��ش洢��ɾ��
       const localSessions = localStorage.getItem('chat-sessions');
       if (localSessions) {
         const sessions = JSON.parse(localSessions).filter((s: any) => s.id !== sessionId);
         localStorage.setItem('chat-sessions', JSON.stringify(sessions));
       }
-      
+
       // ɾ����ص�������ʷ
       localStorage.removeItem(`chat-history-${sessionId}`);
     }
   }
-  
+
   // ��������
   private getUserId(): string {
     const user = JSON.parse(localStorage.getItem('user-StorageIcon') || '{"state":{}}')?.state?.user;
     return user?.id || 'unknown';
   }
-  
+
   private getUserRole(): string {
     const user = JSON.parse(localStorage.getItem('user-StorageIcon') || '{"state":{}}')?.state?.user;
     return user?.role || 'student';
@@ -487,7 +493,7 @@ class apiService {
           createdAt: new Date().toISOString()
         }
       };
-      
+
       return this.request<Experiment>({
         method: 'POST',
         url: '/experiments',
@@ -844,17 +850,17 @@ class apiService {
       if (isConnected) {
         return true;
       }
-      
+
       retries++;
       // ֻ�����һ������ʧ��ʱ��ʾ����
       if (retries === maxRetries) {
         console.warn('�޷����ӵ���������ʹ������ģʽ');
       }
-      
+
       // �ȴ�һ��ʱ�������
       await new Promise(resolve => setTimeout(resolve, delayMs));
     }
-    
+
     return false;
   }
 
@@ -872,11 +878,11 @@ class apiService {
     try {
       let url = '/resources';
       const params: Record<string, string> = {};
-      
+
       if (experimentType) params.type = experimentType;
       if (CategoryIcon) params.category = CategoryIcon;
       if (search) params.search = search;
-      
+
       const response = await this.apiClient.get(url, { params });
       return {
         success: true,
@@ -976,28 +982,28 @@ class apiService {
   async testModelConnection(modelName: string): Promise<{ success: boolean; message: string; latency?: number; tokenLimits?: any }> {
     try {
       const startTime = Date.now();
-      
+
       // ��ȡ�����AI����
       const aiConfigStr = localStorage.getItem('ai-config');
       let aiConfig = null;
-      
+
       if (aiConfigStr) {
         try {
           aiConfig = JSON.parse(aiConfigStr);
         } catch (error) {
           console.warn('Failed to parse AI config:', error);
-          return { 
-            success: false, 
-            message: '�޷�����AI����' 
+          return {
+            success: false,
+            message: '�޷�����AI����'
           };
         }
       } else {
-        return { 
-          success: false, 
-          message: 'δ�ҵ�AI����' 
+        return {
+          success: false,
+          message: 'δ�ҵ�AI����'
         };
       }
-      
+
       // ��ȡģ��������Ϣ��ȷ����ȷ�Ĳ���
       const modelConfig = AI_MODELS.find(model => model.id === modelName);
       if (!modelConfig) {
@@ -1006,13 +1012,13 @@ class apiService {
           message: `�Ҳ���ģ�� ${modelName} ��������Ϣ`
         };
       }
-      
+
       // ���ݲ�ͬģ�Ͷ����������
       const requestData: any = {
         model: modelName,
         config: aiConfig
       };
-      
+
       // ���ݹ�Ӧ�̺�ģ��ID�����ض�����
       if (modelName === 'doubao-seed-1-6-thinking-250615') {
         // ��ɽ���۶���˼��ģ���ض�����
@@ -1029,12 +1035,12 @@ class apiService {
           endpoint: 'https://api.deepseek.com/v1/chat/completions'
         };
       }
-      
+
       // ���Ͳ������󵽺��
       const response = await this.apiClient.post('/ai-assistant/test-connection', requestData);
-      
+
       const latency = Date.now() - startTime;
-      
+
       // �����˷�����ģ����Ϣ��token���ƣ����䱣����µ����ش洢��
       if (response.data.success && response.data.tokenLimits) {
         const modelInfoStr = localStorage.getItem('ai-models-info') || '{}';
@@ -1052,7 +1058,7 @@ class apiService {
           console.warn('�޷�����ģ����Ϣ����:', e);
         }
       }
-      
+
       return {
         success: response.data.success,
         message: response.data.message || '���ӳɹ�',
@@ -1061,10 +1067,10 @@ class apiService {
       };
     } catch (error: any) {
       console.error('AIģ�����Ӳ���ʧ��:', error);
-      
+
       // ��ȡ������Ϣ
       const errorMessage = error.response?.data?.message || error.message || '���Ӳ���ʧ��';
-      
+
       return {
         success: false,
         message: errorMessage
@@ -1073,11 +1079,11 @@ class apiService {
   }
 
   // ����ָ��ϵͳapi
-  async getGuidanceSuggestions(params?: { 
-    type?: string; 
-    importance?: number; 
-    page?: number; 
-    limit?: number 
+  async getGuidanceSuggestions(params?: {
+    type?: string;
+    importance?: number;
+    page?: number;
+    limit?: number
   }): Promise<PaginatedResponse<any>> {
     return this.request({
       method: 'GET',
@@ -1210,8 +1216,8 @@ class apiService {
     return {
       ...data,
       timestamp: typeof data.timestamp === 'string' ? data.timestamp : data.timestamp.toISOString(),
-      status: (statusStr.includes('online') || statusStr.includes('connected') ? 'online' : 
-               statusStr.includes('offline') || statusStr.includes('disconnected') ? 'offline' : 
+      status: (statusStr.includes('online') || statusStr.includes('connected') ? 'online' :
+               statusStr.includes('offline') || statusStr.includes('disconnected') ? 'offline' :
                'error') as 'online' | 'offline' | 'error'
     };
   }
