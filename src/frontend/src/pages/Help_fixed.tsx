@@ -18,18 +18,18 @@ import {
   Link
 } from '@mui/material';
 
-import { 
-  ExpandMoreIcon, 
-  HelpOutlineIcon as HelpIconIcon, 
-  SchoolIcon, 
-  ScienceIcon, 
-  SmartToyIcon as AIIcon, 
-  StorageIcon as DataIcon, 
-  SecurityIcon, 
-  PhoneIcon as ContactIcon, 
-  EmailIcon, 
-  LanguageIcon as WebIcon, 
-  VideoLibraryIcon as VideoIcon 
+import {
+  ExpandMoreIcon,
+  HelpOutlineIcon as HelpIconIcon,
+  SchoolIcon,
+  ScienceIcon,
+  SmartToyIcon as AIIcon,
+  StorageIcon as DataIcon,
+  SecurityIcon,
+  PhoneIcon as ContactIcon,
+  EmailIcon,
+  LanguageIcon as WebIcon,
+  VideoLibraryIcon as VideoIcon
 } from '../utils/icons';
 
 const Help: React.FC = () => {
@@ -78,7 +78,7 @@ const Help: React.FC = () => {
     {
       id: 'faq8',
       question: '如何获得技术支持？',
-      answer: '您可以通过以下方式获得技术支持：1) 查看本帮助页面的常见问题；2) 发送邮件至support@aiexp.edu；3) 拨打支持热线400-123-4567；4) 观看视频教程了解详细操作。'
+      answer: '您可以通过以下方式获得技术支持：1) 查看本帮助页面的常见问题；2) 发送邮件至support@sslab.edu.cn；3) 拨打支持热线400-888-9999；4) 观看视频教程了解详细操作。'
     }
   ];
 
@@ -99,13 +99,13 @@ const Help: React.FC = () => {
       title: '查看视频教程',
       description: '观看详细的操作指导视频',
       icon: <VideoIcon />,
-      action: () => window.open('https://help.aiexp.edu/videos', '_blank')
+      action: () => window.open('/help/videos', '_blank')
     },
     {
       title: '联系技术支持',
       description: '获得专业的技术支持服务',
       icon: <ContactIcon />,
-      action: () => window.open('mailto:support@aiexp.edu', '_blank')
+      action: () => window.open('mailto:support@sslab.edu.cn', '_blank')
     }
   ];
 
@@ -128,10 +128,10 @@ const Help: React.FC = () => {
         <Grid container spacing={2}>
           {quickActions.map((action, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card 
-                sx={{ 
-                  cursor: 'pointer', 
-                  '&:hover': { backgroundColor: 'action.hover' } 
+              <Card
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': { backgroundColor: 'action.hover' }
                 }}
                 onClick={action.action}
               >
@@ -158,7 +158,7 @@ const Help: React.FC = () => {
           常见问题
         </Typography>
         {faqs.map((faq) => (
-          <Accordion 
+          <Accordion
             key={faq.id}
             expanded={expandedFAQ === faq.id}
             onChange={handleFAQChange(faq.id)}

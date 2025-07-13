@@ -23,9 +23,12 @@ import {
   Slider
 } from '@mui/material';
 import {
+  Language as LanguageIcon,
+  AccessTime as AccessTimeIcon,
   Business as BusinessIcon,
   Save as SaveIcon,
   Refresh as RefreshIcon,
+  Cloud as CloudIcon,
   Settings as SettingsIcon,
   UploadFile as UploadFileIcon
 } from '@mui/icons-material';
@@ -91,65 +94,6 @@ const GeneralSettings: React.FC = () => {
 
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // 组件加载时获取设置数据
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        setLoading(true);
-
-        // 从服务器获取设置
-        const response = await fetch('/api/settings/general');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            // 更新通用设置
-            if (data.data.general) {
-              setSettings(prev => ({ ...prev, ...data.data.general }));
-            }
-
-            // 更新学校设置
-            if (data.data.school) {
-              setSchoolSettings(prev => ({ ...prev, ...data.data.school }));
-            }
-          }
-        } else {
-          console.warn('无法从服务器获取设置，使用默认值');
-        }
-
-        // 从本地存储获取备份数据
-        const localGeneralSettings = localStorage.getItem('general-settings');
-        const localSchoolSettings = localStorage.getItem('school-settings');
-
-        if (localGeneralSettings) {
-          try {
-            const parsed = JSON.parse(localGeneralSettings);
-            setSettings(prev => ({ ...prev, ...parsed }));
-          } catch (e) {
-            console.warn('本地通用设置解析失败:', e);
-          }
-        }
-
-        if (localSchoolSettings) {
-          try {
-            const parsed = JSON.parse(localSchoolSettings);
-            setSchoolSettings(prev => ({ ...prev, ...parsed }));
-          } catch (e) {
-            console.warn('本地学校设置解析失败:', e);
-          }
-        }
-
-      } catch (error) {
-        console.error('加载设置失败:', error);
-        setError('加载设置失败，使用默认配置');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSettings();
-  }, []);
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -206,16 +150,6 @@ const GeneralSettings: React.FC = () => {
     };
     return types[type] || '未知类型';
   };
-
-  if (loading) {
-    return (
-      <Box sx={{ p: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography variant="h6" color="text.secondary">
-          正在加载设置，请稍候...
-        </Typography>
-      </Box>
-    );
-  }
 
   return (
     <Box sx={{ p: 3 }}>

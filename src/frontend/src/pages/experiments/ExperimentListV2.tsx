@@ -29,44 +29,44 @@ import { AddIcon } from '../../utils/icons';
 import { VisibilityIcon } from '../../utils/icons';
 import { toast } from 'react-hot-toast';
 
-// ����������
+// 导入核心组件
 import { Button, ButtonType } from '../../components/core/atoms/Button';
 import { Card } from '../../components/core/atoms/Card';
 
-// ����ʵ�����
+// 导入实验服务
 import { experimentService } from '../../services';
 import { Experiment, ExperimentType, ExperimentStatus } from '../../types';
 
-// ʵ��״̬������ӳ��
+// 实验状态配置和映射
 import { experimentTypes } from '../../utils/experimentTypes';
 import { experimentStatusMap } from '../../constants/experimentStatus';
 
 /**
- * ʵ���б�ҳ�� - �ع���V2
- * 
- * ʹ���µ������ʵ�ֵ�ʵ���б�ҳ�棬���и��õ����Ͱ�ȫ�Ժ������Ż�
+ * 实验列表页面 - 重构版V2
+ *
+ * 使用新的服务实现的实验列表页面，具有更好的性能和安全性和更好优化
  */
 const ExperimentListV2: React.FC = () => {
   const navigate = useNavigate();
-  
-  // ״̬����
+
+  // 状态管理
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  
-  // ��ҳ״̬
-  const [page, setPage] = useState(0); // MUI��ҳ��0��ʼ
+
+  // 分页状态
+  const [page, setPage] = useState(0); // MUI分页从0开始
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
 
-  // ��ȡʵ���б�
+  // 获取实验列表
   const fetchExperiments = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await experimentService.getExperiments({
         page: page + 1, // api��ҳ��1��ʼ
@@ -74,9 +74,9 @@ const ExperimentListV2: React.FC = () => {
         sort: 'updatedAt',
         order: 'desc'
       });
-      
+
       if (response.success && response.data) {
-        // ʹ������ת��ȷ�����ͼ���
+        // 使用类型转换确保数据类型正确
         const apiExperiments = response.data.items || [];
         const convertedExperiments: Experiment[] = apiExperiments.map(item => ({
           id: item.id,
@@ -92,54 +92,54 @@ const ExperimentListV2: React.FC = () => {
           results: {},
           metadata: {}
         }));
-        
+
         setExperiments(convertedExperiments);
       } else {
         throw new Error((response as any).error || '获取实验列表失败');
       }
     } catch (err) {
-      console.error('��ȡʵ���б�ʧ��:', err);
-      setError('��ȡʵ���б�ʧ�ܣ����Ժ�����');
-      toast.error('��ȡʵ���б�ʧ�ܣ����Ժ�����');
-      
-      // ����ģ�������Ա�չʾUI
+      console.error('获取实验列表失败:', err);
+      setError('获取实验列表失败，请稍后重试');
+      toast.error('获取实验列表失败，请稍后重试');
+
+      // 使用模拟数据以便展示UI
       const mockData: Experiment[] = [
-        { 
-          id: '1', 
-          name: 'ͼ�����ʵ��', 
-          type: 'observation', 
-          status: 'running' as ExperimentStatus, 
-          createdAt: new Date(), 
-          updatedAt: new Date(), 
-          description: 'ʹ��ResNet50ģ�ͽ���ͼ�����',
+        {
+          id: '1',
+          name: '图像分类实验',
+          type: 'observation',
+          status: 'running' as ExperimentStatus,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          description: '使用ResNet50模型进行图像分类',
           userId: 'user1',
           parameters: {},
           data: {},
           results: {},
           metadata: {}
         },
-        { 
-          id: '2', 
-          name: 'Ŀ����ʵ��', 
-          type: 'measurement', 
-          status: 'completed' as ExperimentStatus, 
-          createdAt: new Date(), 
-          updatedAt: new Date(), 
-          description: 'ʹ��YOLO v8ģ�ͽ���Ŀ����',
+        {
+          id: '2',
+          name: '目标检测实验',
+          type: 'measurement',
+          status: 'completed' as ExperimentStatus,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          description: '使用YOLO v8模型进行目标检测',
           userId: 'user1',
           parameters: {},
           data: {},
           results: {},
           metadata: {}
         },
-        { 
-          id: '3', 
-          name: '��Ȼ���Դ���ʵ��', 
-          type: 'analysis', 
-          status: 'pending' as ExperimentStatus, 
-          createdAt: new Date(), 
-          updatedAt: new Date(), 
-          description: 'BERTģ�������ı���������',
+        {
+          id: '3',
+          name: '自然语言处理实验',
+          type: 'analysis',
+          status: 'pending' as ExperimentStatus,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          description: 'BERT模型进行文本分类任务',
           userId: 'user1',
           parameters: {},
           data: {},
@@ -147,77 +147,77 @@ const ExperimentListV2: React.FC = () => {
           metadata: {}
         }
       ];
-      
+
       setExperiments(mockData);
     } finally {
       setLoading(false);
     }
   }, [page, rowsPerPage]);
 
-  // ��ʼ����
+  // 初始化加载
   useEffect(() => {
     fetchExperiments();
   }, [fetchExperiments]);
-  
-  // ����ҳ��仯
+
+  // 处理页面变化
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
-  
-  // ����ÿҳ�����仯
+
+  // 处理每页行数变化
   const handleChangeRowsPerPage = (Event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(Event.target.value, 10));
-    setPage(0); // ���õ���һҳ
+    setPage(0); // 重置到第一页
   };
-  
-  // ��������
+
+  // 处理搜索
   const handleSearch = (Event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(Event.target.value);
   };
-  
-  // ��������ɸѡ
+
+  // 处理类型筛选
   const handleTypeFilterChange = (Event: React.ChangeEvent<HTMLInputElement>) => {
     setTypeFilter(Event.target.value as string);
   };
-  
+
   // ����״̬ɸѡ
   const handleStatusFilterChange = (Event: React.ChangeEvent<HTMLInputElement>) => {
     setStatusFilter(Event.target.value as string);
   };
-  
+
   // ����ˢ��
   const handleRefreshIcon = () => {
     fetchExperiments();
   };
-  
+
   // ����������ʵ��
   const handleCreateExperiment = () => {
     navigate('/experiments/create');
   };
-  
+
   // �����鿴ʵ������
   const handleViewExperiment = (id: string) => {
     navigate(`/experiments/${id}`);
   };
-  
+
   // ��ȡ���˺��ʵ��
   const getFilteredExperiments = () => {
     return experiments.filter(exp => {
       // ��������
-      const matchesSearch = searchTerm === '' || 
+      const matchesSearch = searchTerm === '' ||
         exp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (exp.description && exp.description.toLowerCase().includes(searchTerm.toLowerCase()));
-      
+
       // ���͹���
       const matchesType = typeFilter === 'all' || exp.type === typeFilter;
-      
+
       // ״̬����
       const matchesStatus = statusFilter === 'all' || exp.status === statusFilter;
-      
+
       return matchesSearch && matchesType && matchesStatus;
     });
   };
-  
+
   // ��ʽ������
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('zh-CN', {
@@ -228,13 +228,13 @@ const ExperimentListV2: React.FC = () => {
       minute: '2-digit'
     });
   };
-  
+
   // ��ȡʵ��������ʾ����
   const getTypeDisplayName = (type: string) => {
     const typeObj = experimentTypes.find(t => t.value === type);
     return typeObj ? typeObj.label : type;
   };
-  
+
   // ���˺��ʵ������
   const filteredExperiments = getFilteredExperiments();
 
@@ -242,7 +242,7 @@ const ExperimentListV2: React.FC = () => {
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">ʵ���б�</Typography>
-        <Button 
+        <Button
           buttonType={ButtonType.PRIMARY}
           startIcon={<AddIcon />}
           onClick={handleCreateExperiment}
@@ -250,13 +250,13 @@ const ExperimentListV2: React.FC = () => {
           ������ʵ��
         </Button>
       </Box>
-      
+
       {error && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
-      
+
       <Card sx={{ mb: 3 }}>
         <Box sx={{ p: 2, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           <TextField
@@ -273,7 +273,7 @@ const ExperimentListV2: React.FC = () => {
               ),
             }}
           />
-          
+
           <FormControl size="small" sx={{ minWidth: '150px' }}>
             <InputLabel>ʵ������</InputLabel>
             <Select
@@ -289,7 +289,7 @@ const ExperimentListV2: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-          
+
           <FormControl size="small" sx={{ minWidth: '150px' }}>
             <InputLabel>״̬</InputLabel>
             <Select
@@ -307,7 +307,7 @@ const ExperimentListV2: React.FC = () => {
               <MenuItem value="StopIconped">��ֹͣ</MenuItem>
             </Select>
           </FormControl>
-          
+
           <Tooltip title="ˢ��">
             <IconButton onClick={handleRefreshIcon} color="primary">
               <RefreshIcon />
@@ -315,7 +315,7 @@ const ExperimentListV2: React.FC = () => {
           </Tooltip>
         </Box>
       </Card>
-      
+
       <Card>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="medium">
@@ -347,7 +347,7 @@ const ExperimentListV2: React.FC = () => {
                     <Typography variant="body1" color="text.secondary">
                       û���ҵ�����������ʵ��
                     </Typography>
-                    <Button 
+                    <Button
                       buttonType={ButtonType.PRIMARY}
                       sx={{ mt: 2 }}
                       onClick={handleCreateExperiment}
@@ -372,15 +372,15 @@ const ExperimentListV2: React.FC = () => {
                       </TableCell>
                       <TableCell>{getTypeDisplayName(experiment.type)}</TableCell>
                       <TableCell>
-                        <Chip 
-                          label={experimentStatusMap[experiment.status as keyof typeof experimentStatusMap]?.label || experiment.status} 
-                          color={experimentStatusMap[experiment.status as keyof typeof experimentStatusMap]?.color as any || 'default'} 
+                        <Chip
+                          label={experimentStatusMap[experiment.status as keyof typeof experimentStatusMap]?.label || experiment.status}
+                          color={experimentStatusMap[experiment.status as keyof typeof experimentStatusMap]?.color as any || 'default'}
                           size="small"
                         />
                       </TableCell>
                       <TableCell>{formatDate(experiment.createdAt)}</TableCell>
                       <TableCell>
-                        <Button 
+                        <Button
                           buttonType={ButtonType.PRIMARY}
                           startIcon={<VisibilityIcon />}
                           onClick={() => handleViewExperiment(experiment.id)}
@@ -394,7 +394,7 @@ const ExperimentListV2: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 50]}
           component="div"

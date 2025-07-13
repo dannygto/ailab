@@ -504,20 +504,3 @@ function getEditionFeatures(edition: string): string[] {
       return baseFeatures;
   }
 }
-
-// 导出所有函数
-export default {
-  getSettings,
-  getGeneralSettings,
-  updateGeneralSettings,
-  getThemeSettings,
-  updateThemeSettings,
-  getSchoolInfo,
-  updateSchoolInfo,
-  resetSettings,
-  getVersionInfo,
-  // 为了兼容性，添加别名
-  getAllSettings: getSettings,
-  getDataSettings: getSettings, // 暂时指向通用设置
-  updateDataSettings: updateGeneralSettings // 暂时指向通用设置更新
-};

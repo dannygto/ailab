@@ -61,12 +61,29 @@ const ThemeSettings: React.FC = () => {
 
   const handleSavesettings = async () => {
     try {
-      // 这里应该调用api保存设置
-      console.log('Saving theme settings:', themeSettings);
-      // 应用主题到全局
-      localStorage.setItem('theme-settings', JSON.stringify(themeSettings));
-      setSuccess('主题设置已保存');
+      // 调用API保存主题设置
+      const response = await fetch('/api/settings/theme', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(themeSettings),
+      });
+
+      if (response.ok) {
+        // 应用主题到全局
+        localStorage.setItem('theme-settings', JSON.stringify(themeSettings));
+        setSuccess('主题设置已保存');
+
+        // 触发主题更新事件
+        window.dispatchEvent(new CustomEvent('theme-updated', {
+          detail: themeSettings
+        }));
+      } else {
+        throw new Error('保存失败');
+      }
     } catch (err) {
+      console.error('保存主题设置错误:', err);
       setError('保存设置时发生错误');
     }
   };
@@ -237,9 +254,9 @@ const ThemeSettings: React.FC = () => {
                         />
                         <Typography variant="body2">{theme.name}</Typography>
                       </Box>
-                      <Chip 
-                        label={theme.mode === 'dark' ? '深色' : '浅色'} 
-                        size="small" 
+                      <Chip
+                        label={theme.mode === 'dark' ? '深色' : '浅色'}
+                        size="small"
                         variant="outlined"
                       />
                     </Paper>
@@ -347,15 +364,15 @@ const ThemeSettings: React.FC = () => {
 
         {/* 保存按钮 */}
         <Grid item xs={12}>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             startIcon={<SaveIcon />}
             onClick={handleSavesettings}
             sx={{ mr: 2 }}
           >
             保存主题
           </Button>
-          <Button 
+          <Button
             variant="outlined"
             onClick={resetToDefault}
           >

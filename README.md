@@ -1,78 +1,152 @@
-# AILAB 平台
+# AILAB项目 - 人工智能实验平台
 
-## 项目概述
+这是一个专为K12教育设计的人工智能实验教学平台，提供完整的实验管理、AI助手、设备控制等功能。
 
-AILAB是一个全面的AI实验教学平台，为K12教育提供丰富的AI实验资源和工具。平台支持多种教学场景，帮助学生通过实践掌握AI基础知识和应用技能。
+## 🚀 快速开始
 
-## 技术架构
+### 本地开发
+```bash
+# 安装依赖
+npm install
 
-- **前端**: React + TypeScript
-- **后端**: Node.js + Express
-- **AI服务**: Python + FastAPI
-- **数据库**: MongoDB
-- **缓存**: Redis
+# 启动前端开发服务器
+cd src/frontend && npm start
 
-## 目录结构
+# 启动后端开发服务器
+cd src/backend && npm run dev
+```
+
+### 生产部署
+```bash
+# 使用快速部署脚本（推荐）
+./quick-deploy.sh
+
+# 或手动部署
+./scripts/deployment/minimal-fix.sh
+```
+
+## 🌐 服务器信息
+
+**生产服务器配置:**
+- 服务器IP: `82.156.75.232`
+- SSH用户: `root`
+- 密钥文件: `ailab.pem` (项目根目录)
+- 项目路径: `/root/ailab/`
+
+**访问地址:**
+- 前端: http://82.156.75.232:3000
+- 后端API: http://82.156.75.232:3001
+- API健康检查: http://82.156.75.232:3001/api/health
+
+**SSH连接:**
+```bash
+ssh -i "ailab.pem" root@82.156.75.232
+```
+
+## 📁 项目结构
 
 ```
 ailab/
-├── src/                  # 源代码
-│   ├── frontend/        # 前端代码 (React)
-│   ├── backend/         # 后端代码 (Node.js)
-│   └── ai-service/      # AI服务代码 (Python)
-├── docs/                # 项目文档
-├── scripts/             # 部署和管理脚本
-├── docker/              # Docker配置
-├── config/              # 配置文件
-├── tests/               # 测试文件
-└── README.md            # 项目说明
+├── src/
+│   ├── frontend/          # React前端应用
+│   ├── backend/           # Node.js后端API
+│   └── ai-service/        # Python AI服务
+├── scripts/
+│   └── deployment/        # 部署脚本
+├── docs/                  # 项目文档
+├── config/               # 配置文件
+├── ailab.pem            # SSH密钥文件
+├── server-config.txt    # 服务器配置信息
+└── quick-deploy.sh      # 快速部署脚本
 ```
 
-## 快速开始
+## ⚙️ 配置说明
 
-### Windows开发环境
-```powershell
-# 启动开发环境
-.\start-platform.ps1
+### 环境变量
+前端配置文件: `src/frontend/.env.production`
+```
+REACT_APP_API_URL=/api
 ```
 
-### Linux生产环境
+后端配置: `src/backend/.env`
+```
+PORT=3001
+NODE_ENV=production
+```
+
+### PM2配置
+服务通过PM2管理，配置文件: `ecosystem.config.js`
+
+查看服务状态:
 ```bash
-# 运行部署脚本
-./scripts/deployment/deploy-to-linux.sh
-
-# 启动服务
-./start-ailab.sh
+pm2 status
+pm2 logs
 ```
 
-### Docker部署
+## 🔧 常见问题
+
+### 1. 实验列表乱码
+- 问题：前端显示乱码字符
+- 解决：文件编码问题，已修复为UTF-8
+
+### 2. 主题设置无法保存
+- 问题：设置页面无法保存配置
+- 解决：已添加API端点支持设置保存
+
+### 3. 帮助中心链接错误
+- 问题：链接指向错误域名
+- 解决：已更新为正确的内部链接
+
+### 4. SSH连接问题
+- 问题：密钥文件名或路径错误
+- 解决：使用正确的密钥文件 `ailab.pem`
+
+## 📋 开发指南
+
+### 代码提交
 ```bash
-# 使用Docker Compose
-cd docker
-docker-compose up -d
+git add .
+git commit -m "描述修改内容"
+git push origin main
 ```
 
-## 服务端口
+### 部署更新
+```bash
+# 构建前端
+cd src/frontend && npm run build
 
-- **前端**: http://localhost:3000
-- **后端API**: http://localhost:3001
-- **AI服务**: http://localhost:8001
-- **监控服务**: http://localhost:3002
+# 快速部署到服务器
+./quick-deploy.sh
+```
 
-## 文档
+### 监控服务
+```bash
+# 连接服务器
+ssh -i "ailab.pem" root@82.156.75.232
 
-详细文档请参考:
+# 查看服务状态
+pm2 status
+pm2 logs
+pm2 monit
 
-- [部署指南](docs/03-部署指南/) - 完整的部署说明
-- [开发文档](docs/02-开发文档/) - 开发相关指南
-- [API文档](docs/04-API参考/) - API接口文档
-- [项目管理](docs/05-项目管理/) - 项目管理信息
+# 查看系统资源
+free -h
+df -h
+```
 
-## 许可证
+## 📞 技术支持
 
-[MIT License](LICENSE)
+- 邮箱: support@sslab.edu.cn
+- 电话: 400-888-9999
+- 项目维护: AILAB开发团队
+
+## ⚠️ 重要提醒
+
+1. **密钥文件**: 确保使用正确的 `ailab.pem` 文件
+2. **服务器信息**: IP `82.156.75.232`, 用户 `root`
+3. **端口配置**: 前端3000, 后端3001
+4. **编码问题**: 所有文件保持UTF-8编码
+5. **部署脚本**: 优先使用 `quick-deploy.sh` 进行部署
 
 ---
-
-**版本**: 3.1.0  
-**最后更新**: 2025年7月12日
+*最后更新: 2025年7月13日*

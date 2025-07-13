@@ -1,5 +1,12 @@
 #!/bin/bash
 # AILAB平台 - 2核4G服务器最小化配置
+# 服务器: 82.156.75.232 (ubuntu用户)
+# 密钥文件: ailab.pem
+
+# 部署参数
+EDITION=${1:-general}  # 版本类型：general, vocational, higher
+SCHOOL_ID=${2:-demo-school-001}  # 学校ID
+SCHOOL_NAME=${3:-示范学校}  # 学校名称
 
 log_info() {
   echo -e "\033[0;32m[信息]\033[0m $1"
@@ -17,9 +24,22 @@ log_warning() {
   echo -e "\033[0;33m[警告]\033[0m $1"
 }
 
+get_edition_name() {
+  case $1 in
+    general) echo "普教版" ;;
+    vocational) echo "职教版" ;;
+    higher) echo "高校版" ;;
+    *) echo "未知版本" ;;
+  esac
+}
+
 echo "======================================="
 echo "  AILAB平台 - 最小化配置脚本"
 echo "  适用于2核4G服务器"
+echo "======================================="
+echo "版本类型: $EDITION ($(get_edition_name $EDITION))"
+echo "学校ID: $SCHOOL_ID"
+echo "学校名称: $SCHOOL_NAME"
 echo "======================================="
 
 # 获取AILAB项目根目录
@@ -31,6 +51,16 @@ log_info "部署目录: $DEPLOY_DIR"
 
 # 切换到部署目录
 cd $DEPLOY_DIR
+
+# 生成版本配置
+log_info "生成版本配置..."
+if [ -f "scripts/deployment/generate-edition-config.sh" ]; then
+  chmod +x scripts/deployment/generate-edition-config.sh
+  bash scripts/deployment/generate-edition-config.sh $EDITION $SCHOOL_ID "$SCHOOL_NAME" production
+  log_success "版本配置生成完成"
+else
+  log_warning "版本配置脚本不存在，使用默认配置"
+fi
 
 # 验证目录结构
 log_info "验证项目目录结构..."
@@ -186,7 +216,7 @@ log_info "运行健康检查..."
 sleep 5
 
 # 获取外部IP地址
-EXTERNAL_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null || hostname -I | awk '{print $1}')
+EXTERNAL_IP=$(curl -s ifconfig.me 2>/dev/null || curl -s ipinfo.io/ip 2>/dev/null || echo "82.156.75.232")
 log_info "检测到外部IP: $EXTERNAL_IP"
 
 # 检查后端（本地检查）
