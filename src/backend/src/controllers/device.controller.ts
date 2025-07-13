@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { 
-  Device, 
-  DeviceType, 
+import {
+  Device,
+  DeviceType,
   DeviceConnectionStatus,
   DeviceDataPoint,
   DeviceCommand,
   DeviceSession,
   DeviceReservation
-} from '../models/device.model';
+} from '../models/device.model.js';
 
 // 模拟数据
 const devices: Map<string, Device> = new Map();
@@ -124,13 +124,13 @@ export class DeviceController {
   public getAllDevices = (req: Request, res: Response) => {
     try {
       const allDevices = Array.from(devices.values());
-      
+
       // 支持过滤和分页
       const type = req.query.type as DeviceType | undefined;
       const status = req.query.status as DeviceConnectionStatus | undefined;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
-      
+
       // 应用过滤
       let filteredDevices = allDevices;
       if (type) {
@@ -139,12 +139,12 @@ export class DeviceController {
       if (status) {
         filteredDevices = filteredDevices.filter(d => d.connectionStatus === status);
       }
-      
+
       // 应用分页
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
       const paginatedDevices = filteredDevices.slice(startIndex, endIndex);
-      
+
       res.json({
         success: true,
         data: {
@@ -162,20 +162,20 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 获取单个设备
   public getDeviceById = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const device = devices.get(id);
-      
+
       if (!device) {
         return res.status(404).json({
           success: false,
           message: '未找到指定的设备'
         });
       }
-      
+
       res.json({
         success: true,
         data: device
@@ -187,13 +187,13 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 更新设备状态
   public updateDeviceStatus = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { status } = req.body;
-      
+
       // 验证参数
       if (!status || !Object.values(DeviceConnectionStatus).includes(status as DeviceConnectionStatus)) {
         return res.status(400).json({
@@ -201,7 +201,7 @@ export class DeviceController {
           message: '无效的设备状态'
         });
       }
-      
+
       // 检查设备是否存在
       const device = devices.get(id);
       if (!device) {
@@ -210,12 +210,12 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 更新状态
       device.connectionStatus = status as DeviceConnectionStatus;
       device.updatedAt = new Date().toISOString();
       devices.set(id, device);
-      
+
       res.json({
         success: true,
         message: '设备状态已更新',
@@ -228,13 +228,13 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 发送命令到设备
   public sendCommand = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { command, parameters } = req.body;
-      
+
       // 验证参数
       if (!command) {
         return res.status(400).json({
@@ -242,7 +242,7 @@ export class DeviceController {
           message: '命令不能为空'
         });
       }
-      
+
       // 检查设备是否存在
       const device = devices.get(id);
       if (!device) {
@@ -251,7 +251,7 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 检查设备是否在线
       if (device.connectionStatus !== DeviceConnectionStatus.ONLINE) {
         return res.status(400).json({
@@ -259,7 +259,7 @@ export class DeviceController {
           message: `设备当前不可用，状态: ${device.connectionStatus}`
         });
       }
-      
+
       // 创建命令记录
       const commandId = `cmd-${Date.now()}`;
       const newCommand: DeviceCommand = {
@@ -270,12 +270,12 @@ export class DeviceController {
         timestamp: new Date().toISOString(),
         status: 'sent'
       };
-      
+
       // 存储命令
       const deviceCommandsList = deviceCommands.get(id) || [];
       deviceCommandsList.push(newCommand);
       deviceCommands.set(id, deviceCommandsList);
-      
+
       // 在实际应用中，这里会调用设备API发送命令
       // 这里我们模拟一个成功的响应
       setTimeout(() => {
@@ -283,7 +283,7 @@ export class DeviceController {
         newCommand.executedAt = new Date().toISOString();
         newCommand.result = { success: true, message: '命令已执行' };
       }, 500);
-      
+
       res.json({
         success: true,
         message: '命令已发送到设备',
@@ -300,12 +300,12 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 获取设备命令历史
   public getDeviceCommands = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      
+
       // 检查设备是否存在
       if (!devices.has(id)) {
         return res.status(404).json({
@@ -313,31 +313,31 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 获取命令历史
       const commands = deviceCommands.get(id) || [];
-      
+
       // 支持过滤和分页
       const status = req.query.status as string | undefined;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
-      
+
       // 应用过滤
       let filteredCommands = commands;
       if (status) {
         filteredCommands = filteredCommands.filter(c => c.status === status);
       }
-      
+
       // 排序 - 最新的命令优先
-      filteredCommands.sort((a, b) => 
+      filteredCommands.sort((a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       );
-      
+
       // 应用分页
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
       const paginatedCommands = filteredCommands.slice(startIndex, endIndex);
-      
+
       res.json({
         success: true,
         data: {
@@ -355,12 +355,12 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 获取设备数据
   public getDeviceData = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      
+
       // 检查设备是否存在
       if (!devices.has(id)) {
         return res.status(404).json({
@@ -368,14 +368,14 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 获取数据点
       const dataPoints = deviceDataPoints.get(id) || [];
-      
+
       // 支持时间范围过滤
       const startTime = req.query.startTime as string | undefined;
       const endTime = req.query.endTime as string | undefined;
-      
+
       let filteredDataPoints = dataPoints;
       if (startTime || endTime) {
         filteredDataPoints = dataPoints.filter(dp => {
@@ -385,7 +385,7 @@ export class DeviceController {
           return startValid && endValid;
         });
       }
-      
+
       res.json({
         success: true,
         data: {
@@ -401,13 +401,13 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 创建设备会话
   public createSession = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { userId, experimentId, settings } = req.body;
-      
+
       // 验证参数
       if (!userId) {
         return res.status(400).json({
@@ -415,7 +415,7 @@ export class DeviceController {
           message: '用户ID不能为空'
         });
       }
-      
+
       // 检查设备是否存在
       const device = devices.get(id);
       if (!device) {
@@ -424,7 +424,7 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 检查设备是否可用
       if (device.connectionStatus !== DeviceConnectionStatus.ONLINE) {
         return res.status(400).json({
@@ -432,7 +432,7 @@ export class DeviceController {
           message: `设备当前不可用，状态: ${device.connectionStatus}`
         });
       }
-      
+
       // 创建会话
       const sessionId = `session-${Date.now()}`;
       const newSession: DeviceSession = {
@@ -446,10 +446,10 @@ export class DeviceController {
         dataPoints: [],
         settings: settings || {}
       };
-      
+
       // 存储会话
       deviceSessions.set(sessionId, newSession);
-      
+
       // 生成一些初始数据点
       if (device.type === DeviceType.MICROSCOPE) {
         const initialDataPoint: DeviceDataPoint = {
@@ -464,14 +464,14 @@ export class DeviceController {
             illumination: 75
           }
         };
-        
+
         const deviceDataList = deviceDataPoints.get(id) || [];
         deviceDataList.push(initialDataPoint);
         deviceDataPoints.set(id, deviceDataList);
-        
+
         newSession.dataPoints.push(initialDataPoint);
       }
-      
+
       res.json({
         success: true,
         message: '设备会话已创建',
@@ -488,12 +488,12 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 结束设备会话
   public endSession = (req: Request, res: Response) => {
     try {
       const { sessionId } = req.params;
-      
+
       // 检查会话是否存在
       const session = deviceSessions.get(sessionId);
       if (!session) {
@@ -502,7 +502,7 @@ export class DeviceController {
           message: '未找到指定的设备会话'
         });
       }
-      
+
       // 检查会话是否已结束
       if (session.status !== 'active') {
         return res.status(400).json({
@@ -510,14 +510,14 @@ export class DeviceController {
           message: `会话已${session.status === 'ended' ? '结束' : '发生错误'}`
         });
       }
-      
+
       // 结束会话
       session.status = 'ended';
       session.endTime = new Date().toISOString();
-      
+
       // 更新会话
       deviceSessions.set(sessionId, session);
-      
+
       res.json({
         success: true,
         message: '设备会话已结束',
@@ -536,13 +536,13 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 创建设备预约
   public createReservation = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const { userId, title, purpose, startTime, endTime } = req.body;
-      
+
       // 验证参数
       if (!userId || !title || !startTime || !endTime) {
         return res.status(400).json({
@@ -550,7 +550,7 @@ export class DeviceController {
           message: '缺少必要的预约信息'
         });
       }
-      
+
       // 检查设备是否存在
       if (!devices.has(id)) {
         return res.status(404).json({
@@ -558,25 +558,25 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 检查日期格式
       const start = new Date(startTime);
       const end = new Date(endTime);
-      
+
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
         return res.status(400).json({
           success: false,
           message: '无效的日期格式'
         });
       }
-      
+
       if (end <= start) {
         return res.status(400).json({
           success: false,
           message: '结束时间必须晚于开始时间'
         });
       }
-      
+
       // 创建预约
       const reservationId = `rsv-${Date.now()}`;
       const newReservation: DeviceReservation = {
@@ -591,10 +591,10 @@ export class DeviceController {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
+
       // 存储预约
       deviceReservations.set(reservationId, newReservation);
-      
+
       res.status(201).json({
         success: true,
         message: '设备预约已创建，等待审批',
@@ -607,12 +607,12 @@ export class DeviceController {
       });
     }
   };
-  
+
   // 获取设备预约列表
   public getDeviceReservations = (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      
+
       // 检查设备是否存在
       if (!devices.has(id)) {
         return res.status(404).json({
@@ -620,26 +620,26 @@ export class DeviceController {
           message: '未找到指定的设备'
         });
       }
-      
+
       // 获取所有预约
       const allReservations = Array.from(deviceReservations.values());
-      
+
       // 过滤指定设备的预约
       const deviceReservationList = allReservations.filter(r => r.deviceId === id);
-      
+
       // 支持状态过滤
       const status = req.query.status as string | undefined;
-      
+
       let filteredReservations = deviceReservationList;
       if (status) {
         filteredReservations = deviceReservationList.filter(r => r.status === status);
       }
-      
+
       // 按开始时间排序
-      filteredReservations.sort((a, b) => 
+      filteredReservations.sort((a, b) =>
         new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
       );
-      
+
       res.json({
         success: true,
         data: filteredReservations

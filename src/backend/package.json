@@ -2,16 +2,17 @@
   "name": "ai-experiment-platform-backend",
   "version": "1.0.0",
   "description": "人工智能实验平台后端服务",
+  "type": "module",
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts",
-    "build": "tsc src/server.ts --outDir dist --esModuleInterop --resolveJsonModule --target es2020 --module commonjs",
+    "dev": "ts-node --esm src/server.ts",
+    "build": "tsc",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "migrate": "ts-node src/database/migrate.ts",
-    "seed": "ts-node src/database/seed.ts"
+    "migrate": "ts-node --esm src/database/migrate.ts",
+    "seed": "ts-node --esm src/database/seed.ts"
   },
   "keywords": [
     "ai",

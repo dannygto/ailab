@@ -1,11 +1,11 @@
 import express from 'express';
-import settingsController from '../controllers/settings.controller';
+import settingsController from '../controllers/settings.controller.js';
 
 const router = express.Router();
 
 /**
  * 系统设置路由
- * 
+ *
  * 提供系统设置相关的API端点
  * 包括: 通用设置、主题设置、数据设置的获取和更新
  */

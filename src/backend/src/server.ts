@@ -35,13 +35,13 @@ import morgan from 'morgan';
 import { Server as WebSocketServer } from 'ws';
 import http from 'http';
 import dotenv from 'dotenv';
-import guidanceRoutes from './routes/guidance.routes';
-import deviceRoutes from './routes/device.routes';
-import templateRoutes from './routes/template.routes';
-import experimentRoutes from './routes/experiment.routes';
-import settingsRoutes from './routes/settings.routes';
-import schoolRoutes from './routes/school.routes';
-import { AIService } from './services/ai.service';
+import guidanceRoutes from './routes/guidance.routes.js';
+import deviceRoutes from './routes/device.routes.js';
+import templateRoutes from './routes/template.routes.js';
+import experimentRoutes from './routes/experiment.routes.js';
+import settingsRoutes from './routes/settings.routes.js';
+import schoolRoutes from './routes/school.routes.js';
+import { AIService } from './services/ai.service.js';
 
 // 创建AI服务实例
 const aiService = new AIService();

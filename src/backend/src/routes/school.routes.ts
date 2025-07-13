@@ -1,11 +1,11 @@
 import express from 'express';
-import schoolController from '../controllers/school.controller';
+import schoolController from '../controllers/school.controller.js';
 
 const router = express.Router();
 
 /**
  * 校区路由
- * 
+ *
  * 提供校区管理相关的API端点
  */
 

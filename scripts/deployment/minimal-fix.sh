@@ -66,13 +66,14 @@ module.exports = {
     {
       name: 'ailab-backend',
       cwd: './$BACKEND_DIR',
-      script: 'src/index.ts',
+      script: 'src/server.ts',
       interpreter: 'node',
-      interpreter_args: '--loader ts-node/esm --max-old-space-size=1024',
+      interpreter_args: '--loader ts-node/esm --experimental-specifier-resolution=node --max-old-space-size=1024',
       env: {
         NODE_ENV: 'production',
         PORT: 3001,
-        TS_NODE_PROJECT: 'tsconfig.json'
+        TS_NODE_PROJECT: 'tsconfig.json',
+        TS_NODE_ESM: 'true'
       },
       watch: false,
       instances: 1,

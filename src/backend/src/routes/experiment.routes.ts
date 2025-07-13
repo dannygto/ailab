@@ -1,5 +1,5 @@
 import express from 'express';
-import experimentController from '../controllers/experiment.controller';
+import experimentController from '../controllers/experiment.controller.js';
 import multer from 'multer';
 
 // 配置文件上传
@@ -19,7 +19,7 @@ const router = express.Router();
 
 /**
  * 实验相关路由
- * 
+ *
  * 实现所有与实验相关的RESTful API端点
  * 包括: 查询、创建、更新、删除实验，以及启动、停止、克隆实验等操作
  */
