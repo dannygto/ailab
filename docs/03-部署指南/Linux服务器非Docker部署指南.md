@@ -18,11 +18,61 @@ AILAB平台提供以下非Docker的Linux服务器部署方式：
 
 - Linux操作系统（推荐Ubuntu 18.04/20.04或CentOS 7/8）
 - 开放端口：3000（前端）和3001（后端），可根据需要自定义
-- 以下软件（部署脚本会自动检查并提示安装）：
+- 配置服务器防火墙和云服务器安全组（详见下方说明）
+
+部署脚本会自动安装以下软件，无需手动预装：
   - Node.js 16+ 和 npm
   - MongoDB 4.0+
-  - Python 3.6+（用于AI服务，如不使用可选装）
-  - Redis（用于缓存，如不使用可选装）
+  - Python 3.6+（用于AI服务）
+  - Redis（用于缓存）
+
+### 服务器端口配置
+
+部署完成后，需要配置服务器防火墙和云服务器安全组以允许外部访问：
+
+#### 本地防火墙配置
+
+**Ubuntu/Debian 系统 (ufw)：**
+```bash
+# 开放前端端口
+sudo ufw allow 3000
+# 开放后端端口
+sudo ufw allow 3001
+# 开放HTTPS端口（推荐）
+sudo ufw allow 443
+# 如果部署了AI服务，还需开放AI服务端口
+sudo ufw allow 8001
+```
+
+**CentOS/RHEL 系统 (firewalld)：**
+```bash
+# 开放前端端口
+sudo firewall-cmd --permanent --add-port=3000/tcp
+# 开放后端端口
+sudo firewall-cmd --permanent --add-port=3001/tcp
+# 开放HTTPS端口（推荐）
+sudo firewall-cmd --permanent --add-port=443/tcp
+# 如果部署了AI服务，还需开放AI服务端口
+sudo firewall-cmd --permanent --add-port=8001/tcp
+# 重新加载防火墙配置
+sudo firewall-cmd --reload
+```
+
+#### 云服务器安全组配置
+
+如果使用云服务器（如阿里云、腾讯云、AWS等），还需要在云控制台配置安全组：
+
+- **入站规则**：开放端口 3000、3001、443（如有AI服务则加上8001）
+- **协议类型**：TCP
+- **授权对象**：0.0.0.0/0（公网访问）
+
+#### 安全建议
+
+⚠️ **重要提示**：
+- 生产环境建议只开放443端口(HTTPS)，通过Nginx反向代理转发到内部端口
+- 使用SSL证书启用HTTPS加密传输
+- 限制管理端口的访问来源，避免暴露到公网
+- 定期更新系统和软件包，及时修复安全漏洞
 
 ## 源代码直接部署
 
@@ -50,13 +100,27 @@ AILAB平台提供以下非Docker的Linux服务器部署方式：
 
 3. 运行部署脚本
    ```bash
-   cd /opt/ailab
+   # 切换到项目目录
+   cd /path/to/your/ailab/project
+   
+   # 给脚本执行权限
    chmod +x scripts/deployment/deploy-to-linux.sh
+   
+   # 运行部署脚本（使用当前目录）
+   ./scripts/deployment/deploy-to-linux.sh
+   
+   # 或指定参数
    ./scripts/deployment/deploy-to-linux.sh [部署目录] [前端端口] [后端端口] [MongoDB URI]
    ```
 
+   **重要说明**: 脚本会自动检测当前目录是否为部署目录，如果不是，会将文件复制到指定的部署目录。
+
    例如：
    ```bash
+   # 使用默认参数（当前目录作为部署目录）
+   ./scripts/deployment/deploy-to-linux.sh
+   
+   # 指定部署到/opt/ailab目录
    ./scripts/deployment/deploy-to-linux.sh /opt/ailab 3000 3001 mongodb://localhost:27017/ailab
    ```
 
@@ -71,11 +135,17 @@ AILAB平台提供以下非Docker的Linux服务器部署方式：
 
 部署脚本会执行以下操作：
 
-1. 检查并安装必要的软件（Node.js、MongoDB、Python、Redis等）
+1. **自动安装必要的软件**：
+   - Node.js 16+（如果未安装或版本低于16，会自动安装最新LTS版本）
+   - MongoDB 4.0+（如果未安装，会自动安装并启动服务）
+   - Python 3.6+和pip3（如果未安装，会自动安装）
+   - Redis（如果未安装，会自动安装并启动服务）
+   - PM2和serve（用于服务管理和前端部署）
+
 2. 配置服务器环境和目录结构
-3. 自动检测项目目录结构（支持中文/英文目录结构）
-4. 安装依赖并构建前端代码
-5. 配置后端环境变量
+3. 自动检测项目目录结构
+4. 自动安装依赖并构建前端代码
+5. 自动配置后端环境变量
 6. 创建PM2配置、启动脚本和健康检查脚本
 7. 提供启动指令和说明
 
@@ -88,9 +158,14 @@ AILAB平台提供以下非Docker的Linux服务器部署方式：
 ### 启动服务
 
 ```bash
-cd /opt/ailab  # 替换为实际部署目录
+# 切换到实际的部署目录
+cd /path/to/your/deployment/directory
+
+# 运行启动脚本
 ./start-ailab.sh
 ```
+
+**注意**: 请将 `/path/to/your/deployment/directory` 替换为实际的部署目录路径。部署脚本完成后会显示正确的路径。
 
 启动脚本会：
 1. 检查MongoDB服务是否运行
@@ -134,9 +209,14 @@ pm2 save
 部署脚本会创建一个健康检查脚本，用于验证服务是否正常运行：
 
 ```bash
-cd /opt/ailab  # 替换为实际部署目录
+# 切换到部署目录
+cd /path/to/your/deployment/directory
+
+# 运行健康检查
 node scripts/health-check.js
 ```
+
+**注意**: 请将 `/path/to/your/deployment/directory` 替换为实际的部署目录路径。
 
 健康检查会验证：
 1. 前端服务是否可访问

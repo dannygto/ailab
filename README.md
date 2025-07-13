@@ -2,80 +2,77 @@
 
 ## 项目概述
 
-AILAB是一个全面的AI实验教学平台，为K12教育提供丰富的AI实验资源和工具。平台支持多种教学场景，
-帮助学生通过实践掌握AI基础知识和应用技能。
+AILAB是一个全面的AI实验教学平台，为K12教育提供丰富的AI实验资源和工具。平台支持多种教学场景，帮助学生通过实践掌握AI基础知识和应用技能。
+
+## 技术架构
+
+- **前端**: React + TypeScript
+- **后端**: Node.js + Express
+- **AI服务**: Python + FastAPI
+- **数据库**: MongoDB
+- **缓存**: Redis
 
 ## 目录结构
 
-
 ```
 ailab/
-├── config/               # 配置文件目录
-│   ├── backup/           # 备份配置
-│   ├── deployment/       # 部署配置
-│   ├── environment/      # 环境配置
-│   ├── logging/          # 日志配置
-│   ├── monitoring/       # 监控配置
-│   ├── nginx/            # Nginx配置
-│   ├── security/         # 安全配置
-│   └── ssl/              # SSL配置
-├── docker/               # Docker配置目录
-│   ├── ai-service/       # AI服务配置
-│   ├── backend/          # 后端服务配置
-│   ├── frontend/         # 前端服务配置
-│   ├── mongo/            # MongoDB配置
-│   └── monitoring/       # 监控服务配置
-├── docs/                 # 文档目录
-│   ├── 00-索引/          # 文档索引
-│   ├── 01-项目概述/      # 项目概述文档
-│   ├── 02-开发文档/      # 开发文档
-│   ├── 03-部署指南/      # 部署指南
-│   ├── 04-API参考/       # API文档
-│   ├── 05-项目管理/      # 项目管理文档
-│   └── 06-法律文档/      # 法律文档
-├── scripts/              # 脚本目录
-│   ├── deployment/       # 部署脚本
-│   ├── maintenance/      # 维护脚本
-│   ├── startup/          # 启动脚本
-│   └── testing/          # 测试脚本
-└── src/                  # 源代码目录
-    ├── backend/          # 后端代码
-    ├── frontend/         # 前端代码
-    └── ai-service/       # AI服务代码
+├── src/                  # 源代码
+│   ├── frontend/        # 前端代码 (React)
+│   ├── backend/         # 后端代码 (Node.js)
+│   └── ai-service/      # AI服务代码 (Python)
+├── docs/                # 项目文档
+├── scripts/             # 部署和管理脚本
+├── docker/              # Docker配置
+├── config/              # 配置文件
+├── tests/               # 测试文件
+└── README.md            # 项目说明
 ```
-
 
 ## 快速开始
 
-详细的启动和部署指南请参考以下文档:
+### Windows开发环境
+```powershell
+# 启动开发环境
+.\start-platform.ps1
+```
 
-- [部署指南](docs/03-部署指南/部署指南.md)
-- [Docker部署指南](docs/03-部署指南/Docker部署指南.md)
-- [启动指南](docs/03-部署指南/启动指南.md)
+### Linux生产环境
+```bash
+# 运行部署脚本
+./scripts/deployment/deploy-to-linux.sh
 
-## 服务架构
+# 启动服务
+./start-ailab.sh
+```
 
-平台包含以下核心服务:
+### Docker部署
+```bash
+# 使用Docker Compose
+cd docker
+docker-compose up -d
+```
 
-- 前端服务 (端口: 3000)
-- 后端API服务 (端口: 3001)
-- 监控服务 (端口: 3002)
-- AI服务 (内部服务)
-- 数据库服务 (内部服务)
+## 服务端口
 
-## 技术栈
+- **前端**: http://localhost:3000
+- **后端API**: http://localhost:3001
+- **AI服务**: http://localhost:8001
+- **监控服务**: http://localhost:3002
 
-详细的技术栈信息请参考: [技术栈文档](docs/02-开发文档/技术栈.md)
+## 文档
 
-## 文档索引
+详细文档请参考:
 
-完整的文档目录请参考: [文档索引](docs/00-索引/文档索引-中文.md)
+- [部署指南](docs/03-部署指南/) - 完整的部署说明
+- [开发文档](docs/02-开发文档/) - 开发相关指南
+- [API文档](docs/04-API参考/) - API接口文档
+- [项目管理](docs/05-项目管理/) - 项目管理信息
 
-- [项目组件说明](docs/组件说明.md) - 项目各组件详细说明
-- [开发指南](docs/02-开发文档/开发指南.md) - 开发相关指南
-- [技术栈文档](docs/02-开发文档/技术栈.md) - 项目技术栈详情
+## 许可证
+
+[MIT License](LICENSE)
 
 ---
 
-**版本**: 3.1.0
-**更新日期**: 2025-07-12
+**版本**: 3.1.0  
+**最后更新**: 2025年7月12日
