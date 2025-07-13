@@ -1,6 +1,6 @@
 /**
  * 🚀 后端主服务器 - 完成度: 96%
- * 
+ *
  * ✅ 已完成功能:
  * - Express应用框架配置
  * - WebSocket实时通信服务
@@ -13,13 +13,13 @@
  * - 模板管理API
  * - 指导系统API
  * - 错误处理中间件
- * 
+ *
  * 🔄 待完善功能:
  * - 数据库连接池优化
  * - 更多业务API接口
  * - 文件上传处理
  * - 缓存机制集成
- * 
+ *
  * 📊 技术亮点:
  * - TypeScript类型安全
  * - 微服务架构设计
@@ -50,7 +50,7 @@ const aiService = new AIService();
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = Number(process.env.PORT) || 3002;
 
 // 创建HTTP服务器
 const server = http.createServer(app);
@@ -61,21 +61,21 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 // WebSocket连接处理
 wss.on('connection', (ws) => {
   console.log('WebSocket客户端已连接');
-  
+
   // 发送初始连接成功消息
-  ws.send(JSON.stringify({ 
+  ws.send(JSON.stringify({
     type: 'connection',
     status: 'connected',
     message: 'WebSocket连接已建立',
     timestamp: new Date().toISOString()
   }));
-  
+
   // 监听客户端消息
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message.toString());
       console.log('收到WebSocket消息:', data);
-      
+
       // 根据消息类型处理
       if (data.type === 'ping') {
         ws.send(JSON.stringify({
@@ -95,19 +95,19 @@ wss.on('connection', (ws) => {
       }
     } catch (err) {
       console.error('处理WebSocket消息时出错:', err);
-      ws.send(JSON.stringify({ 
+      ws.send(JSON.stringify({
         type: 'error',
         message: '消息格式错误',
         timestamp: new Date().toISOString()
       }));
     }
   });
-  
+
   // 处理连接关闭
   ws.on('close', () => {
     console.log('WebSocket客户端已断开连接');
   });
-  
+
   // 处理错误
   ws.on('error', (error) => {
     console.error('WebSocket错误:', error);
@@ -117,13 +117,15 @@ wss.on('connection', (ws) => {
 // 安全中间件
 app.use(helmet());
 
-// CORS配置 - 修复前端端口为3000
+// CORS配置 - 修复前端端口为3000，支持外部访问
 app.use(cors({
   origin: [
-    process.env.FRONTEND_URL || "http://localhost:3000", 
+    process.env.FRONTEND_URL || "http://localhost:3000",
     "http://localhost:3001", // 备用端口
     "http://192.168.0.145:3000",
-    "http://192.168.0.145:3001"
+    "http://192.168.0.145:3001",
+    "http://82.156.75.232:3000", // 外部IP前端
+    "http://82.156.75.232:3001"  // 外部IP后端
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -147,7 +149,7 @@ app.use('/api/schools', schoolRoutes);
 
 // 基础路由
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: '人工智能辅助实验平台后端API - 普教版',
     version: '1.0.0',
     edition: 'basic',
@@ -157,7 +159,7 @@ app.get('/', (req, res) => {
 
 // 健康检查
 app.get('/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'healthy',
     timestamp: new Date().toISOString()
   });
@@ -165,7 +167,7 @@ app.get('/health', (req, res) => {
 
 // API健康检查
 app.get('/api/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'healthy',
     timestamp: new Date().toISOString()
   });
@@ -196,7 +198,7 @@ app.post('/api/ai-assistant/test-connection', (req, res) => {
       };
     } else if (model === 'deepseek-reasoner') {
       tokenLimits = {
-        contextWindow: 128000, 
+        contextWindow: 128000,
         inputTokenLimit: 120000,
         outputTokenLimit: 8000
       };
@@ -248,7 +250,7 @@ app.get('/api/dashboard/stats', (req, res) => {
 // 仪表盘最近实验
 app.get('/api/dashboard/recent-experiments', (req, res) => {
   const limit = parseInt(req.query.limit as string) || 5;
-  
+
   const experiments = [
     {
       id: '1',
@@ -269,7 +271,7 @@ app.get('/api/dashboard/recent-experiments', (req, res) => {
       duration: 45
     },
     {
-      id: '2', 
+      id: '2',
       name: '简单电路制作',
       description: '学习基本电路原理，制作简单的串联和并联电路',
       type: 'measurement',
@@ -290,7 +292,7 @@ app.get('/api/dashboard/recent-experiments', (req, res) => {
       id: '3',
       name: '植物细胞观察',
       description: '使用显微镜观察植物细胞的结构，认识细胞壁、细胞核等组织',
-      type: 'observation', 
+      type: 'observation',
       status: 'completed',
       userId: '1',
       parameters: {},
@@ -341,17 +343,17 @@ app.get('/api/dashboard/recent-experiments', (req, res) => {
       duration: 70
     }
   ].slice(0, limit);
-  
+
   res.json(experiments);
 });
 
 // API路由示例 - 实验相关
 app.get('/api/experiments', (req, res) => {
   const experiments = [
-    { 
-      id: '1', 
+    {
+      id: '1',
       name: '磁铁的性质探究',
-      title: '磁铁的性质探究', 
+      title: '磁铁的性质探究',
       type: 'OBSERVATION',
       grade: 'primary',
       subject: 'science',
@@ -362,12 +364,12 @@ app.get('/api/experiments', (req, res) => {
       materials: ['条形磁铁', '回形针', '铁钉', '塑料片'],
       safetyLevel: 'LOW'
     },
-    { 
-      id: '2', 
+    {
+      id: '2',
       name: '植物细胞观察',
-      title: '植物细胞观察', 
+      title: '植物细胞观察',
       type: 'OBSERVATION',
-      grade: 'junior', 
+      grade: 'junior',
       subject: 'biology',
       description: '使用显微镜观察洋葱表皮细胞，认识植物细胞的基本结构',
       status: 'running',
@@ -376,13 +378,13 @@ app.get('/api/experiments', (req, res) => {
       materials: ['洋葱', '显微镜', '载玻片', '碘液'],
       safetyLevel: 'MEDIUM'
     },
-    { 
-      id: '3', 
+    {
+      id: '3',
       name: '简单电路制作',
-      title: '简单电路制作', 
+      title: '简单电路制作',
       type: 'DESIGN',
       grade: 'junior',
-      subject: 'physics', 
+      subject: 'physics',
       description: '通过制作简单电路理解电路原理，学习串联和并联电路的区别',
       status: 'draft',
       createdAt: '2025-01-12',
@@ -487,7 +489,7 @@ app.get('/api/ai/models', (req, res) => {
     console.log('aiService 构造函数:', aiService.constructor.name);
     console.log('aiService 方法列表:', Object.getOwnPropertyNames(Object.getPrototypeOf(aiService)));
     console.log('getAvailableModels 方法:', typeof aiService.getAvailableModels);
-    
+
     const availableModels = aiService.getAvailableModels();
     res.json({
       success: true,
@@ -505,22 +507,22 @@ app.get('/api/ai/models', (req, res) => {
 // AI模型连接测试接口
 app.post('/api/ai-assistant/test', async (req, res) => {
   const { modelId } = req.body;
-  
+
   try {
     console.log('🧪 测试AI模型连接:', modelId);
-    
+
     if (!modelId) {
       return res.status(400).json({
         success: false,
         message: '请提供模型ID'
       });
     }
-    
+
     const result = await aiService.testModelConnection(modelId);
     console.log('🧪 连接测试结果:', result);
-    
+
     res.json(result);
-    
+
   } catch (error: any) {
     console.error('❌ AI连接测试失败:', error.message);
     res.json({
@@ -561,11 +563,11 @@ app.post('/api/ai-assistant/chat', async (req, res) => {
 app.post('/api/ai-assistant/test', async (req, res) => {
   try {
     const { modelId = 'deepseek-chat' } = req.body;
-    
+
     console.log(`🧪 测试AI模型连接: ${modelId}`);
-    
+
     const result = await aiService.testModelConnection(modelId);
-    
+
     res.json({
       success: result.success,
       message: result.message,
@@ -588,10 +590,10 @@ function generateSuggestions(query: string, response: string) {
     { text: '数据分析有哪些常用方法？', category: 'analysis' },
     { text: '如何解释实验误差？', category: 'knowledge' }
   ];
-  
+
   // 根据查询和响应动态生成建议
   const suggestions = [];
-  
+
   // 实验相关建议
   if (query.includes('实验') || response.includes('实验')) {
     suggestions.push(
@@ -599,7 +601,7 @@ function generateSuggestions(query: string, response: string) {
       { text: '实验数据如何可视化？', category: 'analysis' }
     );
   }
-  
+
   // 学科相关建议
   if (query.includes('物理') || response.includes('物理')) {
     suggestions.push(
@@ -617,7 +619,7 @@ function generateSuggestions(query: string, response: string) {
       { text: '植物细胞观察实验', category: 'experiment' }
     );
   }
-  
+
   // 返回建议 (最多5个)
   return [...suggestions, ...defaultSuggestions].slice(0, 5);
 }
@@ -634,9 +636,11 @@ app.use('*', (req, res) => {
 });
 
 // 启动服务器
-server.listen(PORT, () => {
+const HOST = '0.0.0.0'; // 监听所有接口
+server.listen(PORT, HOST, () => {
   console.log(`🚀 后端服务器启动成功！`);
-  console.log(`📍 地址: http://localhost:${PORT}`);
+  console.log(`📍 本地地址: http://localhost:${PORT}`);
+  console.log(`🌐 外部地址: http://${HOST}:${PORT}（监听所有接口）`);
   console.log(`🎓 版本: 普教版 (K12基础教育)`);
   console.log(`🕐 时间: ${new Date().toLocaleString()}`);
 });
