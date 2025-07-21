@@ -86,12 +86,25 @@ class AIAssistantController {
                 return;
             }
             logger_1.logger.info(`Experiment analysis request for experiment ${experimentId} from user ${userId}`);
-            const analysis = { message: '实验分析功能暂未实现' };
+            const context = {
+                userId,
+                experimentId,
+                role: 'student',
+                sessionId: `exp-${experimentId}-${userId}`,
+                currentPage: 'experiment-analysis',
+            };
+            const chatRequest = {
+                message: `请对以下实验数据进行分析：${JSON.stringify(data)}`,
+                context,
+                mode: 'text',
+                options: {},
+            };
+            const aiResult = await this.aiService.processChat(chatRequest);
             const duration = Date.now() - startTime;
             (0, logger_1.logApiRequest)('POST', '/api/ai/analyze-experiment', 200, duration, userId);
             res.status(200).json({
                 success: true,
-                data: analysis,
+                data: aiResult,
                 timestamp: new Date().toISOString(),
             });
         }

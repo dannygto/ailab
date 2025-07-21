@@ -10,6 +10,7 @@ import {
   Container
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import experimentService, { Experiment } from '../../services/experimentService';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -51,30 +52,28 @@ const ExperimentResultPanel = ({ experiment }: any) => (
 const ExperimentDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [tabValue, setTabValue] = useState(0);
-  const [experiment, setExperiment] = useState<any>(null);
+  const [experiment, setExperiment] = useState<Experiment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 模拟数据加载
   React.useEffect(() => {
     const loadExperiment = async () => {
       try {
-        // 模拟API调用
-        setTimeout(() => {
-          setExperiment({
-            id,
-            name: '示例实验',
-            description: '这是一个示例实验',
-            status: 'completed'
-          });
-          setLoading(false);
-        }, 1000);
-      } catch (err) {
+        setLoading(true);
+        setError(null);
+        if (!id) return;
+        const res = await experimentService.getExperiment(id);
+        if (res.success && res.data) {
+          setExperiment(res.data);
+        } else {
+          setError(res.message || '实验不存在');
+        }
+      } catch (err: any) {
         setError('加载实验详情失败');
+      } finally {
         setLoading(false);
       }
     };
-
     if (id) {
       loadExperiment();
     }

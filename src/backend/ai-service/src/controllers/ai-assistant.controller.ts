@@ -15,10 +15,10 @@ export class AIAssistantController {
    */
   async chat(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const { message, mode, context, options } = req.body as ChatRequest;
-      
+
       // 验证请求参数
       if (!message || !context) {
         this.sendErrorResponse(res, 400, '缺少必要参数', 'VALIDATION_ERROR');
@@ -42,7 +42,7 @@ export class AIAssistantController {
       });
 
       const duration = Date.now() - startTime;
-      
+
       // 记录API请求
       logApiRequest('POST', '/api/ai/chat', 200, duration, context.userId);
 
@@ -56,7 +56,7 @@ export class AIAssistantController {
     } catch (error) {
       const duration = Date.now() - startTime;
       const userId = req.body?.context?.userId || 'unknown';
-      
+
       logger.error('Chat API error:', error);
       logApiRequest('POST', '/api/ai/chat', 500, duration, userId);
 
@@ -74,10 +74,10 @@ export class AIAssistantController {
    */
   async voiceChat(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const { audio, format, context } = req.body;
-      
+
       // 验证请求参数
       if (!audio || !format || !context) {
         this.sendErrorResponse(res, 400, '缺少必要参数', 'VALIDATION_ERROR');
@@ -107,7 +107,7 @@ export class AIAssistantController {
     } catch (error) {
       const duration = Date.now() - startTime;
       const userId = req.body?.context?.userId || 'unknown';
-      
+
       logger.error('Voice chat API error:', error);
       logApiRequest('POST', '/api/ai/voice-chat', 500, duration, userId);
 
@@ -125,44 +125,47 @@ export class AIAssistantController {
    */
   async analyzeExperiment(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
-    
     try {
       const { experimentId, data } = req.body;
-      
       // 验证请求参数
       if (!experimentId || !data) {
         this.sendErrorResponse(res, 400, '缺少必要参数', 'VALIDATION_ERROR');
         return;
       }
-
       // 验证用户身份
       const userId = req.headers['x-user-id'] as string;
       if (!userId) {
         this.sendErrorResponse(res, 401, '用户未认证', 'AUTHENTICATION_ERROR');
         return;
       }
-
       logger.info(`Experiment analysis request for experiment ${experimentId} from user ${userId}`);
-
-      // 分析实验数据
-      const analysis = { message: '实验分析功能暂未实现' };
-
+      // 构造AI分析请求
+      const context = {
+        userId,
+        experimentId,
+        role: 'student' as 'student', // 明确类型，彻底消除类型错误
+        sessionId: `exp-${experimentId}-${userId}`,
+        currentPage: 'experiment-analysis',
+      };
+      const chatRequest = {
+        message: `请对以下实验数据进行分析：${JSON.stringify(data)}`,
+        context,
+        mode: 'text' as const, // 强类型断言，彻底消除类型错误
+        options: {},
+      };
+      const aiResult = await this.aiService.processChat(chatRequest);
       const duration = Date.now() - startTime;
       logApiRequest('POST', '/api/ai/analyze-experiment', 200, duration, userId);
-
       res.status(200).json({
         success: true,
-        data: analysis,
+        data: aiResult,
         timestamp: new Date().toISOString(),
       });
-
     } catch (error) {
       const duration = Date.now() - startTime;
       const userId = req.headers['x-user-id'] as string || 'unknown';
-      
       logger.error('Experiment analysis API error:', error);
       logApiRequest('POST', '/api/ai/analyze-experiment', 500, duration, userId);
-
       this.sendErrorResponse(
         res,
         500,
@@ -177,11 +180,11 @@ export class AIAssistantController {
    */
   async getConversationHistory(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const { userId } = req.params;
       const { limit = 20, offset = 0 } = req.query;
-      
+
       // 验证用户身份
       const currentUserId = req.headers['x-user-id'] as string;
       if (!currentUserId || currentUserId !== userId) {
@@ -225,7 +228,7 @@ export class AIAssistantController {
     } catch (error) {
       const duration = Date.now() - startTime;
       const userId = req.params['userId'] || 'unknown';
-      
+
       logger.error('Get conversation history API error:', error);
       logApiRequest('GET', `/api/ai/conversation-history/${userId}`, 500, duration, userId);
 
@@ -243,10 +246,10 @@ export class AIAssistantController {
    */
   async clearConversationHistory(req: Request, res: Response): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const { userId } = req.params;
-      
+
       // 验证用户身份
       const currentUserId = req.headers['x-user-id'] as string;
       if (!currentUserId || currentUserId !== userId) {
@@ -271,7 +274,7 @@ export class AIAssistantController {
     } catch (error) {
       const duration = Date.now() - startTime;
       const userId = req.params['userId'] || 'unknown';
-      
+
       logger.error('Clear conversation history API error:', error);
       logApiRequest('DELETE', `/api/ai/conversation-history/${userId}`, 500, duration, userId);
 
@@ -323,9 +326,9 @@ export class AIAssistantController {
       }
 
       logger.info(`Testing connection for model: ${model}`);
-      
+
       const result = await this.aiService.testModelConnection(model, config, specificParams);
-      
+
       if (result.success) {
         logger.info(`Connection test successful for model: ${model}`);
         res.status(200).json({

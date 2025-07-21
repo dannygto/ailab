@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = __importDefault(require("../utils/logger"));
+const resource_model_1 = require("../models/resource.model");
 class ResourceController {
     async getResources(req, res) {
         try {
@@ -23,7 +24,18 @@ class ResourceController {
                 res.json(filteredResources);
                 return;
             }
-            res.status(501).json({ message: '此功能尚未实现' });
+            const query = {};
+            if (type)
+                query.type = type;
+            if (category)
+                query['metadata.category'] = category;
+            if (search)
+                query['$or'] = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { 'metadata.description': { $regex: search, $options: 'i' } }
+                ];
+            const resources = await resource_model_1.ExperimentResourceModel.find(query).lean();
+            res.json(resources);
         }
         catch (error) {
             logger_1.default.error('获取资源列表失败:', error);
@@ -45,7 +57,12 @@ class ResourceController {
                 res.json(resource);
                 return;
             }
-            res.status(501).json({ message: '此功能尚未实现' });
+            const dbResource = await resource_model_1.ExperimentResourceModel.findById(id).lean();
+            if (!dbResource) {
+                res.status(404).json({ message: '资源不存在' });
+                return;
+            }
+            res.json(dbResource);
         }
         catch (error) {
             logger_1.default.error('获取资源详情失败:', error);
@@ -75,7 +92,8 @@ class ResourceController {
                 res.status(201).json(newResource);
                 return;
             }
-            res.status(501).json({ message: '此功能尚未实现' });
+            const created = await resource_model_1.ExperimentResourceModel.create(resourceData);
+            res.status(201).json(created);
         }
         catch (error) {
             logger_1.default.error('创建资源失败:', error);
@@ -107,7 +125,12 @@ class ResourceController {
                 res.json(updatedResource);
                 return;
             }
-            res.status(501).json({ message: '此功能尚未实现' });
+            const updated = await resource_model_1.ExperimentResourceModel.findByIdAndUpdate(id, resourceData, { new: true }).lean();
+            if (!updated) {
+                res.status(404).json({ message: '资源不存在' });
+                return;
+            }
+            res.json(updated);
         }
         catch (error) {
             logger_1.default.error('更新资源失败:', error);
@@ -123,7 +146,12 @@ class ResourceController {
                 res.json({ message: '资源删除成功', id });
                 return;
             }
-            res.status(501).json({ message: '此功能尚未实现' });
+            const deleted = await resource_model_1.ExperimentResourceModel.findByIdAndDelete(id).lean();
+            if (!deleted) {
+                res.status(404).json({ message: '资源不存在' });
+                return;
+            }
+            res.json({ message: '资源删除成功', id });
         }
         catch (error) {
             logger_1.default.error('删除资源失败:', error);

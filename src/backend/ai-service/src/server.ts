@@ -9,6 +9,9 @@ import { DatabaseManager } from '@/config/database';
 import { logger, logMiddleware } from '@/utils/logger';
 import aiAssistantRoutes from '@/routes/ai-assistant.routes';
 import resourceRoutes from '@/routes/resource.routes';
+// 撤销跨服务import，仅保留自身路由
+// import deviceRoutes from '../../../../src/backend/src/routes/device.routes';
+// import experimentRoutes from '../../../../src/backend/src/routes/experiment.routes';
 
 // 加载环境变量
 dotenv.config();
@@ -73,7 +76,7 @@ class AIAssistantServer {
 
     // 解析JSON请求体
     this.app.use(express.json({ limit: '10mb' }));
-    
+
     // 解析URL编码请求体
     this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -87,7 +90,7 @@ class AIAssistantServer {
         version: process.env['npm_package_version'] || '1.0.0',
       });
     });
-    
+
     // 添加一个API健康检查端点，匹配前端的请求路径
     this.app.get('/api/health', (_req, res) => {
       res.status(200).json({
@@ -104,10 +107,10 @@ class AIAssistantServer {
   private initializeRoutes(): void {
     // API路由前缀
     const apiPrefix = '/api/ai';
-    
+
     // AI助手路由
     this.app.use(apiPrefix, aiAssistantRoutes);
-    
+
     // 资源管理路由
     this.app.use('/api', resourceRoutes);
 
@@ -324,4 +327,4 @@ server.start().catch((error) => {
   process.exit(1);
 });
 
-export default server; 
+export default server;

@@ -17,7 +17,7 @@ const resource_routes_1 = __importDefault(require("@/routes/resource.routes"));
 dotenv_1.default.config();
 class AIAssistantServer {
     constructor() {
-        this.port = parseInt(process.env['PORT'] || '3001', 10);
+        this.port = parseInt(process.env['PORT'] || '8001', 10);
         this.app = (0, express_1.default)();
         this.server = (0, http_1.createServer)(this.app);
         this.io = new socket_io_1.Server(this.server, {

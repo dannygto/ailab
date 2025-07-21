@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import logger from '../utils/logger';
 import { ExperimentResource } from '../types';
+import { ExperimentResourceModel } from '../models/resource.model';
 
 /**
  * 实验资源控制器
@@ -15,38 +16,44 @@ class ResourceController {
   public async getResources(req: Request, res: Response): Promise<void> {
     try {
       const { type, category, search } = req.query;
-      
+
       // 在开发环境中，返回模拟数据
       if (process.env["NODE_ENV"] === 'development' || process.env["MOCK_DB"] === 'true') {
         logger.info(`[MOCK] 获取资源列表: type=${type}, category=${category}, search=${search}`);
-        
+
         // 延迟模拟数据库查询时间
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         // 模拟资源数据
         const mockResources = this.generateMockResources(type as string);
-        
+
         // 根据category过滤
-        let filteredResources = category 
+        let filteredResources = category
           ? mockResources.filter(r => r.metadata['category'] === category)
           : mockResources;
-          
+
         // 根据search搜索
         if (search) {
           const searchTerm = (search as string).toLowerCase();
-          filteredResources = filteredResources.filter(r => 
-            r.name.toLowerCase().includes(searchTerm) || 
+          filteredResources = filteredResources.filter(r =>
+            r.name.toLowerCase().includes(searchTerm) ||
             (r.metadata['description'] && r.metadata['description'].toLowerCase().includes(searchTerm))
           );
         }
-        
+
         res.json(filteredResources);
         return;
       }
-      
-      // TODO: 连接数据库，根据查询参数获取资源列表
-      
-      res.status(501).json({ message: '此功能尚未实现' });
+      // 生产环境：连接数据库，根据查询参数获取资源列表
+      const query: any = {};
+      if (type) query.type = type;
+      if (category) query['metadata.category'] = category;
+      if (search) query['$or'] = [
+        { name: { $regex: search, $options: 'i' } },
+        { 'metadata.description': { $regex: search, $options: 'i' } }
+      ];
+      const resources = await ExperimentResourceModel.find(query).lean();
+      res.json(resources);
     } catch (error) {
       logger.error('获取资源列表失败:', error);
       res.status(500).json({ message: '获取资源列表失败', error: (error as Error).message });
@@ -61,30 +68,33 @@ class ResourceController {
   public async getResource(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      
+
       // 在开发环境中，返回模拟数据
       if (process.env["NODE_ENV"] === 'development' || process.env["MOCK_DB"] === 'true') {
         logger.info(`[MOCK] 获取资源详情: id=${id}`);
-        
+
         // 延迟模拟数据库查询时间
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         // 模拟资源数据
         const mockResources = this.generateMockResources();
         const resource = mockResources.find(r => r.id === id);
-        
+
         if (!resource) {
           res.status(404).json({ message: '资源不存在' });
           return;
         }
-        
+
         res.json(resource);
         return;
       }
-      
-      // TODO: 连接数据库，获取指定ID的资源
-      
-      res.status(501).json({ message: '此功能尚未实现' });
+      // 生产环境：连接数据库，获取指定ID的资源
+      const dbResource = await ExperimentResourceModel.findById(id).lean();
+      if (!dbResource) {
+        res.status(404).json({ message: '资源不存在' });
+        return;
+      }
+      res.json(dbResource);
     } catch (error) {
       logger.error('获取资源详情失败:', error);
       res.status(500).json({ message: '获取资源详情失败', error: (error as Error).message });
@@ -99,14 +109,14 @@ class ResourceController {
   public async createResource(req: Request, res: Response): Promise<void> {
     try {
       const resourceData = req.body;
-      
+
       // 在开发环境中，模拟创建
       if (process.env["NODE_ENV"] === 'development' || process.env["MOCK_DB"] === 'true') {
         logger.info(`[MOCK] 创建资源: ${JSON.stringify(resourceData)}`);
-        
+
         // 延迟模拟数据库操作时间
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // 创建模拟资源ID
         const newResource: ExperimentResource = {
           id: `mock-resource-${Date.now()}`,
@@ -122,14 +132,13 @@ class ResourceController {
           },
           createdAt: new Date()
         };
-        
+
         res.status(201).json(newResource);
         return;
       }
-      
-      // TODO: 连接数据库，创建新资源
-      
-      res.status(501).json({ message: '此功能尚未实现' });
+      // 生产环境：连接数据库，创建新资源
+      const created = await ExperimentResourceModel.create(resourceData);
+      res.status(201).json(created);
     } catch (error) {
       logger.error('创建资源失败:', error);
       res.status(500).json({ message: '创建资源失败', error: (error as Error).message });
@@ -145,23 +154,23 @@ class ResourceController {
     try {
       const { id } = req.params;
       const resourceData = req.body;
-      
+
       // 在开发环境中，模拟更新
       if (process.env["NODE_ENV"] === 'development' || process.env["MOCK_DB"] === 'true') {
         logger.info(`[MOCK] 更新资源: id=${id}, ${JSON.stringify(resourceData)}`);
-        
+
         // 延迟模拟数据库操作时间
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         // 模拟资源数据
         const mockResources = this.generateMockResources();
         const resource = mockResources.find(r => r.id === id);
-        
+
         if (!resource) {
           res.status(404).json({ message: '资源不存在' });
           return;
         }
-        
+
         // 更新资源
         const updatedResource: ExperimentResource = {
           ...resource,
@@ -172,14 +181,17 @@ class ResourceController {
             updatedAt: new Date().toISOString()
           }
         };
-        
+
         res.json(updatedResource);
         return;
       }
-      
-      // TODO: 连接数据库，更新资源
-      
-      res.status(501).json({ message: '此功能尚未实现' });
+      // 生产环境：连接数据库，更新资源
+      const updated = await ExperimentResourceModel.findByIdAndUpdate(id, resourceData, { new: true }).lean();
+      if (!updated) {
+        res.status(404).json({ message: '资源不存在' });
+        return;
+      }
+      res.json(updated);
     } catch (error) {
       logger.error('更新资源失败:', error);
       res.status(500).json({ message: '更新资源失败', error: (error as Error).message });
@@ -194,21 +206,24 @@ class ResourceController {
   public async deleteResource(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      
+
       // 在开发环境中，模拟删除
       if (process.env["NODE_ENV"] === 'development' || process.env["MOCK_DB"] === 'true') {
         logger.info(`[MOCK] 删除资源: id=${id}`);
-        
+
         // 延迟模拟数据库操作时间
         await new Promise(resolve => setTimeout(resolve, 500));
-        
+
         res.json({ message: '资源删除成功', id });
         return;
       }
-      
-      // TODO: 连接数据库，删除资源
-      
-      res.status(501).json({ message: '此功能尚未实现' });
+      // 生产环境：连接数据库，删除资源
+      const deleted = await ExperimentResourceModel.findByIdAndDelete(id).lean();
+      if (!deleted) {
+        res.status(404).json({ message: '资源不存在' });
+        return;
+      }
+      res.json({ message: '资源删除成功', id });
     } catch (error) {
       logger.error('删除资源失败:', error);
       res.status(500).json({ message: '删除资源失败', error: (error as Error).message });
@@ -232,24 +247,24 @@ class ResourceController {
       'object_detection',
       'nlp_experiment'
     ];
-    
+
     const resources: ExperimentResource[] = [];
-    
+
     // 为每种实验类型生成资源
     const typesToGenerate = type ? [type] : experimentTypes;
-    
+
     typesToGenerate.forEach((expType) => {
       // 为每种类型生成3-5个资源
       const count = 3 + Math.floor(Math.random() * 3);
-      
+
       for (let i = 0; i < count; i++) {
         const isPhysical = Math.random() > 0.3;
         const resourceType = isPhysical ? 'physical' : 'virtual';
-        
+
         let resourceName = '';
         let equipment = '';
         let software = '';
-        
+
         if (expType === 'physics_experiment') {
           resourceName = `物理实验${isPhysical ? '设备' : '软件'} ${i + 1}`;
           equipment = isPhysical ? '力学实验套件、光学元件、测量仪器' : '无需实体设备';
@@ -280,7 +295,7 @@ class ResourceController {
           equipment = '无需实体设备';
           software = 'AI分析工具';
         }
-        
+
         resources.push({
           id: `mock-${expType}-${i}`,
           experimentId: 'global',
@@ -306,7 +321,7 @@ class ResourceController {
         });
       }
     });
-    
+
     return resources;
   }
 }
