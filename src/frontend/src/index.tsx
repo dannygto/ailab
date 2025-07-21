@@ -23,4 +23,22 @@ root.render(
   </React.StrictMode>
 );
 
+// PWA支持 - Service Worker注册
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+
+        // 检查更新
+        registration.addEventListener('updatefound', () => {
+          console.log('SW update found');
+        });
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
 export default editionFromEnv;

@@ -32,6 +32,8 @@ import {
   Settings as SettingsIcon,
   UploadFile as UploadFileIcon
 } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+import { apiRequest } from '../../config/api';
 
 const GeneralSettings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -105,7 +107,7 @@ const GeneralSettings: React.FC = () => {
 
   const handleSaveSettings = async () => {
     try {
-      const response = await fetch('/api/settings/general', {
+      const response = await apiRequest('/api/settings/general', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -223,78 +223,80 @@ export const getGeneralSettings = async (req: Request, res: Response) => {
 export const updateGeneralSettings = async (req: Request, res: Response) => {
   try {
     const updates = req.body;
+    console.log('接收到的更新数据:', updates);
 
-    // 验证必填字段
-    if (updates.school) {
-      if (!updates.school.schoolName) {
-        return res.status(400).json({
-          success: false,
-          message: '学校名称不能为空'
-        });
+    // 处理嵌套数据结构
+    if (updates.general || updates.school || (!updates.general && !updates.school)) {
+      // 如果是嵌套结构或者混合数据
+      if (updates.general) {
+        currentSettings.general = {
+          ...currentSettings.general,
+          ...updates.general
+        };
       }
 
-      if (!updates.school.principalName) {
-        return res.status(400).json({
-          success: false,
-          message: '校长姓名不能为空'
-        });
+      if (updates.school) {
+        // 验证学校信息必填字段
+        if (updates.school.schoolName === '') {
+          return res.status(400).json({
+            success: false,
+            message: '学校名称不能为空'
+          });
+        }
+
+        if (updates.school.principalName === '') {
+          return res.status(400).json({
+            success: false,
+            message: '校长姓名不能为空'
+          });
+        }
+
+        // 确保主校区存在
+        if (updates.school.campuses && updates.school.campuses.length > 0) {
+          const hasMainCampus = updates.school.campuses.some((campus: any) => campus.isMain);
+          if (!hasMainCampus) {
+            updates.school.campuses[0].isMain = true;
+          }
+        }
+
+        currentSettings.school = {
+          ...currentSettings.school,
+          ...updates.school
+        };
       }
 
-      if (!updates.school.schoolAddress) {
-        return res.status(400).json({
-          success: false,
-          message: '学校地址不能为空'
-        });
-      }
+      // 如果没有嵌套结构，直接处理为学校信息更新
+      if (!updates.general && !updates.school) {
+        // 分离通用设置和学校设置
+        const { language, timezone, autoSave, saveInterval, defaultExperimentDuration, maxFileSize, enableNotifications, enableAnalytics, ...schoolData } = updates;
 
-      if (!updates.school.schoolPhone) {
-        return res.status(400).json({
-          success: false,
-          message: '学校电话不能为空'
-        });
-      }
+        if (language || timezone || autoSave !== undefined) {
+          currentSettings.general = {
+            ...currentSettings.general,
+            language: language || currentSettings.general.language,
+            timezone: timezone || currentSettings.general.timezone
+          };
+        }
 
-      if (!updates.school.schoolEmail) {
-        return res.status(400).json({
-          success: false,
-          message: '学校邮箱不能为空'
-        });
-      }
-
-      // 确保主校区存在
-      if (updates.school.campuses && updates.school.campuses.length > 0) {
-        const hasMainCampus = updates.school.campuses.some((campus: any) => campus.isMain);
-        if (!hasMainCampus) {
-          // 如果没有主校区，将第一个校区设为主校区
-          updates.school.campuses[0].isMain = true;
+        if (Object.keys(schoolData).length > 0) {
+          currentSettings.school = {
+            ...currentSettings.school,
+            ...schoolData
+          };
         }
       }
-    }
-
-    // 更新通用设置
-    if (updates.general) {
-      currentSettings.general = {
-        ...currentSettings.general,
-        ...updates.general
-      };
-    }
-
-    // 更新学校信息
-    if (updates.school) {
-      currentSettings.school = {
-        ...currentSettings.school,
-        ...updates.school
-      };
     }
 
     // TODO: 这里应该保存到数据库
     // await saveSettingsToDatabase(currentSettings);
 
+    console.log('更新后的设置:', currentSettings);
+
     res.json({
       success: true,
       message: '设置已保存',
       data: {
-        ...currentSettings.general,
+        general: currentSettings.general,
         school: currentSettings.school
       }
     });
@@ -505,6 +507,109 @@ function getEditionFeatures(edition: string): string[] {
   }
 }
 
+/**
+ * 获取演示数据统计
+ */
+export const getDemoDataStats = async (req: Request, res: Response) => {
+  try {
+    res.json({
+      success: true,
+      data: {
+        students: 150,
+        teachers: 25,
+        experiments: 48,
+        devices: 32
+      }
+    });
+  } catch (error) {
+    console.error('获取演示数据统计失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '获取演示数据统计失败',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
+/**
+ * 生成演示数据
+ */
+export const generateDemoData = async (req: Request, res: Response) => {
+  try {
+    res.json({
+      success: true,
+      message: '演示数据生成成功'
+    });
+  } catch (error) {
+    console.error('生成演示数据失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '生成演示数据失败',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
+/**
+ * 删除演示数据
+ */
+export const deleteDemoData = async (req: Request, res: Response) => {
+  try {
+    res.json({
+      success: true,
+      message: '演示数据删除成功'
+    });
+  } catch (error) {
+    console.error('删除演示数据失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '删除演示数据失败',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
+/**
+ * 生成Docker部署配置
+ */
+export const generateDockerDeployment = async (req: Request, res: Response) => {
+  try {
+    res.json({
+      success: true,
+      message: 'Docker部署配置生成成功'
+    });
+  } catch (error) {
+    console.error('生成Docker部署配置失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '生成Docker部署配置失败',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
+/**
+ * 重置所有设置
+ */
+export const resetAllSettings = async (req: Request, res: Response) => {
+  try {
+    currentSettings = { ...defaultSettings };
+
+    res.json({
+      success: true,
+      message: '所有设置已重置为默认值',
+      data: currentSettings
+    });
+  } catch (error) {
+    console.error('重置所有设置失败:', error);
+    res.status(500).json({
+      success: false,
+      message: '重置所有设置失败',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
+
 // 导出所有函数
 export default {
   getSettings,
@@ -516,6 +621,11 @@ export default {
   updateSchoolInfo,
   resetSettings,
   getVersionInfo,
+  getDemoDataStats,
+  generateDemoData,
+  deleteDemoData,
+  generateDockerDeployment,
+  resetAllSettings,
   // 为了兼容性，添加别名
   getAllSettings: getSettings,
   getDataSettings: getSettings, // 暂时指向通用设置

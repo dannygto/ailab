@@ -32,7 +32,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { Server as WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import http from 'http';
 import dotenv from 'dotenv';
 import guidanceRoutes from './routes/guidance.routes.js';

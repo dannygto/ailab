@@ -247,6 +247,12 @@ ssh -i ailab.pem ubuntu@82.156.75.232 "cd /home/ubuntu/ailab && git pull && ./sc
 - [x] 配置文件生成脚本
 - [x] 部署脚本集成
 - [x] 文档完善
+- [x] **学校API路由修复** - `/api/schools` 接口现已正常工作
+- [x] **后端服务稳定运行** - PM2服务正常，API响应正确
+
+### 当前问题 🔧
+- [ ] **前端API路径异常** - 请求路径显示为`/?/api/schools`而非`/api/schools`
+- [ ] **前端路由刷新404** - 仍需修复SPA路由配置
 
 ### 待优化 🔄
 - [ ] 前端UI进一步美化

@@ -134,53 +134,53 @@ export class AIService extends BaseapiService {
   public async getModels(): Promise<apiResponse<AIModel[]>> {
     return this.get<AIModel[]>('/ai/models');
   }
-  
+
   // �ı���ȫ
   public async completeText(data: TextCompletionRequest): Promise<apiResponse<TextCompletionResponse>> {
     return this.post<TextCompletionResponse>('/ai/complete', data);
   }
-  
+
   // ���첹ȫ
   public async chatCompletion(data: chatCompletionRequest): Promise<apiResponse<chatCompletionResponse>> {
     return this.post<chatCompletionResponse>('/ai/chat', data);
   }
-  
+
   // ͼ������
   public async generateImage(data: ImageGenerationRequest): Promise<apiResponse<ImageGenerationResponse>> {
     return this.post<ImageGenerationResponse>('/ai/generate-image', data);
   }
-  
+
   // ͼ�����
   public async analyzeImage(data: ImageAnalysisRequest): Promise<apiResponse<ImageAnalysisResponse>> {
     // ����ͼ���ϴ�
     let formData: FormData | null = null;
     let postData: any = { ...data };
-    
+
     if (data.image instanceof File) {
       formData = new FormData();
       formData.append('image', data.image);
-      
+
       if (data.analysisTypes) {
         data.analysisTypes.forEach(type => {
           formData!.append('analysisTypes[]', type);
         });
       }
-      
+
       postData = formData;
     }
-    
+
     return this.post<ImageAnalysisResponse>('/ai/analyze-image', postData, {
       headers: formData ? {
         'Content-Type': 'multipart/form-data'
       } : undefined
     });
   }
-  
+
   // ���AI���񽡿�״̬
   public async CheckIconHealth(): Promise<apiResponse<{ status: string; services: Record<string, boolean> }>> {
     return this.get<{ status: string; services: Record<string, boolean> }>('/ai/health');
   }
-  
+
   // ��ȡAI�Ƽ���Դ
   public async getRecommendedResources(request: ResourceRecommendationRequest): Promise<apiResponse<{
     resources: Resource[];
@@ -198,7 +198,7 @@ export class AIService extends BaseapiService {
       params: { limit }
     });
   }
-  
+
   // ����ʵ�����������ݷ�������ӻ�����
   public async getDataVisualizationSuggestions(experimentId: string): Promise<apiResponse<{
     visualizations: Array<{
@@ -337,12 +337,12 @@ export class AIService extends BaseapiService {
     // ��ʵ��Ӧ���У�����Ӧ�õ��ú��api
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { dataPoints, visualizationType } = params;
-    
+
     // ���ݲ�ͬ��3D���ӻ����͹�����ͬ������
     let config: any = {};
-    
+
     if (visualizationType === '3d-scatter') {
       config = {
         title: '3D����ɢ��ͼ',
@@ -359,7 +359,7 @@ export class AIService extends BaseapiService {
       // ���ɱ�������
       const size = 20;
       const z = Array(size).fill(0).map(() => Array(size).fill(0));
-      
+
       for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
           const x = i / size * 10 - 5;
@@ -367,7 +367,7 @@ export class AIService extends BaseapiService {
           z[i][j] = Math.sin(Math.sqrt(x*x + y*y)) * 5;
         }
       }
-      
+
       config = {
         title: '3D����ͼ',
         z,
@@ -380,10 +380,10 @@ export class AIService extends BaseapiService {
       // ����3D��״ͼ����
       const x = Array.from({length: 10}, (_, i) => `X${i}`);
       const y = Array.from({length: 10}, (_, i) => `Y${i}`);
-      const z = Array.from({length: 10}, () => 
+      const z = Array.from({length: 10}, () =>
         Array.from({length: 10}, () => Math.random() * 10)
       );
-      
+
       config = {
         title: '3D��״ͼ',
         x,
@@ -395,7 +395,7 @@ export class AIService extends BaseapiService {
         zaxis: 'ֵ'
       };
     }
-    
+
     // ģ��һЩ���ݶ���
     const insights = [
       '���ݳ������ԵĿռ�������ƣ����ܱ��������д�����Ȼ���顣',
@@ -403,7 +403,7 @@ export class AIService extends BaseapiService {
       '������Z�᷽���ϵķֲ���Χ�Ϲ㣬������ά�ȵı����Խϴ�',
       '����������Ⱥ�㣬�����ڽ�һ�������н����ر��ע��'
     ];
-    
+
     return {
       success: true,
       data: {
@@ -422,9 +422,9 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<any>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { matrix, xLabels, yLabels } = params;
-    
+
     const config = {
       title: '������ͼ����',
       z: matrix,
@@ -434,7 +434,7 @@ export class AIService extends BaseapiService {
       xaxis: '����',
       yaxis: '�۲�ֵ'
     };
-    
+
     // ģ��һЩ���ݶ���
     const insights = [
       '��ͼ��ʾ����A�ͱ���C֮����ڽ�ǿ������ԡ�',
@@ -442,7 +442,7 @@ export class AIService extends BaseapiService {
       '�������ݳ��ֶԽ��߷ֲ�ģʽ���������ܴ���������ԡ�',
       '����F������������������ձ�ϵͣ������Ƕ������ء�'
     ];
-    
+
     return {
       success: true,
       data: {
@@ -460,35 +460,35 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<any>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { nodes, edges } = params;
-    
+
     // �����ڵ����
     const categories = [
       { name: '���A' },
       { name: '���B' },
       { name: '���C' }
     ];
-    
+
     // Ϊ�ڵ�������ɫ
     const colorNodes = nodes.map(node => ({
       ...node,
       color: ['#c23531', '#2f4554', '#61a0a8'][node.category]
     }));
-    
+
     // Ϊ��������ɫ
     const colorEdges = edges.map(edge => ({
       ...edge,
       color: edge.value > 50 ? 'rgba(255,0,0,0.5)' : 'rgba(0,0,255,0.3)'
     }));
-    
+
     const config = {
       title: '�����ϵ����',
       nodes: colorNodes,
       edges: colorEdges,
       categories
     };
-    
+
     // ģ��һЩ���ݶ���
     const insights = [
       '����ͼ��ʾ����3����Ҫ�����Ӵأ����������д�����Ȼ���顣',
@@ -496,7 +496,7 @@ export class AIService extends BaseapiService {
       '���A�Ľڵ�֮�������ܶȽϸߣ����������������ӽ��١�',
       '���������ܶ�Ϊ0.28����������һ�����ϡ�������ṹ��'
     ];
-    
+
     return {
       success: true,
       data: {
@@ -514,18 +514,18 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<any>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { timeseriesData, sensitivityLevel } = params;
-    
+
     // �������ж������쳣��ֵ
     const thresholds = {
       low: 40,
       medium: 30,
       high: 20
     };
-    
+
     const threshold = thresholds[sensitivityLevel];
-    
+
     // Ѱ���쳣��
     const baseValue = 100;
     const anomalies = timeseriesData.filter(point => {
@@ -541,7 +541,7 @@ export class AIService extends BaseapiService {
         }`
       };
     });
-    
+
     // ģ��һЩ���ݶ���
     const insights = [
       `����⵽${anomalies.length}���쳣�㣬ռ�����ݵ��${(anomalies.length / timeseriesData.length * 100).toFixed(1)}%��`,
@@ -549,7 +549,7 @@ export class AIService extends BaseapiService {
       `�����ص��쳣������${anomalies.length > 0 ? new Date(anomalies.sort((a, b) => b.score - a.score)[0].timestamp).toLocaleString() : 'δ֪ʱ��'}��`,
       '������ʵ������еĸ������أ��Լ���δ�������е��쳣��'
     ];
-    
+
     return {
       success: true,
       data: {
@@ -564,7 +564,7 @@ export class AIService extends BaseapiService {
   public async analyzeExperimentStatistics(experimentId: string): Promise<apiResponse<any>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     // ģ��ͳ�Ʒ������
     const stats = {
       summary: {
@@ -573,7 +573,7 @@ export class AIService extends BaseapiService {
         missingValues: 12,
         outliers: 5
       },
-      correlationMatrix: Array(8).fill(0).map(() => 
+      correlationMatrix: Array(8).fill(0).map(() =>
         Array(8).fill(0).map(() => Math.random() * 2 - 1)
       ),
       descriptiveStats: {
@@ -584,7 +584,7 @@ export class AIService extends BaseapiService {
         max: [35.6, 78.9, 21.4, 67.8, 98.5, 45.6, 89.7, 112.4]
       }
     };
-    
+
     // ģ��һЩ���ݶ���
     const insights = [
       '����3�ͱ���7֮�����ǿ�ҵ������(r=0.82)���������ǿ�������ͬ����Ӱ�졣',
@@ -592,7 +592,7 @@ export class AIService extends BaseapiService {
       '���������������ã�����10%�����ݵ����ȱʧֵ����Ҫ�����ڱ���4�ͱ���8��',
       '���ݷֲ����������ƫ���ƣ�������Ҫ�����ڽ�һ�������н��ж���ת����'
     ];
-    
+
     return {
       success: true,
       data: {
@@ -601,21 +601,21 @@ export class AIService extends BaseapiService {
       }
     };
   }
-  
+
   // ���������
   public async performMultivariateAnalysis(experimentId: string, params?: MultivariateAnalysisParams): Promise<apiResponse<MultivariateAnalysisResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const method = params?.method || 'pca';
     const dimensions = params?.dimensions || 2;
-    
+
     let results: any = {};
     let components: any[] = [];
     let clusters: any[] = [];
     let visualizationConfig: any = {};
     let insights: string[] = [];
-    
+
     if (method === 'pca') {
       // ģ��PCA�������
       components = Array.from({length: dimensions}, (_, i) => ({
@@ -630,12 +630,12 @@ export class AIService extends BaseapiService {
           '����5': Math.random() * 2 - 1
         }
       }));
-      
+
       results = {
         totalVarianceExplained: components.reduce((sum, pc) => sum + pc.variance, 0),
         components
       };
-      
+
       visualizationConfig = {
         type: 'biplot',
         xComponent: 'pc1',
@@ -651,7 +651,7 @@ export class AIService extends BaseapiService {
           y: components[1].loadings[varName] * 3
         }))
       };
-      
+
       insights = [
         `���ɷַ�����ʾǰ${dimensions}�����ɷֽ�����${(results.totalVarianceExplained * 100).toFixed(1)}%���ܷ��`,
         '��һ���ɷ���Ҫ�ɱ���1�ͱ���3��ɣ���ӳ��ʵ���е���Ҫ�仯���ơ�',
@@ -676,13 +676,13 @@ export class AIService extends BaseapiService {
           members: Array.from({length: size}, (_, j) => `sample${i*30+j+1}`)
         };
       });
-      
+
       results = {
         clusterCount,
         silhouetteScore: 0.65 + Math.random() * 0.2,
         clusters
       };
-      
+
       visualizationConfig = {
         type: 'ScatterPlotIcon',
         dimensions: ['����1', '����2'],
@@ -697,7 +697,7 @@ export class AIService extends BaseapiService {
           };
         })
       };
-      
+
       insights = [
         `�������ʶ���${clusterCount}����ͬ�������أ�����ϵ��Ϊ${results.silhouetteScore.toFixed(2)}��`,
         `���Ĵ�Ϊ��${clusters.reduce((max, c, i) => c.size > clusters[max].size ? i : max, 0) + 1}������${Math.max(...clusters.map(c => c.size))}��������`,
@@ -705,7 +705,7 @@ export class AIService extends BaseapiService {
         '�����ÿ���ص��������е���������̽����ͬ�����µ�ʵ�������졣'
       ];
     }
-    
+
     return {
       success: true,
       data: {
@@ -722,9 +722,9 @@ export class AIService extends BaseapiService {
   public async analyzeExperimentDesign(experimentId: string, params?: ExperimentDesignParams): Promise<apiResponse<ExperimentDesignResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const factors = params?.factors || ['�¶�', 'ѹ��', 'Ũ��', 'ʱ��'];
-    
+
     // ģ��ʵ����Ʒ������
     const designSummary = {
       factors: factors.map(f => ({
@@ -743,7 +743,7 @@ export class AIService extends BaseapiService {
       design: '��Ӧ�����',
       power: 0.85
     };
-    
+
     // ��ЧӦ����
     const effectsAnalysis = factors.map(f => ({
       factor: f,
@@ -751,7 +751,7 @@ export class AIService extends BaseapiService {
       pValue: Math.random() * 0.2,
       isSignificant: Math.random() > 0.3
     }));
-    
+
     // ����ЧӦ
     const interactions = [
       {
@@ -767,7 +767,7 @@ export class AIService extends BaseapiService {
         isSignificant: Math.random() > 0.4
       }
     ];
-    
+
     // ��������
     const optimumConditions = {
       '�¶�': 35 + Math.random() * 10 - 5,
@@ -779,7 +779,7 @@ export class AIService extends BaseapiService {
         'purity': 95 + Math.random() * 5 - 2.5
       }
     };
-    
+
     // ��Ӧģ��
     const responseModel = {
       formula: 'Y = 75.3 + 8.2*X1 + 4.3*X2 - 2.1*X3 + 1.5*X4 - 3.2*X1^2 - 1.8*X1*X2',
@@ -794,19 +794,19 @@ export class AIService extends BaseapiService {
       },
       rSquared: 0.87
     };
-    
+
     // ���ӻ�����
     const visualizationConfig = {
       type: 'contourPlot',
       xFactor: '�¶�',
       yFactor: 'Ũ��',
-      responseSurface: Array.from({length: 20}, (_, i) => 
+      responseSurface: Array.from({length: 20}, (_, i) =>
         Array.from({length: 20}, (_, j) => ({
           x: 20 + i * 1.5,
           y: 5 + j * 0.5,
-          z: 75.3 + 8.2 * ((20 + i * 1.5) - 35) / 10 + 4.3 * ((1.5) - 1.75) / 0.5 - 
-             2.1 * ((5 + j * 0.5) - 8) / 2 + 1.5 * ((45) - 52.5) / 15 - 
-             3.2 * Math.pow(((20 + i * 1.5) - 35) / 10, 2) - 
+          z: 75.3 + 8.2 * ((20 + i * 1.5) - 35) / 10 + 4.3 * ((1.5) - 1.75) / 0.5 -
+             2.1 * ((5 + j * 0.5) - 8) / 2 + 1.5 * ((45) - 52.5) / 15 -
+             3.2 * Math.pow(((20 + i * 1.5) - 35) / 10, 2) -
              1.8 * ((20 + i * 1.5) - 35) / 10 * ((1.5) - 1.75) / 0.5
         }))
       ),
@@ -816,7 +816,7 @@ export class AIService extends BaseapiService {
         z: optimumConditions['predictedResponse']['yield']
       }
     };
-    
+
     // ��������
     const insights = [
       `��${effectsAnalysis.filter(e => e.isSignificant).length}�����������У�${
@@ -833,7 +833,7 @@ export class AIService extends BaseapiService {
           .join(', ')
       }ʱ��Ԥ�ƿɻ��������Ӧֵ��`
     ];
-    
+
     return {
       success: true,
       data: {
@@ -852,10 +852,10 @@ export class AIService extends BaseapiService {
   public async batchProcessExperimentData(experimentIds: string[], params?: BatchProcessParams): Promise<apiResponse<BatchProcessResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const operation = params?.operation || 'aggregate';
     const experimentCount = experimentIds.length;
-    
+
     // ģ�������Ϣ
     const summary = {
       experimentCount,
@@ -865,11 +865,11 @@ export class AIService extends BaseapiService {
       ] as [string, string],
       totalSamples: experimentCount * 20 + Math.floor(Math.random() * 50)
     };
-    
+
     let results: any = {};
     let visualizationConfig: any = {};
     let insights: string[] = [];
-    
+
     if (operation === 'aggregate') {
       // ģ��ۺϷ������
       results = {
@@ -906,7 +906,7 @@ export class AIService extends BaseapiService {
           'pressure-purity': 0.58 + Math.random() * 0.2 - 0.1
         }
       };
-      
+
       visualizationConfig = {
         type: 'boxPlot',
         categories: ['�¶�', 'ѹ��', '����', '����'],
@@ -917,16 +917,16 @@ export class AIService extends BaseapiService {
           median: results.metrics.average[metric] - results.metrics.standardDeviation[metric] * 0.1,
           q3: results.metrics.max[metric] - (results.metrics.max[metric] - results.metrics.average[metric]) * 0.33,
           max: results.metrics.max[metric],
-          outliers: Array.from({length: Math.floor(Math.random() * 3)}, () => 
+          outliers: Array.from({length: Math.floor(Math.random() * 3)}, () =>
             results.metrics.min[metric] - Math.random() * results.metrics.standardDeviation[metric] * 2
           ).concat(
-            Array.from({length: Math.floor(Math.random() * 3)}, () => 
+            Array.from({length: Math.floor(Math.random() * 3)}, () =>
               results.metrics.max[metric] + Math.random() * results.metrics.standardDeviation[metric] * 2
             )
           )
         }))
       };
-      
+
       insights = [
         `��${experimentCount}��ʵ���У�ƽ������Ϊ${results.metrics.average['����'].toFixed(1)}����׼��Ϊ${results.metrics.standardDeviation['����'].toFixed(1)}��`,
         `�¶��������${results.correlations['�¶�-����'] > 0 ? '��' : '��'}���(r=${Math.abs(results.correlations['�¶�-����']).toFixed(2)})�������¶�${results.correlations['�¶�-����'] > 0 ? '����' : '����'}��������߲�����`,
@@ -959,7 +959,7 @@ export class AIService extends BaseapiService {
           }
         }
       };
-      
+
       visualizationConfig = {
         type: 'lineChart',
         xAxis: {
@@ -987,7 +987,7 @@ export class AIService extends BaseapiService {
           }
         ]
       };
-      
+
       insights = [
         `从${new Date(summary.timeRange[0]).toLocaleDateString()}到${new Date(summary.timeRange[1]).toLocaleDateString()}期间，实验产量呈${results.trendAnalysis['yield'].slope > 0 ? '上升' : '下降'}趋势。`,
         `平均每月产量增长${(results.trendAnalysis['yield'].slope * 30).toFixed(1)}个单位，相关性R2为${results.trendAnalysis['yield'].rSquared.toFixed(2)}。`,
@@ -995,7 +995,7 @@ export class AIService extends BaseapiService {
         `基于当前趋势预测，到2025年底产量将达到${(results.trendAnalysis['yield'].intercept + results.trendAnalysis['yield'].slope * 150).toFixed(1)}，纯度将达到${(results.trendAnalysis['purity'].intercept + results.trendAnalysis['purity'].slope * 150).toFixed(1)}%。`
       ];
     }
-    
+
     return {
       success: true,
       data: {
@@ -1011,16 +1011,16 @@ export class AIService extends BaseapiService {
   public async analyzeTextClassification(params: TextClassificationParams): Promise<apiResponse<TextClassificationResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { text, categories } = params;
-    
+
     // ģ���ı�������
-    const categoriesWithScores = categories ? 
+    const categoriesWithScores = categories ?
       categories.map(category => ({
         category,
         score: Math.random(),
         confidence: Math.random() * 0.5 + 0.5
-      })) : 
+      })) :
       [
         { category: 'ʵ���������', score: Math.random(), confidence: Math.random() * 0.5 + 0.5 },
         { category: 'ʵ��������', score: Math.random(), confidence: Math.random() * 0.5 + 0.5 },
@@ -1028,14 +1028,14 @@ export class AIService extends BaseapiService {
         { category: '�����Ų�', score: Math.random(), confidence: Math.random() * 0.5 + 0.5 },
         { category: '��ȫע������', score: Math.random(), confidence: Math.random() * 0.5 + 0.5 }
       ];
-      
+
     // ����������
     categoriesWithScores.sort((a, b) => b.score - a.score);
-    
+
     // ����������������
     const wordCount = text.split(/\s+/).length;
     const LanguageIcon = text.match(/[\u4e00-\u9fa5]/) ? 'zh-CN' : 'en-US';
-    
+
     // ���ɹؼ���
     const keywords = Array.from(
       { length: Math.min(5, Math.ceil(wordCount / 20)) },
@@ -1044,7 +1044,7 @@ export class AIService extends BaseapiService {
         return words[Math.floor(Math.random() * words.length)];
       }
     );
-    
+
     return {
       success: true,
       data: {
@@ -1064,19 +1064,19 @@ export class AIService extends BaseapiService {
   public async generateTextSummary(params: TextSummaryParams): Promise<apiResponse<TextSummaryResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const { text, maxLength, type } = params;
-    
+
     // ����������
     const wordCount = text.split(/\s+/).length;
-    
+
     // ����ժҪ����󳤶�
     const summaryLength = maxLength || Math.ceil(wordCount * 0.3);
-    
+
     // ����ժҪ�������ɲ�ͬ��ժҪ
     let summary = '';
     let keyPoints: string[] = [];
-    
+
     if (type === 'extractive' || !type) {
       // ��ȡʽժҪ����ԭ������ȡ�ؼ�����
       const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
@@ -1084,20 +1084,20 @@ export class AIService extends BaseapiService {
         .slice(0, Math.min(3, sentences.length))
         .concat(sentences.length > 5 ? [sentences[Math.floor(sentences.length / 2)]] : [])
         .concat(sentences.length > 3 ? [sentences[sentences.length - 1]] : []);
-      
+
       summary = selectedSentences.join(' ').substring(0, summaryLength);
-      
+
       // ���ɹؼ���
       keyPoints = sentences
         .filter((_, i) => i % Math.ceil(sentences.length / 3) === 0)
         .slice(0, 3)
         .map(s => s.trim());
-        
+
     } else if (type === 'abstractive') {
       // ����ʽժҪ�������µ�ժҪ����
       const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
       const words = text.split(/\s+/).filter(w => w.length > 3);
-      
+
       // ģ�����ʽժҪ
       summary = `����һƪ����${words[Math.floor(Math.random() * words.length)]}�����£���Ҫ̽����${
         words[Math.floor(Math.random() * words.length)]
@@ -1106,7 +1106,7 @@ export class AIService extends BaseapiService {
       }�ļ����ؼ����棬�������${
         words[Math.floor(Math.random() * words.length)]
       }���¼��⡣`.substring(0, summaryLength);
-      
+
       // ���ɹؼ���
       keyPoints = [
         `${words[Math.floor(Math.random() * words.length)]}����Ҫ��`,
@@ -1114,7 +1114,7 @@ export class AIService extends BaseapiService {
         `${words[Math.floor(Math.random() * words.length)]}��Ӧ��ǰ��`
       ];
     }
-    
+
     return {
       success: true,
       data: {
@@ -1134,20 +1134,20 @@ export class AIService extends BaseapiService {
   public async generateExperimentReport(params: ExperimentReportParams): Promise<apiResponse<ExperimentReportResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const { experimentId, experimentData, format, sections } = params;
-    
+
     // ģ�ⱨ�沿��
     const reportSections: Record<string, string> = {};
-    
+
     // ��������Ĳ���������Ӧ������
     const availableSections = [
-      'introduction', 'methodology', 'results', 
+      'introduction', 'methodology', 'results',
       'discussion', 'conclusion', 'references'
     ];
-    
+
     const requestedSections = sections || availableSections;
-    
+
     // ���ɸ���������
     requestedSections.forEach(section => {
       if (section === 'introduction') {
@@ -1164,10 +1164,10 @@ export class AIService extends BaseapiService {
         reportSections[section] = `# �ο�����\n\n1. ${experimentData?.references?.[0] || 'Smith, J. (2024). ����о���Ŀ. �ڿ�����, 10(2), 100-110.'}\n2. ${experimentData?.references?.[1] || 'Wang, L. & Zhang, X. (2023). ��һ������о�. �ڿ�����, 8(4), 210-225.'}\n3. ${experimentData?.references?.[2] || 'Johnson, K., et al. (2022). ��������. �ڿ�����, 15(1), 50-75.'}`;
       }
     });
-    
+
     // ������������
     const fullReport = Object.values(reportSections).join('\n\n');
-    
+
     // ���ɱ���Ԫ����
     const metadata = {
       generatedAt: new Date().toISOString(),
@@ -1176,7 +1176,7 @@ export class AIService extends BaseapiService {
       sections: Object.keys(reportSections),
       experimentId: experimentId || 'unknown'
     };
-    
+
     return {
       success: true,
       data: {
@@ -1191,63 +1191,63 @@ export class AIService extends BaseapiService {
   public async semanticSearchExperiments(params: SemanticSearchParams): Promise<apiResponse<SemanticSearchResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 700));
-    
+
     const { query, filters, limit } = params;
-    
+
     // ģ���������
     const resultCount = limit || 10;
-    
+
     // ����ģ����
     const results = Array.from({ length: resultCount }, (_, i) => {
       // ���ݲ�ѯ�ʺ͹�������������ضȷ���
       const baseRelevance = 0.95 - (i * 0.05);
-      
+
       // Ӧ�ù�������Ӱ����ض�
       let appliedFilters: string[] = [];
       let relevanceScore = baseRelevance;
-      
+
       if (filters) {
         if (filters.subject && Math.random() > 0.3) {
           appliedFilters.push(`ѧ��: ${filters.subject}`);
           relevanceScore *= 1.05;
         }
-        
+
         if (filters.dateRange && Math.random() > 0.3) {
           appliedFilters.push(`���ڷ�Χ: ${filters.dateRange[0]} �� ${filters.dateRange[1]}`);
           relevanceScore *= 1.03;
         }
-        
+
         if (filters.experimentType && Math.random() > 0.3) {
           appliedFilters.push(`ʵ������: ${filters.experimentType}`);
           relevanceScore *= 1.04;
         }
-        
+
         // ��֤����������1
         relevanceScore = Math.min(relevanceScore, 0.99);
       }
-      
+
       // ����ģ��ʵ������
       const startDate = new Date('2025-01-01');
       const endDate = new Date('2025-06-30');
       const experimentDate = new Date(
         startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())
       );
-      
+
       // ����ƥ����ı�Ƭ��
       const queryTerms = query.split(/\s+/);
       const randomTerm = queryTerms[Math.floor(Math.random() * queryTerms.length)];
-      
+
       const textFragments = [
         `...ʵ����ʹ�õ�${randomTerm}���ֳ�����������...`,
         `...ͨ����${randomTerm}�ķ��������Ƿ���...`,
         `...${randomTerm}�ڲ�ͬ�����µı仯���Ʊ���...`
       ];
-      
+
       return {
         id: `exp-${Date.now()}-${i}`,
         title: `ʵ��${i+1}: ${
-          queryTerms.length > 1 
-          ? `${queryTerms[0]}��${queryTerms[1]}�Ĺ�ϵ�о�` 
+          queryTerms.length > 1
+          ? `${queryTerms[0]}��${queryTerms[1]}�Ĺ�ϵ�о�`
           : `${query}��ʵ���о�`
         }`,
         date: experimentDate.toISOString(),
@@ -1258,17 +1258,17 @@ export class AIService extends BaseapiService {
         appliedFilters
       };
     });
-    
+
     // ����ض�����
     results.sort((a, b) => b.relevanceScore - a.relevanceScore);
-    
+
     // ��������ͳ������
     const stats = {
       totalResults: resultCount + Math.floor(Math.random() * 50),
       searchTime: Math.random() * 0.5 + 0.2,
       filtersApplied: !!filters
     };
-    
+
     return {
       success: true,
       data: {
@@ -1302,21 +1302,21 @@ export class AIService extends BaseapiService {
     // ����FormData�����ϴ���Ƶ�ļ�
     const formData = new FormData();
     formData.append('audio', audioFile);
-    
+
     if (params) {
       if (params.LanguageIcon) formData.append('LanguageIcon', params.LanguageIcon);
       if (params.model) formData.append('model', params.model);
-      if (params.enableTimestamps !== undefined) 
+      if (params.enableTimestamps !== undefined)
         formData.append('enableTimestamps', params.enableTimestamps.toString());
     }
-    
+
     return this.post('/ai/speech-to-text', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
   }
-  
+
   // ģ������ʶ����
   public async mockSpeechToText(audioFile: File, params?: {
     language?: string;
@@ -1338,14 +1338,14 @@ export class AIService extends BaseapiService {
   }>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 1200));
-    
+
     // Ĭ������
     const language = params?.language || 'zh-CN';
-    
+
     // �����ļ���Сģ����Ƶʱ��������ƽ��������Ϊ128kbps��
     const fileSizeMB = audioFile.size / (1024 * 1024);
     const estimatedDuration = fileSizeMB * 8 / 0.128; // ʱ�����ƣ��룩
-    
+
     // ģ��ʶ���ı���ʵ����Ŀ���ⲿ�ֻ�����ʵ��AI�����ṩ��
     let recognizedText = '';
     let segments: Array<{
@@ -1354,10 +1354,10 @@ export class AIService extends BaseapiService {
       end: number;
       confidence: number;
     }> = [];
-    
+
     if (language === 'zh-CN') {
       recognizedText = '这是一次参数调试，现在转换文本。实验数据表明，我们观测到了有趣的现象，结果显示温度变化时，反应会变得更加活跃。未来实验将进一步探索不同温度条件下的反应情况。';
-      
+
       if (params?.enableTimestamps) {
         const sentences = [
           '����һ�β���������תд�ı���',
@@ -1365,7 +1365,7 @@ export class AIService extends BaseapiService {
           '������ʾ�¶�����ʱ��Ӧ�������Լӿ졣',
           'δ��ʵ�齫����̽����ͬ�����µķ�Ӧ���ơ�'
         ];
-        
+
         let currentTime = 0;
         segments = sentences.map(sentence => {
           const duration = sentence.length * 0.2; // ����ÿ���ַ���Ҫ0.2��
@@ -1381,7 +1381,7 @@ export class AIService extends BaseapiService {
       }
     } else {
       recognizedText = 'This is a transcription of a test audio. During the experiment, we observed interesting phenomena. The data shows that reaction rates significantly increase with temperature. Future experiments will continue to explore reaction mechaniSmsIcon under different conditions.';
-      
+
       if (params?.enableTimestamps) {
         const sentences = [
           'This is a transcription of a test audio.',
@@ -1389,7 +1389,7 @@ export class AIService extends BaseapiService {
           'The data shows that reaction rates significantly increase with temperature.',
           'Future experiments will continue to explore reaction mechaniSmsIcon under different conditions.'
         ];
-        
+
         let currentTime = 0;
         segments = sentences.map(sentence => {
           const duration = sentence.length * 0.1; // ����ÿ���ַ���Ҫ0.1��
@@ -1404,12 +1404,12 @@ export class AIService extends BaseapiService {
         });
       }
     }
-    
+
     // ����ͳ��
-    const wordCount = language === 'zh-CN' ? 
+    const wordCount = language === 'zh-CN' ?
       recognizedText.replace(/[��������������""''��������]/g, '').length :
       recognizedText.split(/\s+/).length;
-    
+
     return {
       success: true,
       data: {
@@ -1424,7 +1424,7 @@ export class AIService extends BaseapiService {
       }
     };
   }
-  
+
   // 图像OCR (光学字符识别)
   public async imageOCR(image: File, params?: {
     language?: string;
@@ -1456,22 +1456,22 @@ export class AIService extends BaseapiService {
     // 创建FormData来上传图片
     const formData = new FormData();
     formData.append('image', image);
-    
+
     if (params) {
       if (params.language) formData.append('language', params.language);
-      if (params.detectOrientation !== undefined) 
+      if (params.detectOrientation !== undefined)
         formData.append('detectOrientation', params.detectOrientation.toString());
-      if (params.recognitionMode) 
+      if (params.recognitionMode)
         formData.append('recognitionMode', params.recognitionMode);
     }
-    
+
     return this.post('/ai/ocr', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
   }
-  
+
   // 模拟图像OCR服务
   public async mockImageOCR(image: File, params?: {
     language?: string;
@@ -1502,14 +1502,14 @@ export class AIService extends BaseapiService {
   }>> {
     // 模拟API调用延迟
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     // 默认语言
     const language = params?.language || 'zh-CN';
-    
+
     // ģ��ͼƬ�ߴ�
     let imageWidth = 800;
     let imageHeight = 600;
-    
+
     // ��ʵ����Ŀ�У������ͨ��ͼ�������ȡ��ʵ�ߴ�
     const createImagePromise = new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
@@ -1526,13 +1526,13 @@ export class AIService extends BaseapiService {
       };
       img.src = url;
     });
-    
+
     try {
       await createImagePromise;
     } catch (error) {
       console.error('Error loading image:', error);
     }
-    
+
     // ģ��ʶ���ı�
     let recognizedText = '';
     let blocks: Array<{
@@ -1546,10 +1546,10 @@ export class AIService extends BaseapiService {
       confidence: number;
       type: 'line' | 'paragraph' | 'word';
     }> = [];
-    
+
     if (language === 'zh-CN') {
       recognizedText = 'ʵ�����ݷ�������\n\n�¶�: 25��C\nѹ��: 1.5 atm\n��Ӧʱ��: 45����\n\n�����ʾ�������¶ȵ����ߣ�����A���������ӣ����������н��͡��������ʵ������¶���20-30��C֮�䣬��ƽ������ʹ��ȡ�';
-      
+
       // ģ���ı���
       blocks = [
         {
@@ -1588,7 +1588,7 @@ export class AIService extends BaseapiService {
       ];
     } else {
       recognizedText = 'Experimental Data Analysis Report\n\nTemperature: 25��C\nPressure: 1.5 atm\nReaction time: 45 minutes\n\nResults show that as temperature increases, the yield of product A increases but purity slightly decreases. It is recommended to control the temperature between 20-30��C in subsequent experiments to balance yield and purity.';
-      
+
       // ģ���ı���
       blocks = [
         {
@@ -1626,7 +1626,7 @@ export class AIService extends BaseapiService {
         }
       ];
     }
-    
+
     return {
       success: true,
       data: {
@@ -1644,7 +1644,7 @@ export class AIService extends BaseapiService {
       }
     };
   }
-  
+
   // ��ѧͼ������
   public async analyzeScientificChart(image: File, params?: {
     chartType?: 'auto' | 'line' | 'bar' | 'scatter' | 'pie';
@@ -1653,26 +1653,26 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<ScientificChartResponse>> {
     // ������ģʽ���������ģ�����
     return this.mockAnalyzeScientificChart(image, params);
-    
+
     // ʵ��api������ - ������ʹ��
     // const formData = new FormData();
     // formData.append('image', image);
-    // 
+    //
     // if (params) {
     //   if (params.chartType) formData.append('chartType', params.chartType);
-    //   if (params.extractData !== undefined) 
+    //   if (params.extractData !== undefined)
     //     formData.append('extractData', params.extractData.toString());
-    //   if (params.includeAxisLabels !== undefined) 
+    //   if (params.includeAxisLabels !== undefined)
     //     formData.append('includeAxisLabels', params.includeAxisLabels.toString());
     // }
-    // 
+    //
     // return this.post('/ai/analyze-scientific-chart', formData, {
     //   headers: {
     //     'Content-Type': 'multipart/form-data'
     //   }
     // });
   }
-  
+
   // ģ���ѧͼ����������
   public async mockAnalyzeScientificChart(image: File, params?: {
     chartType?: 'auto' | 'line' | 'bar' | 'scatter' | 'pie';
@@ -1681,12 +1681,12 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<ScientificChartResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     // �Զ�����ʹ��ָ����ͼ������
-    const detectedChartType = params?.chartType === 'auto' ? 
-      ['line', 'bar', 'scatter', 'pie'][Math.floor(Math.random() * 4)] : 
+    const detectedChartType = params?.chartType === 'auto' ?
+      ['line', 'bar', 'scatter', 'pie'][Math.floor(Math.random() * 4)] :
       params?.chartType || 'line';
-    
+
     // ģ����ȡ������
     const extractedData = params?.extractData ? {
       labels: ['1��', '2��', '3��', '4��', '5��', '6��'],
@@ -1701,16 +1701,16 @@ export class AIService extends BaseapiService {
         }
       ]
     } : undefined;
-    
+
     // ģ�����ǩ
     const axisLabels = params?.includeAxisLabels ? {
       x: 'ʱ�䣨�£�',
       y: '������kg��'
     } : undefined;
-    
+
     // ����ͼ���������ɲ�ͬ�Ľ���
     let interpretation = '';
-    
+
     if (detectedChartType === 'line') {
       interpretation = '����ͼ��ʾ������ʵ������6�����ڵĲ����仯���ơ���A�Ĳ���ʼ�ո�����B��������ڵ�3���´ﵽ�ֲ���ֵ�����ڵ�5-6���´ﵽ�������ֵ���������Ƴ�������̬�ƣ�����ʵ�������Ż����ܴ����˲���������';
     } else if (detectedChartType === 'bar') {
@@ -1720,7 +1720,7 @@ export class AIService extends BaseapiService {
     } else if (detectedChartType === 'pie') {
       interpretation = '�ñ�ͼչʾ�˲�ͬʵ�������µĲ����ֲ����������У�����Aռ�ܲ�����35%������Bռ28%������Cռ22%������Dռ15%������A��B�ϼƹ�����63%�Ĳ���������������������Ϊ��Ч��';
     }
-    
+
     return {
       success: true,
       data: {
@@ -1745,7 +1745,7 @@ export class AIService extends BaseapiService {
       }
     };
   }
-  
+
   // ��ʽʶ�������
   public async recognizeFormula(image: File, params?: {
     format?: 'latex' | 'mathml' | 'text';
@@ -1754,7 +1754,7 @@ export class AIService extends BaseapiService {
     // 暂时使用mock实现以保证类型安全
     return this.mockRecognizeFormula(image, params);
   }
-  
+
   // ģ�⹫ʽʶ����
   public async mockRecognizeFormula(image: File, params?: {
     format?: 'latex' | 'mathml' | 'text';
@@ -1762,10 +1762,10 @@ export class AIService extends BaseapiService {
   }): Promise<apiResponse<FormulaRecognitionResponse>> {
     // ģ��api�����ӳ�
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Ĭ�ϸ�ʽ
     const format = params?.format || 'latex';
-    
+
     // ģ��ʶ��Ĺ�ʽ (��ѧ����ѧ����)
     let formula = '';
     let convertedFormats: {
@@ -1773,16 +1773,16 @@ export class AIService extends BaseapiService {
       mathml?: string;
       text?: string;
     } = {};
-    
+
     // LaTeX��ʽ�Ĺ�ʽ
     const latexFormula = 'k = A e^{-E_a/RT}';
-    
+
     // MathML��ʽ�Ĺ�ʽ
     const mathmlFormula = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi><mo>=</mo><mi>A</mi><msup><mi>e</mi><mrow><mo>-</mo><msub><mi>E</mi><mi>a</mi></msub><mo>/</mo><mi>R</mi><mi>T</mi></mrow></msup></math>';
-    
+
     // �ı���ʽ�Ĺ�ʽ
     const textFormula = 'k = A * exp(-Ea/RT)';
-    
+
     // ��������ĸ�ʽ������Ӧ�Ĺ�ʽ
     if (format === 'latex') {
       formula = latexFormula;
@@ -1803,12 +1803,12 @@ export class AIService extends BaseapiService {
         mathml: mathmlFormula
       };
     }
-    
+
     // ��ѡ�Ĺ�ʽ����
-    const explanation = params?.includeExplanation ? 
-      '���ǰ�������˹����(Arrhenius equation)�������˷�Ӧ���ʳ���k���¶�T�Ĺ�ϵ������A��ָǰ���ӣ�Ea�ǻ�ܣ�R�����峣�����÷��̱����������¶ȵ����ߣ���Ӧ���ʳ���k���󣬷�Ӧ���ʼӿ졣' : 
+    const explanation = params?.includeExplanation ?
+      '���ǰ�������˹����(Arrhenius equation)�������˷�Ӧ���ʳ���k���¶�T�Ĺ�ϵ������A��ָǰ���ӣ�Ea�ǻ�ܣ�R�����峣�����÷��̱����������¶ȵ����ߣ���Ӧ���ʳ���k���󣬷�Ӧ���ʼӿ졣' :
       undefined;
-    
+
     return {
       success: true,
       data: {
@@ -1821,7 +1821,7 @@ export class AIService extends BaseapiService {
           },
           {
             formula: mathmlFormula,
-            type: 'mathml', 
+            type: 'mathml',
             confidence: 0.91
           },
           {
@@ -1839,9 +1839,9 @@ export class AIService extends BaseapiService {
   }
 }
 
-// ����������AIServiceʵ��
+// 创建全局AIService实例
 const aiService = new AIService({
-  baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3002',
+  baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3001',
   timeout: 30000,
   withCredentials: true,
   autoErrorToast: true

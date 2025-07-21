@@ -11,7 +11,7 @@ import { EnhancedTemplateService } from './enhancedTemplateService'; // 只导�
 import systemSettingsService from './systemSettingsService';
 
 // api基础配置
-const api_BASE_URL = process.env.REACT_APP_api_URL || 'http://localhost:3002/api';
+const api_BASE_URL = process.env.REACT_APP_api_URL || 'http://localhost:3001/api';
 
 // 创建各服务实例
 const authService = new AuthService({

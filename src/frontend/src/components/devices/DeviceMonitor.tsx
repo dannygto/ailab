@@ -40,8 +40,8 @@ import {
 } from '@mui/material';
 import { RefreshIcon, PlayArrowIcon, PauseIcon, MoreVertIcon, WarningIcon, InfoIcon, DownloadIcon, TuneIcon, CodeIcon, NotificationsActiveIcon, SettingsIcon, InsertChartIcon, ElectricBoltIcon } from '../../utils/icons';
 import { Device, DeviceConnectionStatus, DeviceDataPoint } from '../../types/devices';
-import { 
-  XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, 
+import {
+  XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
   Area, AreaChart, Line, LineChart
 } from 'recharts';
 import { useInterval } from '../../hooks/useInterval';
@@ -56,7 +56,7 @@ interface DeviceMonitorProps {
   wsEndpoint?: string; // WebSocket����˵�
 }
 
-const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localhost:3002/ws', ...props }) => {
+const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localhost:3001/ws', ...props }) => {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
   const [isMonitoring, setIsMonitoring] = useState<boolean>(false);
   const [isRealtime, setIsRealtime] = useState<boolean>(true);
@@ -65,7 +65,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('disconnected');
-  
+
   // ����״̬
   const [selectedMetric, setSelectedMetric] = useState<string>('temperature');
   const [timeRange, setTimeRange] = useState<'realtime' | '1h' | '6h' | '24h' | 'custom'>('realtime');
@@ -76,14 +76,14 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   const [customEndTime, setCustomEndTime] = useState<Date>(new Date());  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['temperature']); // ��ָ��ѡ��
   const [metricDialogOpen, setMetricDialogOpen] = useState<boolean>(false); // ���ƶ�ָ��ѡ��Ի���
   const [showMultiMetrics, setShowMultiMetrics] = useState<boolean>(false); // �Ƿ���ʾ��ָ��
-  
+
   // �����澯���״̬
   const [showAlerts, setShowAlerts] = useState<boolean>(false);
   const [alertCount, setAlertCount] = useState<number>(0);
-  
+
   // WebSocket ����
   const wsRef = useRef<WebSocket | null>(null);
-  
+
   // ģ������
   const [simulatedData, setSimulatedData] = useState<{
     cpuUsage: number;
@@ -139,7 +139,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   // �����豸����
   const updateDeviceData = useCallback((data: any) => {
     const { sensorData, systemMetrics } = data;
-    
+
     // �����豸���ݵ�
     if (sensorData) {
       const newDataPoint: DeviceDataPoint = {
@@ -151,10 +151,10 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         unit: sensorData.unit,
         quality: sensorData.quality || 100
       };
-      
+
       setMonitoringData(prev => [...prev.slice(-99), newDataPoint]);
     }
-    
+
     // ����ϵͳָ��
     if (systemMetrics) {
       setSimulatedData(prev => ({
@@ -166,11 +166,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       }));
     }
   }, [selectedDeviceId]);
-  
+
   // �����豸�¼�
   const addDeviceEventIcon = useCallback((data: any) => {
     if (!data.EventIcon) return;
-    
+
     const newEventIcon = {
       id: `evt-${Date.now()}`,
       type: data.EventIcon.type,
@@ -178,7 +178,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       message: data.EventIcon.message,
       severity: data.EventIcon.severity || 'info'
     };
-    
+
     setSimulatedData(prev => ({
       ...prev,
       recentEventIcons: [newEventIcon, ...prev.recentEventIcons.slice(0, 9)]
@@ -188,16 +188,16 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   // ��ʼ��WebSocket����
   const initWebSocket = useCallback(() => {
     if (!selectedDeviceId || !isMonitoring || !isRealtime) return;
-    
+
     try {
       setConnectionStatus('connecting');
-      
+
       wsRef.current = new WebSocket(wsEndpoint);
-      
+
       wsRef.current.onopen = () => {
         console.log('WebSocket�����ѽ���');
         setConnectionStatus('connected');
-        
+
         // �����豸������Ϣ
         if (wsRef.current?.readyState === WebSocket.OPEN) {
           wsRef.current.send(JSON.stringify({
@@ -207,12 +207,12 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           }));
         }
       };
-      
+
       wsRef.current.onmessage = (EventIcon) => {
         try {
           const data = JSON.parse(EventIcon.data);
           console.log('�յ�WebSocket��Ϣ:', data);
-          
+
           if (data.type === 'device_data' && data.deviceId === selectedDeviceId) {
             // �����豸����
             updateDeviceData(data);
@@ -224,13 +224,13 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           console.error('����WebSocket��Ϣ����:', err);
         }
       };
-      
+
       wsRef.current.onerror = (error) => {
         console.error('WebSocket����:', error);
         setError('WebSocket���Ӵ���');
         setConnectionStatus('disconnected');
       };
-      
+
       wsRef.current.onclose = () => {
         console.log('WebSocket�����ѹر�');
         setConnectionStatus('disconnected');
@@ -253,7 +253,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           timestamp: new Date().toISOString()
         }));
       }
-      
+
       wsRef.current.close();
       wsRef.current = null;
       setConnectionStatus('disconnected');
@@ -265,22 +265,22 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     if (isMonitoring && wsRef.current) {
       closeWebSocket();
     }
-    
+
     setSelectedDeviceId(newDeviceId);
     setMonitoringData([]);
-    
+
     // ���ü��״̬
     setIsMonitoring(false);
-    
+
     // ��ʼ��ģ������
     generateSimulatedData();
   };
-  
+
   // �رն�ָ��ѡ��Ի���
   const handleCloseMultiMetricsDialog = () => {
     setMetricDialogOpen(false);
   };
-  
+
   // Ӧ�ö�ָ��ѡ��
   const handleApplyMultiMetrics = () => {
     if (selectedMetrics.length > 0) {
@@ -301,7 +301,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   const toggleMonitoring = () => {
     const newState = !isMonitoring;
     setIsMonitoring(newState);
-    
+
     if (newState) {
       if (isRealtime) {
         initWebSocket();
@@ -312,12 +312,12 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       closeWebSocket();
     }
   };
-  
+
   // �л�ʵʱģʽ
   const toggleRealtime = (EventIcon: React.ChangeEvent<HTMLInputElement>) => {
     const newState = EventIcon.target.checked;
     setIsRealtime(newState);
-    
+
     // ������ڼ�أ���������
     if (isMonitoring) {
       if (newState) {
@@ -350,14 +350,14 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       fetchDeviceData();
     }
   };
-  
+
   // ��ȡ�豸����
   const fetchDeviceData = async () => {
     if (!selectedDeviceId) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // ģ��api�����ӳ�
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -373,16 +373,16 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   const generateSimulatedData = () => {
     // ����CPUʹ����
     const newCpuUsage = Math.min(100, Math.max(10, simulatedData.cpuUsage + (Math.random() * 10 - 5)));
-    
+
     // �����ڴ�ʹ����
     const newMemoryIconUsage = Math.min(100, Math.max(20, simulatedData.MemoryIconUsage + (Math.random() * 8 - 4)));
-    
+
     // �����¶�
     const newTemperature = Math.min(60, Math.max(35, simulatedData.temperature + (Math.random() * 2 - 1)));
-    
+
     // ���µ�ص���
     const newBatteryLevel = Math.max(0, simulatedData.batteryLevel - Math.random() * 0.5);
-    
+
     // �ڶ�ָ��ģʽ�£�Ϊÿ��ѡ�е�ָ���������ݵ�
     if (showMultiMetrics && selectedMetrics.length > 1) {
       // ���ɶ�����ݵ㣬ÿ��ָ��һ��
@@ -391,7 +391,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                      metric === 'cpuUsage' ? newCpuUsage :
                      metric === 'MemoryIconUsage' ? newMemoryIconUsage :
                      metric === 'batteryLevel' ? newBatteryLevel : 0;
-        
+
         const newDataPoint = {
           id: `dp-${Date.now()}-${metric}`,
           deviceId: selectedDeviceId || 'dev-001',
@@ -401,7 +401,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           unit: metric === 'temperature' ? '°C' : '%',
           quality: 95
         };
-        
+
         setMonitoringData(prev => [...prev.slice(-99), newDataPoint]);
       });
     } else {
@@ -418,10 +418,10 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         unit: selectedMetric === 'temperature' ? '°C' : '%',
         quality: 95
       };
-      
+
       setMonitoringData(prev => [...prev.slice(-99), newDataPoint]);
     }
-    
+
     // ����ϵͳ״̬
     setSimulatedData(prev => ({
       ...prev,
@@ -450,7 +450,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       fetchDeviceData();
     }
   }, isMonitoring && !isRealtime ? RefreshIconInterval : null);
-  
+
   // �豸ѡ�����״̬�仯ʱ����WebSocket����
   useEffect(() => {
     if (isMonitoring && isRealtime) {
@@ -458,7 +458,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     } else {
       closeWebSocket();
     }
-    
+
     // ���ж��ʱ����
     return () => {
       closeWebSocket();
@@ -491,9 +491,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         {props.devices.map((device) => (
           <MenuItem key={device.id} value={device.id}>
             {device.name} ({device.model})
-            <Chip 
-              size="small" 
-              label={device.connectionStatus} 
+            <Chip
+              size="small"
+              label={device.connectionStatus}
               color={device.connectionStatus === DeviceConnectionStatus.ONLINE ? 'success' : 'error'}
               sx={{ ml: 1 }}
             />
@@ -521,7 +521,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             >
               {isMonitoring ? "ֹͣ���" : "��ʼ���"}
             </Button>
-            
+
             <FormControlLabel
               control={
                 <Switch
@@ -532,7 +532,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
               }
               label="ʵʱģʽ"
             />
-            
+
             {!isRealtime && (
               <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
                 <InputLabel id="RefreshIcon-interval-LabelIcon">ˢ�¼��</InputLabel>
@@ -551,7 +551,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 </Select>
               </FormControl>
             )}
-            
+
             <IconButton
               onClick={handleRefreshIcon}
               disabled={!selectedDeviceId}
@@ -559,7 +559,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             >
               <RefreshIcon />
             </IconButton>
-            
+
             <IconButton
               onClick={() => setShowAlerts(!showAlerts)}
               disabled={!selectedDeviceId}
@@ -569,11 +569,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 <NotificationsActiveIcon />
               </Badge>
             </IconButton>
-            
-            <Chip 
-              label={connectionStatus === 'connected' ? '������' : 
-                    connectionStatus === 'connecting' ? '������...' : 'δ����'} 
-              color={connectionStatus === 'connected' ? 'success' : 
+
+            <Chip
+              label={connectionStatus === 'connected' ? '������' :
+                    connectionStatus === 'connecting' ? '������...' : 'δ����'}
+              color={connectionStatus === 'connected' ? 'success' :
                     connectionStatus === 'connecting' ? 'warning' : 'error'}
               size="small"
             />
@@ -592,9 +592,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         </Alert>
       );
     }
-    
+
     const selectedDevice = props.devices.find(d => d.id === selectedDeviceId);
-    
+
     if (!selectedDevice) {
       return (
         <Alert severity="warning" sx={{ mb: 2 }}>
@@ -602,11 +602,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         </Alert>
       );
     }
-    
+
     return (
       <Card sx={{ mb: 2 }}>
-        <CardHeader 
-          title={`�豸״̬: ${selectedDevice.name}`} 
+        <CardHeader
+          title={`�豸״̬: ${selectedDevice.name}`}
           subheader={`�ͺ�: ${selectedDevice.model} | λ��: ${selectedDevice.location}`}
           action={
             <IconButton>
@@ -622,9 +622,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 <Typography variant="subtitle2" gutterBottom>
                   CPUʹ����
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={simulatedData.cpuUsage} 
+                <LinearProgress
+                  variant="determinate"
+                  value={simulatedData.cpuUsage}
                   color={simulatedData.cpuUsage > 80 ? "error" : "primary"}
                   sx={{ height: 10, borderRadius: 5 }}
                 />
@@ -638,9 +638,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 <Typography variant="subtitle2" gutterBottom>
                   �ڴ�ʹ����
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={simulatedData.MemoryIconUsage} 
+                <LinearProgress
+                  variant="determinate"
+                  value={simulatedData.MemoryIconUsage}
                   color={simulatedData.MemoryIconUsage > 80 ? "error" : "primary"}
                   sx={{ height: 10, borderRadius: 5 }}
                 />
@@ -654,9 +654,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 <Typography variant="subtitle2" gutterBottom>
                   �¶�
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={(simulatedData.temperature / 60) * 100} 
+                <LinearProgress
+                  variant="determinate"
+                  value={(simulatedData.temperature / 60) * 100}
                   color={simulatedData.temperature > 50 ? "error" : "primary"}
                   sx={{ height: 10, borderRadius: 5 }}
                 />
@@ -670,9 +670,9 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                 <Typography variant="subtitle2" gutterBottom>
                   ��ص���
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={simulatedData.batteryLevel} 
+                <LinearProgress
+                  variant="determinate"
+                  value={simulatedData.batteryLevel}
                   color={simulatedData.batteryLevel < 20 ? "error" : "success"}
                   sx={{ height: 10, borderRadius: 5 }}
                 />
@@ -694,11 +694,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     // Ϊͼ��׼������
     const chartData = (() => {
       const dataSource = isRealtime ? monitoringData : simulatedData.dataPoints;
-      
+
       if (showMultiMetrics && selectedMetrics.length > 1) {
         // ��ָ��ģʽ����ʱ�����������
         const groupedData: Record<string, any> = {};
-        
+
         dataSource.forEach(dp => {
           const timeKey = new Date(dp.timestamp).toLocaleTimeString();
           if (!groupedData[timeKey]) {
@@ -708,7 +708,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             groupedData[timeKey][dp.sensorType] = typeof dp.value === 'number' ? dp.value : 0;
           }
         });
-        
+
         // Ϊÿ��ʱ������ȱʧ��ָ��ֵ
         return Object.values(groupedData).map((item: any) => {
           selectedMetrics.forEach(metric => {
@@ -731,7 +731,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         }));
       }
     })();
-    
+
     // ��ȡ��ָ��ģʽ�µ���ɫӳ��
     const metricColors: Record<string, string> = {
       temperature: '#8884d8',
@@ -739,22 +739,22 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       MemoryIconUsage: '#ffc658',
       batteryLevel: '#ff8042'
     };
-    
+
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader              title={showMultiMetrics ? "��ָ����" : 
-                     `${selectedMetric === 'temperature' ? '�¶�' : 
-                      selectedMetric === 'cpuUsage' ? 'CPUʹ����' : 
-                      selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' : 
+            <CardHeader              title={showMultiMetrics ? "��ָ����" :
+                     `${selectedMetric === 'temperature' ? '�¶�' :
+                      selectedMetric === 'cpuUsage' ? 'CPUʹ����' :
+                      selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                       selectedMetric === 'batteryLevel' ? '��ص���' : ''}����`}
               subheader={`���${chartData.length}�����ݵ�`}
               action={
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>                  {isLoading ? (
                     <CircularProgress size={24} sx={{ mr: 1 }} />
                   ) : null}
-                  
+
                   {!showMultiMetrics && (
                     <FormControl size="small" sx={{ minWidth: 120, mr: 1 }}>
                       <InputLabel id="metric-select-LabelIcon">ָ��</InputLabel>
@@ -772,7 +772,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       </Select>
                     </FormControl>
                   )}
-                  
+
                   <FormControl size="small" sx={{ minWidth: 100, mr: 1 }}>
                     <InputLabel id="chart-type-select-LabelIcon">ͼ������</InputLabel>
                     <Select
@@ -786,7 +786,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       <MenuItem value="line">����ͼ</MenuItem>
                     </Select>
                   </FormControl>
-                  
+
                   <FormControl size="small" sx={{ minWidth: 120, mr: 1 }}>
                     <InputLabel id="time-range-select-LabelIcon">ʱ�䷶Χ</InputLabel>
                     <Select
@@ -802,19 +802,19 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       <MenuItem value="24h">24Сʱ</MenuItem>
                       <MenuItem value="custom">�Զ���</MenuItem>
                     </Select>                  </FormControl>
-                  
+
                   <IconButton onClick={handleRefreshIcon}>
                     <RefreshIcon />
                   </IconButton>
-                  
+
                   <IconButton onClick={handleExportMenuOpen}>
                     <DownloadIcon />
                   </IconButton>
-                  
+
                   <IconButton onClick={() => setMetricDialogOpen(true)} color={showMultiMetrics ? "primary" : "default"}>
                     <TuneIcon />
                   </IconButton>
-                  
+
                   <Menu
                     anchorEl={exportMenuAnchorEl}
                     open={Boolean(exportMenuAnchorEl)}
@@ -848,18 +848,18 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="timestamp" />
-                        <YAxis 
-                          label={{ 
+                        <YAxis
+                          label={{
                             value: '��ֵ',
-                            angle: -90, 
-                            position: 'insideLeft' 
-                          }} 
+                            angle: -90,
+                            position: 'insideLeft'
+                          }}
                           domain={['auto', 'auto']}
                         />
-                        <RechartsTooltip 
+                        <RechartsTooltip
                           formatter={(value: any, name: string) => [
-                            `${value} ${name === 'temperature' ? '��C' : '%'}`, 
-                            name === 'temperature' ? '�¶�' : 
+                            `${value} ${name === 'temperature' ? '��C' : '%'}`,
+                            name === 'temperature' ? '�¶�' :
                             name === 'cpuUsage' ? 'CPUʹ����' :
                             name === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                             name === 'batteryLevel' ? '��ص���' : name
@@ -868,16 +868,16 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                         />
                         <Legend />
                         {selectedMetrics.map((metric) => (
-                          <Area 
+                          <Area
                             key={metric}
-                            type="monotone" 
+                            type="monotone"
                             dataKey={metric}
-                            name={metric === 'temperature' ? '�¶�' : 
+                            name={metric === 'temperature' ? '�¶�' :
                                   metric === 'cpuUsage' ? 'CPUʹ����' :
                                   metric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                                   metric === 'batteryLevel' ? '��ص���' : metric}
-                            stroke={metricColors[metric]} 
-                            fill={metricColors[metric]} 
+                            stroke={metricColors[metric]}
+                            fill={metricColors[metric]}
                             fillOpacity={0.3}
                             activeDot={{ r: 6 }}
                           />
@@ -890,18 +890,18 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="timestamp" />
-                        <YAxis 
-                          label={{ 
+                        <YAxis
+                          label={{
                             value: '��ֵ',
-                            angle: -90, 
-                            position: 'insideLeft' 
-                          }} 
+                            angle: -90,
+                            position: 'insideLeft'
+                          }}
                           domain={['auto', 'auto']}
                         />
-                        <RechartsTooltip 
+                        <RechartsTooltip
                           formatter={(value: any, name: string) => [
-                            `${value} ${name === 'temperature' ? '��C' : '%'}`, 
-                            name === 'temperature' ? '�¶�' : 
+                            `${value} ${name === 'temperature' ? '��C' : '%'}`,
+                            name === 'temperature' ? '�¶�' :
                             name === 'cpuUsage' ? 'CPUʹ����' :
                             name === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                             name === 'batteryLevel' ? '��ص���' : name
@@ -910,11 +910,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                         />
                         <Legend />
                         {selectedMetrics.map((metric) => (
-                          <Line 
+                          <Line
                             key={metric}
-                            type="monotone" 
+                            type="monotone"
                             dataKey={metric}
-                            name={metric === 'temperature' ? '�¶�' : 
+                            name={metric === 'temperature' ? '�¶�' :
                                   metric === 'cpuUsage' ? 'CPUʹ����' :
                                   metric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                                   metric === 'batteryLevel' ? '��ص���' : metric}
@@ -933,21 +933,21 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="timestamp" />
-                        <YAxis 
-                          label={{ 
-                            value: selectedMetric === 'temperature' ? `�¶� (��C)` : 
+                        <YAxis
+                          label={{
+                            value: selectedMetric === 'temperature' ? `�¶� (��C)` :
                                    selectedMetric === 'cpuUsage' ? 'CPUʹ���� (%)' :
                                    selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ���� (%)' :
                                    selectedMetric === 'batteryLevel' ? '��ص��� (%)' : '',
-                            angle: -90, 
-                            position: 'insideLeft' 
-                          }} 
+                            angle: -90,
+                            position: 'insideLeft'
+                          }}
                           domain={['auto', 'auto']}
                         />
-                        <RechartsTooltip 
+                        <RechartsTooltip
                           formatter={(value: any) => [
-                            `${value} ${selectedMetric === 'temperature' ? '��C' : '%'}`, 
-                            selectedMetric === 'temperature' ? '�¶�' : 
+                            `${value} ${selectedMetric === 'temperature' ? '��C' : '%'}`,
+                            selectedMetric === 'temperature' ? '�¶�' :
                             selectedMetric === 'cpuUsage' ? 'CPUʹ����' :
                             selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                             selectedMetric === 'batteryLevel' ? '��ص���' : ''
@@ -955,15 +955,15 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                           labelFormatter={(label: string) => `ʱ��: \$\{label\}`}
                         />
                         <Legend />
-                        <Area 
-                          type="monotone" 
-                          dataKey="value" 
-                          name={selectedMetric === 'temperature' ? '�¶�' : 
+                        <Area
+                          type="monotone"
+                          dataKey="value"
+                          name={selectedMetric === 'temperature' ? '�¶�' :
                                 selectedMetric === 'cpuUsage' ? 'CPUʹ����' :
                                 selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                                 selectedMetric === 'batteryLevel' ? '��ص���' : ''}
-                          stroke="#8884d8" 
-                          fill="#8884d8" 
+                          stroke="#8884d8"
+                          fill="#8884d8"
                           fillOpacity={0.3}
                           activeDot={{ r: 8 }}
                         />
@@ -975,21 +975,21 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="timestamp" />
-                        <YAxis 
-                          label={{ 
-                            value: selectedMetric === 'temperature' ? `�¶� (��C)` : 
+                        <YAxis
+                          label={{
+                            value: selectedMetric === 'temperature' ? `�¶� (��C)` :
                                    selectedMetric === 'cpuUsage' ? 'CPUʹ���� (%)' :
                                    selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ���� (%)' :
                                    selectedMetric === 'batteryLevel' ? '��ص��� (%)' : '',
-                            angle: -90, 
-                            position: 'insideLeft' 
-                          }} 
+                            angle: -90,
+                            position: 'insideLeft'
+                          }}
                           domain={['auto', 'auto']}
                         />
-                        <RechartsTooltip 
+                        <RechartsTooltip
                           formatter={(value: any) => [
-                            `${value} ${selectedMetric === 'temperature' ? '��C' : '%'}`, 
-                            selectedMetric === 'temperature' ? '�¶�' : 
+                            `${value} ${selectedMetric === 'temperature' ? '��C' : '%'}`,
+                            selectedMetric === 'temperature' ? '�¶�' :
                             selectedMetric === 'cpuUsage' ? 'CPUʹ����' :
                             selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                             selectedMetric === 'batteryLevel' ? '��ص���' : ''
@@ -997,14 +997,14 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                           labelFormatter={(label: string) => `ʱ��: \$\{label\}`}
                         />
                         <Legend />
-                        <Line 
-                          type="monotone" 
-                          dataKey="value" 
-                          name={selectedMetric === 'temperature' ? '�¶�' : 
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          name={selectedMetric === 'temperature' ? '�¶�' :
                                 selectedMetric === 'cpuUsage' ? 'CPUʹ����' :
                                 selectedMetric === 'MemoryIconUsage' ? '�ڴ�ʹ����' :
                                 selectedMetric === 'batteryLevel' ? '��ص���' : ''}
-                          stroke="#8884d8" 
+                          stroke="#8884d8"
                           activeDot={{ r: 8 }}
                         />
                       </LineChart>
@@ -1024,11 +1024,11 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     if (!selectedDeviceId) {
       return null;
     }
-    
+
     return (
       <Card sx={{ mt: 2 }}>
-        <CardHeader 
-          title="�¼���־" 
+        <CardHeader
+          title="�¼���־"
           action={
             <IconButton onClick={() => console.log('������־')}>
               <MoreVertIcon />
@@ -1054,21 +1054,21 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
                     <TableCell>{EventIcon.type}</TableCell>
                     <TableCell>{EventIcon.message}</TableCell>
                     <TableCell>
-                      <Chip 
+                      <Chip
                         size="small"
                         icon={
-                          EventIcon.severity === 'error' ? <WarningIcon /> : 
-                          EventIcon.severity === 'warning' ? <ElectricBoltIcon /> : 
+                          EventIcon.severity === 'error' ? <WarningIcon /> :
+                          EventIcon.severity === 'warning' ? <ElectricBoltIcon /> :
                           <InfoIcon />
                         }
                         label={
-                          EventIcon.severity === 'error' ? '����' : 
-                          EventIcon.severity === 'warning' ? '����' : 
+                          EventIcon.severity === 'error' ? '����' :
+                          EventIcon.severity === 'warning' ? '����' :
                           '��Ϣ'
                         }
                         color={
-                          EventIcon.severity === 'error' ? 'error' : 
-                          EventIcon.severity === 'warning' ? 'warning' : 
+                          EventIcon.severity === 'error' ? 'error' :
+                          EventIcon.severity === 'warning' ? 'warning' :
                           'info'
                         }
                       />
@@ -1095,10 +1095,10 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   // ����ΪCSV
   const exportAsCSV = () => {
     if (!selectedDeviceId || !monitoringData.length) return;
-    
+
     const selectedDevice = props.devices.find(d => d.id === selectedDeviceId);
     if (!selectedDevice) return;
-    
+
     // ׼��CSV����
     const headers = ['ʱ���', 'ָ������', '��ֵ', '��λ', '����'];
     const dataRows = monitoringData.map(dp => [
@@ -1108,13 +1108,13 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       dp.unit || '',
       dp.quality || ''
     ]);
-    
+
     // ���CSV����
     const csvContent = [
       headers.join(','),
       ...dataRows.map(row => row.join(','))
     ].join('\n');
-    
+
     // ����Blob������
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -1125,17 +1125,17 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     handleExportMenuClose();
   };
 
   // ����ΪJSON
   const exportAsJSON = () => {
     if (!selectedDeviceId || !monitoringData.length) return;
-    
+
     const selectedDevice = props.devices.find(d => d.id === selectedDeviceId);
     if (!selectedDevice) return;
-    
+
     // ׼��JSON����
     const exportData = {
       device: {
@@ -1147,7 +1147,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
       timestamp: new Date().toISOString(),
       dataPoints: monitoringData
     };
-    
+
     // ����Blob������
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -1158,7 +1158,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     handleExportMenuClose();
   };
 
@@ -1175,14 +1175,14 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
   const handleTimeRangeChange = (EventIcon: SelectChangeEvent<string>) => {
     const newRange = EventIcon.target.value as 'realtime' | '1h' | '6h' | '24h' | 'custom';
     setTimeRange(newRange);
-    
+
     if (newRange === 'custom') {
       setCustomTimeDialogOpen(true);
     } else if (newRange !== 'realtime') {
       // ���㿪ʼʱ��
       let startTime: Date;
       const endTime = new Date();
-      
+
       switch (newRange) {
         case '1h':
           startTime = new Date(endTime.getTime() - 3600000); // 1Сʱǰ
@@ -1196,36 +1196,36 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         default:
           startTime = new Date(endTime.getTime() - 3600000); // Ĭ��1Сʱ
       }
-      
+
       setCustomStartTime(startTime);
       setCustomEndTime(endTime);
-      
+
       // ��ȡ��ʷ����
       fetchHistoricalData(startTime, endTime);
     }
   };
-  
+
   // ��ȡ��ʷ����
   const fetchHistoricalData = (startTime: Date, endTime: Date) => {
     if (!selectedDeviceId) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     // ģ���ȡ��ʷ���ݵ�api����
     setTimeout(() => {
       // ����ģ����ʷ����
       const historyPoints: DeviceDataPoint[] = [];
       const timeRange = endTime.getTime() - startTime.getTime();
       const pointCount = Math.min(100, Math.floor(timeRange / 60000)); // ���100���㣬����ÿ����һ����
-      
+
       if (showMultiMetrics && selectedMetrics.length > 1) {
         // ��ָ��ģʽ��Ϊÿ��ָ��������ʷ����
         for (let i = 0; i < pointCount; i++) {
           const timestamp = new Date(startTime.getTime() + (i * (timeRange / pointCount)));
-          
+
           selectedMetrics.forEach(metric => {
-            const value = metric === 'temperature' 
+            const value = metric === 'temperature'
               ? 40 + Math.sin(i / (pointCount / 8)) * 5 + Math.random() * 2
               : metric === 'cpuUsage'
               ? 30 + Math.sin(i / (pointCount / 6)) * 30 + Math.random() * 10
@@ -1234,7 +1234,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
               : metric === 'batteryLevel'
               ? 95 - (i / pointCount) * 15 + Math.random() * 2
               : 0;
-            
+
             historyPoints.push({
               id: `hist-${i}-${metric}`,
               deviceId: selectedDeviceId,
@@ -1250,7 +1250,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         // ��ָ��ģʽ
         for (let i = 0; i < pointCount; i++) {
           const timestamp = new Date(startTime.getTime() + (i * (timeRange / pointCount)));
-          const value = selectedMetric === 'temperature' 
+          const value = selectedMetric === 'temperature'
             ? 40 + Math.sin(i / (pointCount / 8)) * 5 + Math.random() * 2
             : selectedMetric === 'cpuUsage'
             ? 30 + Math.sin(i / (pointCount / 6)) * 30 + Math.random() * 10
@@ -1259,7 +1259,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             : selectedMetric === 'batteryLevel'
             ? 95 - (i / pointCount) * 15 + Math.random() * 2
             : 0;
-          
+
           historyPoints.push({
             id: `hist-${i}`,
             deviceId: selectedDeviceId,
@@ -1271,27 +1271,27 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           });
         }
       }
-      
+
       setMonitoringData(historyPoints);
       setIsLoading(false);
     }, 1000);
   };
-  
+
   // �����Զ���ʱ��Ի���Ĺر�
   const handleCustomTimeDialogClose = () => {
     setCustomTimeDialogOpen(false);
-    
+
     // �����ʼ�ͽ���ʱ�䶼��Ч����ȡ��ʷ����
     if (customStartTime && customEndTime) {
       fetchHistoricalData(customStartTime, customEndTime);
     }
   };
-  
+
   // ������ָ��ѡ��
   const handleMetricsChange = (EventIcon: React.ChangeEvent<HTMLInputElement>) => {
     const metric = EventIcon.target.name;
     const checked = EventIcon.target.checked;
-    
+
     if (checked) {
       setSelectedMetrics(prev => [...prev, metric]);
     } else {
@@ -1305,10 +1305,10 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           {error}
         </Alert>
       )}
-      
+
       {renderControlPanel()}
       {renderdevicestatus()}
-      
+
       {/* �澯������� */}
       {showAlerts && selectedDeviceId && (
         <Box sx={{ mb: 3 }}>
@@ -1318,10 +1318,10 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           <AlertManagement deviceId={selectedDeviceId} />
         </Box>
       )}
-      
+
       {renderDataCharts()}
       {renderEventIconLog()}
-      
+
       {/* �Զ���ʱ�䷶Χ�Ի��� */}
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <Dialog open={customTimeDialogOpen} onClose={handleCustomTimeDialogClose}>
@@ -1353,7 +1353,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
           <FormGroup>
             <FormControlLabel
               control={
-                <Checkbox 
+                <Checkbox
                   checked={selectedMetrics.includes('temperature')}
                   onChange={handleMetricsChange}
                   name="temperature"
@@ -1363,7 +1363,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             />
             <FormControlLabel
               control={
-                <Checkbox 
+                <Checkbox
                   checked={selectedMetrics.includes('cpuUsage')}
                   onChange={handleMetricsChange}
                   name="cpuUsage"
@@ -1373,7 +1373,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             />
             <FormControlLabel
               control={
-                <Checkbox 
+                <Checkbox
                   checked={selectedMetrics.includes('MemoryIconUsage')}
                   onChange={handleMetricsChange}
                   name="MemoryIconUsage"
@@ -1383,7 +1383,7 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
             />
             <FormControlLabel
               control={
-                <Checkbox 
+                <Checkbox
                   checked={selectedMetrics.includes('batteryLevel')}
                   onChange={handleMetricsChange}
                   name="batteryLevel"
@@ -1395,8 +1395,8 @@ const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ wsEndpoint = 'ws://localh
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseMultiMetricsDialog}>ȡ��</Button>
-          <Button 
-            onClick={handleApplyMultiMetrics} 
+          <Button
+            onClick={handleApplyMultiMetrics}
             variant="contained"
           >
             ȷ��

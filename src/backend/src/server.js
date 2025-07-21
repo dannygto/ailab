@@ -1,11 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const compression = require('compression');
-const dotenv = require('dotenv');
-const { MongoClient } = require('mongodb');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import dotenv from 'dotenv';
+import { MongoClient } from 'mongodb';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ES模块的__dirname替代
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 加载环境变量
 dotenv.config();
@@ -23,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 导入API路由
-const apiRoutes = require('./routes');
+import apiRoutes from './routes/index.js';
 app.use('/api', apiRoutes);
 
 // 健康检查
@@ -44,7 +49,7 @@ const startServer = async () => {
     await client.connect();
     console.log('Successfully connected to MongoDB');
     await client.close();
-    
+
     // 启动HTTP服务器
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
@@ -58,4 +63,4 @@ const startServer = async () => {
 // 启动服务器
 startServer();
 
-module.exports = app; // 导出app用于测试
+export default app; // 导出app用于测试

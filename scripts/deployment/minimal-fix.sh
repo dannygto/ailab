@@ -138,18 +138,18 @@ log_success "最小化PM2配置创建完成"
 # 检查serve可用性和ESM兼容性
 log_info "检查serve可用性和ESM兼容性..."
 
-# 先尝试使用http-server作为替代方案（更稳定）
+# 先尝试使用http-server作为替代方案（更稳定，支持SPA路由）
 if command -v npx >/dev/null && npx http-server --version >/dev/null 2>&1; then
-  log_success "npx http-server 可用，使用http-server替代serve（支持API代理）"
-  # 更新PM2配置使用http-server
+  log_success "npx http-server 可用，使用http-server替代serve（支持SPA路由和API代理）"
+  # 更新PM2配置使用http-server，添加SPA支持
   sed -i "s|script: '/usr/bin/npx'|script: '/usr/bin/npx'|g" ecosystem.config.js
-  sed -i "s|args: \['serve', '-s', 'build', '-l', '3000'\]|args: ['http-server', 'build', '-p', '3000', '-a', '0.0.0.0', '--proxy', 'http://localhost:3001?', '--cors']|g" ecosystem.config.js
-  log_success "已配置为使用http-server（支持API代理）"
+  sed -i "s|args: \['serve', '-s', 'build', '-l', '3000'\]|args: ['http-server', 'build', '-p', '3000', '-a', '0.0.0.0', '--proxy', 'http://localhost:3001?', '--cors', '--push-state']|g" ecosystem.config.js
+  log_success "已配置为使用http-server（支持SPA路由和API代理）"
 elif npm install -g http-server 2>/dev/null; then
-  log_success "安装并使用http-server（支持API代理）"
+  log_success "安装并使用http-server（支持SPA路由和API代理）"
   sed -i "s|script: '/usr/bin/npx'|script: '/usr/bin/npx'|g" ecosystem.config.js
-  sed -i "s|args: \['serve', '-s', 'build', '-l', '3000'\]|args: ['http-server', 'build', '-p', '3000', '-a', '0.0.0.0', '--proxy', 'http://localhost:3001?', '--cors']|g" ecosystem.config.js
-  log_success "已配置为使用http-server（支持API代理）"
+  sed -i "s|args: \['serve', '-s', 'build', '-l', '3000'\]|args: ['http-server', 'build', '-p', '3000', '-a', '0.0.0.0', '--proxy', 'http://localhost:3001?', '--cors', '--push-state']|g" ecosystem.config.js
+  log_success "已配置为使用http-server（支持SPA路由和API代理）"
 elif command -v npx >/dev/null && npx serve --version >/dev/null 2>&1; then
   log_warning "使用serve，但需要特殊配置避免ESM问题"
   # 使用exec_mode: cluster模式或者直接用shell脚本包装

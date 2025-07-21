@@ -1,12 +1,13 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import systemRoutes from './system.routes.js';
+import healthRoutes from './health.routes.js';
+import schoolRoutes from './school.routes.js';
 
-// 导入路由模块
-const systemRoutes = require('./system.routes');
-const healthRoutes = require('./health.routes');
+const router = express.Router();
 
 // 注册路由
 router.use('/system', systemRoutes);
 router.use('/health', healthRoutes);
+router.use('/schools', schoolRoutes);
 
-module.exports = router;
+export default router;

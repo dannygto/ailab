@@ -18,6 +18,7 @@ import {
   Chip
 } from '@mui/material';
 import { PaletteIcon as ThemeIcon, Brightness4Icon as DarkModeIcon, Brightness7Icon as LightModeIcon, ColorLensIcon as ColorIcon, FormatSizeIcon as FontSizeIcon, SaveIcon } from '../../utils/icons';
+import { apiRequest } from '../../config/api';
 
 const ThemeSettings: React.FC = () => {
   const [themeSettings, setThemeSettings] = useState({
@@ -62,7 +63,7 @@ const ThemeSettings: React.FC = () => {
   const handleSavesettings = async () => {
     try {
       // 调用API保存主题设置
-      const response = await fetch('/api/settings/theme', {
+      const response = await apiRequest('/api/settings/theme', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

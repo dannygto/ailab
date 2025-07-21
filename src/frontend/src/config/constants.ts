@@ -3,7 +3,7 @@
  */
 
 // API基础URL，根据环境自动选择
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3002';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 // 默认分页配置
 export const DEFAULT_PAGE_SIZE = 10;

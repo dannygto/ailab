@@ -3,8 +3,8 @@
 import { Box } from '@mui/material';
 import { TemplateService } from './templateService';
 import { BaseapiService, apiResponse } from './base/apiService';
-import { 
-  ExperimentTemplate, 
+import {
+  ExperimentTemplate,
   TemplateVersion,
   TemplateVersionData,
   TemplateCategory,
@@ -36,15 +36,15 @@ export class EnhancedTemplateService extends BaseapiService {
 
   constructor() {
     super({
-      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3002',
+      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3001',
       timeout: 30000,
       withCredentials: true,
       autoErrorToast: false
     });
-    
+
     // 创建独立的TemplateService实例避免循环依赖
     this.baseService = new TemplateService({
-      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3002',
+      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3001',
       timeout: 30000,
       withCredentials: true,
       autoErrorToast: true
@@ -54,7 +54,7 @@ export class EnhancedTemplateService extends BaseapiService {
   // ����������װ
   public async getTemplates(params?: any): Promise<apiResponse<PaginatedResponse<ExperimentTemplate>>> {
     const response = await this.baseService.getTemplates(params);
-    
+
     // ת��PaginatedResponse��ʽ�Լ���index.ts�еĶ���
     if (response.success && response.data) {
       const convertedData: PaginatedResponse<ExperimentTemplate> = {
@@ -65,13 +65,13 @@ export class EnhancedTemplateService extends BaseapiService {
         limit: response.data.limit || 10,
         totalPages: response.data.totalPages || 0
       };
-      
+
       return {
         ...response,
         data: convertedData
       };
     }
-    
+
     return response as any;
   }
 
@@ -285,7 +285,7 @@ export class EnhancedTemplateService extends BaseapiService {
 
   // �߼�����: ��������
   public async bulkUpdateTemplates(
-    templateIds: string[], 
+    templateIds: string[],
     updates: Partial<ExperimentTemplate>
   ): Promise<apiResponse<{ updated: number; failed: string[] }>> {
     try {
@@ -305,7 +305,7 @@ export class EnhancedTemplateService extends BaseapiService {
 
   // �߼�����: ģ�嵼��
   public async importTemplate(
-    file: File, 
+    file: File,
     options: { overwrite?: boolean; categoryId?: string } = {}
   ): Promise<apiResponse<ExperimentTemplate>> {
     try {

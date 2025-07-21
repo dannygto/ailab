@@ -31,15 +31,15 @@ export class EnhancedAIService extends BaseapiService {
 
   constructor() {
     super({
-      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3002/api',
+      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3001/api',
       timeout: 60000,
       withCredentials: true,
       autoErrorToast: true
     });
-    
+
     // 创建基础AI服务实例
     this.baseService = new AIService({
-      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3002/api',
+      baseURL: process.env.REACT_APP_api_URL || 'http://localhost:3001/api',
       timeout: 60000,
       withCredentials: true,
       autoErrorToast: true
@@ -52,14 +52,14 @@ export class EnhancedAIService extends BaseapiService {
       const start = Date.now();
       const response = await this.get<{models: string[]}>('/health');
       const latency = Date.now() - start;
-      
+
       this.status = {
         isHealthy: true,
         latency,
         lastCheckIconed: new Date(),
         availableModels: response.data?.models || []
       };
-      
+
       return this.status;
     } catch (error) {
       this.status = {

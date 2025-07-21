@@ -29,6 +29,7 @@ import {
   Settings as SettingsIcon,
   UploadFile as UploadFileIcon
 } from '@mui/icons-material';
+import { apiRequest, API_ENDPOINTS } from '../../config/api';
 
 const GeneralSettings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -100,7 +101,7 @@ const GeneralSettings: React.FC = () => {
         setLoading(true);
 
         // 从服务器获取设置
-        const response = await fetch('/api/settings/general');
+        const response = await apiRequest('/api/settings/general');
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
@@ -161,27 +162,36 @@ const GeneralSettings: React.FC = () => {
 
   const handleSaveSettings = async () => {
     try {
-      const response = await fetch('/api/settings/general', {
+      setLoading(true);
+
+      // 构建要保存的数据
+      const saveData = {
+        general: settings,
+        school: schoolSettings
+      };
+
+      const response = await apiRequest('/api/settings/general', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...settings,
-          ...schoolSettings
-        }),
+        body: JSON.stringify(saveData),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setSuccess('学校设置已保存');
         localStorage.setItem('general-settings', JSON.stringify(settings));
         localStorage.setItem('school-settings', JSON.stringify(schoolSettings));
       } else {
-        throw new Error('保存失败');
+        throw new Error(result.message || '保存失败');
       }
     } catch (err) {
       console.error('保存设置错误:', err);
-      setError('保存设置时发生错误');
+      setError('保存设置时发生错误: ' + (err instanceof Error ? err.message : '未知错误'));
+    } finally {
+      setLoading(false);
     }
   };
 
