@@ -1,0 +1,23 @@
+{
+  "host": "192.168.1.101",
+  "port": 5001,
+  "deviceType": "optical",
+  "commandDelimiter": "\n",
+  "responseTimeout": 5000,
+  "secure": false,
+  "reconnectAttempts": 3,
+  "reconnectDelay": 1500,
+  "connectionTimeout": 6000,
+  "bufferSize": 16384,
+  "idleTimeout": 120000,
+  "keepAlive": true,
+  "noDelay": true,
+  "protocolSignatures": [
+    {
+      "pattern": "^OS-2500",
+      "type": "optical",
+      "source": "identification"
+    }
+  ],
+  "notes": "OS-2500光学分析设备，用于TCP/Socket协议适配器集成测试"
+}

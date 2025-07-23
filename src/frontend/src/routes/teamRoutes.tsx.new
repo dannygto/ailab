@@ -1,0 +1,88 @@
+// 团队管理路由集成
+import React from 'react';
+import { Route } from 'react-router-dom';
+import GroupIcon from '@mui/icons-material/Group';
+import GroupWorkIcon from '@mui/icons-material/GroupWork';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { MenuItem } from '@mui/material';
+
+// 团队页面组件
+import TeamManagement from '../pages/team/TeamManagement';
+import TeamDetail from '../pages/team/TeamDetail';
+
+/**
+ * 团队管理相关路由配置
+ * 用于集成到主应用路由系统中
+ */
+export const TeamRoutes = [
+  {
+    path: '/teams',
+    component: TeamManagement,
+    name: '团队管理',
+    icon: 'GroupWorkIcon',
+    permissions: ['view_teams']
+  },
+  {
+    path: '/teams/:teamId',
+    component: TeamDetail,
+    name: '团队详情',
+    hidden: true,
+    permissions: ['view_teams']
+  }
+];
+
+/**
+ * 渲染团队路由组件
+ * @returns {JSX.Element[]} 路由组件数组
+ */
+export const renderTeamRoutes = () => {
+  return (
+    <>
+      <Route path="/teams" element={<TeamManagement />} />
+      <Route path="/teams/:teamId" element={<TeamDetail />} />
+    </>
+  );
+};
+
+/**
+ * 获取团队导航菜单项
+ * @param {Function} t - i18n翻译函数
+ * @returns {Array} 导航菜单项配置
+ */
+export const getTeamMenuItems = (t: (key: string) => string) => {
+  return [
+    {
+      label: t('teamRoutes.teams'),
+      path: '/teams',
+      icon: <GroupWorkIcon />,
+      component: (
+        <MenuItem component="div" sx={{ pl: 2 }}>
+          <GroupWorkIcon sx={{ mr: 2 }} />
+          {t('teamRoutes.teams')}
+        </MenuItem>
+      )
+    },
+    {
+      label: t('teamRoutes.members'),
+      path: '/teams/members',
+      icon: <GroupIcon />,
+      component: (
+        <MenuItem component="div" sx={{ pl: 4 }}>
+          <GroupIcon sx={{ mr: 2 }} />
+          {t('teamRoutes.members')}
+        </MenuItem>
+      )
+    },
+    {
+      label: t('teamRoutes.settings'),
+      path: '/teams/settings',
+      icon: <SettingsIcon />,
+      component: (
+        <MenuItem component="div" sx={{ pl: 4 }}>
+          <SettingsIcon sx={{ mr: 2 }} />
+          {t('teamRoutes.settings')}
+        </MenuItem>
+      )
+    }
+  ];
+};

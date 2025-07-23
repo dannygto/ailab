@@ -1,0 +1,23 @@
+{
+  "host": "192.168.1.104",
+  "port": 8001,
+  "deviceType": "thermal",
+  "commandDelimiter": "\r\n",
+  "responseTimeout": 3000,
+  "secure": false,
+  "reconnectAttempts": 4,
+  "reconnectDelay": 1200,
+  "connectionTimeout": 5000,
+  "bufferSize": 8192,
+  "idleTimeout": 120000,
+  "keepAlive": true,
+  "noDelay": true,
+  "protocolSignatures": [
+    {
+      "pattern": "^TH-1200",
+      "type": "thermal",
+      "source": "identification"
+    }
+  ],
+  "notes": "TH-1200热学测试设备，通过USB转TCP连接，用于TCP/Socket协议适配器集成测试"
+}

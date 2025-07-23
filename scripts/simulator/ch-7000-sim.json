@@ -1,0 +1,23 @@
+{
+  "deviceName": "CH-7000",
+  "host": "0.0.0.0",
+  "port": 4004,
+  "responses": {
+    "*IDN?": "CH-7000,ChemLab,70055,v4.2.1",
+    "ANALYZE:PH?": "7.32",
+    "ANALYZE:CONDUCTIVITY?": "455.67",
+    "ANALYZE:OXYGEN?": "8.45",
+    "CALIBRATION:STATUS?": "LAST CALIBRATION: 2025-07-20",
+    "*": "ERROR_CODE:001"
+  },
+  "commandDelimiter": "\r\n",
+  "responseDelay": {
+    "min": 30,
+    "max": 150
+  },
+  "errorProbability": 0.07,
+  "connectionLifetime": 0,
+  "customHandlers": {
+    "CALIBRATE": "socket.write('CALIBRATION STARTED' + delimiter); setTimeout(() => socket.write('CALIBRATION COMPLETE' + delimiter), 2000);"
+  }
+}

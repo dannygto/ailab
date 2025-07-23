@@ -1,0 +1,23 @@
+{
+  "host": "192.168.1.102",
+  "port": 6001,
+  "deviceType": "mechanical",
+  "commandDelimiter": ";",
+  "responseTimeout": 3000,
+  "secure": false,
+  "reconnectAttempts": 5,
+  "reconnectDelay": 2000,
+  "connectionTimeout": 4000,
+  "bufferSize": 4096,
+  "idleTimeout": 90000,
+  "keepAlive": true,
+  "noDelay": true,
+  "protocolSignatures": [
+    {
+      "pattern": "^MC-3000",
+      "type": "mechanical",
+      "source": "identification"
+    }
+  ],
+  "notes": "MC-3000机械控制设备，通过串口转TCP连接，用于TCP/Socket协议适配器集成测试"
+}

@@ -1,0 +1,15 @@
+﻿{
+  "edition": "general",
+  "editionName": "General Education",
+  "schoolId": "demo-school-001",
+  "schoolName": "DemoSchool",
+  "version": "1.0.0-general",
+  "limits": {
+    "maxStudents": 5000,
+    "maxTeachers": 500,
+    "maxCampuses": 10
+  },
+  "theme": {
+    "primaryColor": "#1976d2"
+  }
+}

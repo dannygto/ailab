@@ -9,6 +9,9 @@ import { ResourceService } from './resourceService';
 import { enhancedAiService } from './enhancedAiService';
 import { EnhancedTemplateService } from './enhancedTemplateService'; // 只导入类，不导入实例
 import systemSettingsService from './systemSettingsService';
+import teamService from './team.service';
+import organizationService from './organization.service';
+import permissionService from './permission.service';
 
 // api基础配置
 const api_BASE_URL = process.env.REACT_APP_api_URL || 'http://localhost:3001/api';
@@ -88,5 +91,8 @@ export {
   resourceService,
   enhancedAiService,
   enhancedTemplateService,
-  systemSettingsService
+  systemSettingsService,
+  teamService,
+  organizationService,
+  permissionService
 };

@@ -1,0 +1,138 @@
+{
+  "timestamp": "2025-07-23T02:06:06.681Z",
+  "summary": {
+    "totalTests": 10,
+    "passedTests": 0,
+    "failedTests": 10,
+    "successRate": 0
+  },
+  "deviceResults": [
+    {
+      "deviceName": "CH-7000",
+      "totalTests": 2,
+      "passedTests": 0,
+      "failedTests": 2,
+      "successRate": 0
+    },
+    {
+      "deviceName": "GX-5000",
+      "totalTests": 2,
+      "passedTests": 0,
+      "failedTests": 2,
+      "successRate": 0
+    },
+    {
+      "deviceName": "MC-3000",
+      "totalTests": 2,
+      "passedTests": 0,
+      "failedTests": 2,
+      "successRate": 0
+    },
+    {
+      "deviceName": "OS-2500",
+      "totalTests": 2,
+      "passedTests": 0,
+      "failedTests": 2,
+      "successRate": 0
+    },
+    {
+      "deviceName": "TH-1200",
+      "totalTests": 2,
+      "passedTests": 0,
+      "failedTests": 2,
+      "successRate": 0
+    }
+  ],
+  "detailedResults": [
+    {
+      "deviceName": "CH-7000",
+      "testName": "基本连接测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "设备特定命令测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "基本连接测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "设备特定命令测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "基本连接测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "设备特定命令测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "基本连接测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "设备特定命令测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "基本连接测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "设备特定命令测试",
+      "success": false,
+      "message": "连接失败",
+      "error": {
+        "code": "ECONNREFUSED"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "deviceName": "GX-5000",
+  "host": "0.0.0.0",
+  "port": 4001,
+  "responses": {
+    "*IDN?": "GX-5000,ACME,12345,v1.2.3",
+    "MEAS:VOLT:DC?": "4.982",
+    "MEAS:CURR:DC?": "0.521",
+    "MEAS:RES?": "1023.45",
+    "*": "ERROR: Invalid command"
+  },
+  "commandDelimiter": "\r\n",
+  "responseDelay": {
+    "min": 10,
+    "max": 50
+  },
+  "errorProbability": 0.05,
+  "connectionLifetime": 0,
+  "customHandlers": {
+    "MEAS:VOLT:RANGE": "socket.write('OK' + delimiter);"
+  }
+}

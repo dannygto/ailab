@@ -1,0 +1,23 @@
+{
+  "deviceName": "TH-1200",
+  "host": "0.0.0.0",
+  "port": 4005,
+  "responses": {
+    "*IDN?": "TH-1200,ThermalControl,12501,v1.0.7",
+    "GET:TEMP?": "37.2",
+    "GET:SETPOINT?": "37.0",
+    "GET:POWER?": "42.5",
+    "GET:STATUS?": "HEATING",
+    "*": "ERROR_INVALID_COMMAND"
+  },
+  "commandDelimiter": "\r\n",
+  "responseDelay": {
+    "min": 10,
+    "max": 60
+  },
+  "errorProbability": 0.04,
+  "connectionLifetime": 0,
+  "customHandlers": {
+    "SET:TEMP": "const temp = command.split(' ')[1]; socket.write('SETPOINT CHANGED TO ' + temp + delimiter);"
+  }
+}

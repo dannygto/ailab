@@ -1,0 +1,23 @@
+{
+  "host": "192.168.1.200",
+  "port": 5000,
+  "deviceType": "electronic",
+  "commandDelimiter": "\r\n",
+  "responseTimeout": 3000,
+  "secure": false,
+  "reconnectAttempts": 3,
+  "reconnectDelay": 1000,
+  "connectionTimeout": 5000,
+  "bufferSize": 8192,
+  "idleTimeout": 60000,
+  "keepAlive": true,
+  "noDelay": true,
+  "protocolSignatures": [
+    {
+      "pattern": "^GX-5000",
+      "type": "electronic",
+      "source": "identification"
+    }
+  ],
+  "notes": "GX-5000模拟设备，用于TCP/Socket协议适配器集成测试"
+}

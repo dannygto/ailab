@@ -1,76 +1,35 @@
-"use strict";
-/**
- * 🚀 后端主服务器 - 完成度: 96%
- *
- * ✅ 已完成功能:
- * - Express应用框架配置
- * - WebSocket实时通信服务
- * - RESTful API路由系统
- * - 跨域CORS配置
- * - 安全中间件(Helmet)
- * - 请求日志记录(Morgan)
- * - AI助手服务集成
- * - 设备管理API
- * - 模板管理API
- * - 指导系统API
- * - 错误处理中间件
- *
- * 🔄 待完善功能:
- * - 数据库连接池优化
- * - 更多业务API接口
- * - 文件上传处理
- * - 缓存机制集成
- *
- * 📊 技术亮点:
- * - TypeScript类型安全
- * - 微服务架构设计
- * - 实时双向通信
- * - 模块化路由管理
- * - 环境配置管理
- */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const helmet_1 = __importDefault(require("helmet"));
-const morgan_1 = __importDefault(require("morgan"));
-const ws_1 = require("ws");
-const http_1 = __importDefault(require("http"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const guidance_routes_1 = __importDefault(require("./routes/guidance.routes"));
-const device_routes_1 = __importDefault(require("./routes/device.routes"));
-const template_routes_1 = __importDefault(require("./routes/template.routes"));
-const experiment_routes_1 = __importDefault(require("./routes/experiment.routes"));
-const settings_routes_1 = __importDefault(require("./routes/settings.routes"));
-const ai_service_1 = require("./services/ai.service");
-// 创建AI服务实例
-const aiService = new ai_service_1.AIService();
-// 加载环境变量
-dotenv_1.default.config();
-const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3002;
-// 创建HTTP服务器
-const server = http_1.default.createServer(app);
-// 设置WebSocket服务器
-const wss = new ws_1.Server({ server, path: '/ws' });
-// WebSocket连接处理
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { WebSocketServer } from 'ws';
+import http from 'http';
+import dotenv from 'dotenv';
+import guidanceRoutes from './routes/guidance.routes.js';
+import deviceRoutes from './routes/device.routes.js';
+import templateRoutes from './routes/template.routes.js';
+import experimentRoutes from './routes/experiment.routes.js';
+import settingsRoutes from './routes/settings.routes.js';
+import schoolRoutes from './routes/school.routes.js';
+import { AIService } from './services/ai.service.js';
+const aiService = new AIService();
+dotenv.config();
+const app = express();
+const PORT = Number(process.env.PORT) || 3002;
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server, path: '/ws' });
 wss.on('connection', (ws) => {
     console.log('WebSocket客户端已连接');
-    // 发送初始连接成功消息
     ws.send(JSON.stringify({
         type: 'connection',
         status: 'connected',
         message: 'WebSocket连接已建立',
         timestamp: new Date().toISOString()
     }));
-    // 监听客户端消息
     ws.on('message', (message) => {
         try {
             const data = JSON.parse(message.toString());
             console.log('收到WebSocket消息:', data);
-            // 根据消息类型处理
             if (data.type === 'ping') {
                 ws.send(JSON.stringify({
                     type: 'pong',
@@ -78,7 +37,6 @@ wss.on('connection', (ws) => {
                 }));
             }
             else if (data.type === 'ai-request') {
-                // 模拟AI处理
                 setTimeout(() => {
                     ws.send(JSON.stringify({
                         type: 'ai-response',
@@ -98,41 +56,36 @@ wss.on('connection', (ws) => {
             }));
         }
     });
-    // 处理连接关闭
     ws.on('close', () => {
         console.log('WebSocket客户端已断开连接');
     });
-    // 处理错误
     ws.on('error', (error) => {
         console.error('WebSocket错误:', error);
     });
 });
-// 安全中间件
-app.use((0, helmet_1.default)());
-// CORS配置 - 修复前端端口为3000
-app.use((0, cors_1.default)({
+app.use(helmet());
+app.use(cors({
     origin: [
         process.env.FRONTEND_URL || "http://localhost:3000",
-        "http://localhost:3001", // 备用端口
+        "http://localhost:3001",
         "http://192.168.0.145:3000",
-        "http://192.168.0.145:3001"
+        "http://192.168.0.145:3001",
+        "http://82.156.75.232:3000",
+        "http://82.156.75.232:3001"
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-// 请求日志
-app.use((0, morgan_1.default)('combined'));
-// JSON解析
-app.use(express_1.default.json());
-app.use(express_1.default.urlencoded({ extended: true }));
-// API路由
-app.use('/api/guidance', guidance_routes_1.default);
-app.use('/api/devices', device_routes_1.default);
-app.use('/api/templates', template_routes_1.default);
-app.use('/api/experiments', experiment_routes_1.default);
-app.use('/api/settings', settings_routes_1.default);
-// 基础路由
+app.use(morgan('combined'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api/guidance', guidanceRoutes);
+app.use('/api/devices', deviceRoutes);
+app.use('/api/templates', templateRoutes);
+app.use('/api/experiments', experimentRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/schools', schoolRoutes);
 app.get('/', (req, res) => {
     res.json({
         message: '人工智能辅助实验平台后端API - 普教版',
@@ -141,33 +94,28 @@ app.get('/', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
-// 健康检查
 app.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString()
     });
 });
-// API健康检查
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString()
     });
 });
-// AI助手模型测试连接端点
 app.post('/api/ai-assistant/test-connection', (req, res) => {
     try {
         const { model, config, specificParams } = req.body;
         console.log(`🧪 测试AI模型连接: ${model}`);
-        // 在这里我们只是验证请求格式，实际环境中应该尝试实际连接模型API
         if (!model || !config || !config.apiKey) {
             return res.status(400).json({
                 success: false,
                 message: '缺少必要参数: 模型名称或API密钥'
             });
         }
-        // 根据不同的模型返回不同的token限制信息
         let tokenLimits = {};
         if (model === 'doubao-seed-1-6-thinking-250615') {
             tokenLimits = {
@@ -190,7 +138,6 @@ app.post('/api/ai-assistant/test-connection', (req, res) => {
                 outputTokenLimit: 2000
             };
         }
-        // 模拟成功响应
         return res.json({
             success: true,
             message: `成功连接到 ${model}`,
@@ -205,14 +152,12 @@ app.post('/api/ai-assistant/test-connection', (req, res) => {
         });
     }
 });
-// 仪表盘统计数据
 app.get('/api/dashboard/stats', (req, res) => {
-    // 生成动态的系统健康数据
     const generateSystemHealth = () => ({
-        cpu: Math.floor(Math.random() * 30) + 10, // 10-40%
-        memory: Math.floor(Math.random() * 40) + 30, // 30-70%
-        disk: Math.floor(Math.random() * 20) + 15, // 15-35%
-        gpu: Math.floor(Math.random() * 25) + 5 // 5-30%
+        cpu: Math.floor(Math.random() * 30) + 10,
+        memory: Math.floor(Math.random() * 40) + 30,
+        disk: Math.floor(Math.random() * 20) + 15,
+        gpu: Math.floor(Math.random() * 25) + 5
     });
     res.json({
         totalExperiments: 15,
@@ -225,7 +170,6 @@ app.get('/api/dashboard/stats', (req, res) => {
         lastUpdated: new Date().toISOString()
     });
 });
-// 仪表盘最近实验
 app.get('/api/dashboard/recent-experiments', (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const experiments = [
@@ -322,7 +266,6 @@ app.get('/api/dashboard/recent-experiments', (req, res) => {
     ].slice(0, limit);
     res.json(experiments);
 });
-// API路由示例 - 实验相关
 app.get('/api/experiments', (req, res) => {
     const experiments = [
         {
@@ -376,7 +319,6 @@ app.get('/api/experiments', (req, res) => {
         totalPages: Math.ceil(experiments.length / (parseInt(req.query.limit) || 10))
     });
 });
-// 教师管理 - 获取学生列表
 app.get('/api/teacher/students', (req, res) => {
     res.json({
         students: [
@@ -403,7 +345,6 @@ app.get('/api/teacher/students', (req, res) => {
         ]
     });
 });
-// 实验资源管理
 app.get('/api/experiment-resources', (req, res) => {
     res.json({
         resources: [
@@ -425,7 +366,6 @@ app.get('/api/experiment-resources', (req, res) => {
         ]
     });
 });
-// AI助手聊天接口
 app.post('/api/ai/chat', async (req, res) => {
     try {
         const { message, modelId = 'deepseek-chat', apiKey, context = {}, options = {} } = req.body;
@@ -436,7 +376,6 @@ app.post('/api/ai/chat', async (req, res) => {
             { role: 'system', content: '你是多学科实验平台的AI助手，可以帮助学生和教师进行实验设计、参数调整和结果分析。请提供准确、简洁和有教育意义的回答。' },
             { role: 'user', content: message }
         ];
-        // 动态设置API密钥
         if (apiKey) {
             if (modelId.includes('doubao') || modelId.includes('ark')) {
                 process.env.ARK_API_KEY = apiKey;
@@ -453,7 +392,6 @@ app.post('/api/ai/chat', async (req, res) => {
         res.status(500).json({ success: false, message: error.message || '服务器内部错误' });
     }
 });
-// 获取可用AI模型列表
 app.get('/api/ai/models', (req, res) => {
     try {
         console.log('🔍 调试信息:');
@@ -475,7 +413,6 @@ app.get('/api/ai/models', (req, res) => {
         });
     }
 });
-// AI模型连接测试接口
 app.post('/api/ai-assistant/test', async (req, res) => {
     const { modelId } = req.body;
     try {
@@ -498,7 +435,6 @@ app.post('/api/ai-assistant/test', async (req, res) => {
         });
     }
 });
-// AI助手聊天接口 - 兼容前端路径
 app.post('/api/ai-assistant/chat', async (req, res) => {
     try {
         const { message, modelId = 'deepseek-chat', apiKey, context = {}, options = {} } = req.body;
@@ -509,7 +445,6 @@ app.post('/api/ai-assistant/chat', async (req, res) => {
             { role: 'system', content: '你是多学科实验平台的AI助手，可以帮助学生和教师进行实验设计、参数调整和结果分析。请提供准确、简洁和有教育意义的回答。' },
             { role: 'user', content: message }
         ];
-        // 动态设置API密钥
         if (apiKey) {
             if (modelId.includes('doubao') || modelId.includes('ark')) {
                 process.env.ARK_API_KEY = apiKey;
@@ -526,7 +461,6 @@ app.post('/api/ai-assistant/chat', async (req, res) => {
         res.status(500).json({ success: false, message: error.message || '服务器内部错误' });
     }
 });
-// 测试AI助手连接
 app.post('/api/ai-assistant/test', async (req, res) => {
     try {
         const { modelId = 'deepseek-chat' } = req.body;
@@ -546,21 +480,16 @@ app.post('/api/ai-assistant/test', async (req, res) => {
         });
     }
 });
-// 辅助函数：生成相关建议
 function generateSuggestions(query, response) {
-    // 基础建议
     const defaultSuggestions = [
         { text: '如何设计一个物理实验？', category: 'experiment' },
         { text: '数据分析有哪些常用方法？', category: 'analysis' },
         { text: '如何解释实验误差？', category: 'knowledge' }
     ];
-    // 根据查询和响应动态生成建议
     const suggestions = [];
-    // 实验相关建议
     if (query.includes('实验') || response.includes('实验')) {
         suggestions.push({ text: '如何提高实验精确度？', category: 'experiment' }, { text: '实验数据如何可视化？', category: 'analysis' });
     }
-    // 学科相关建议
     if (query.includes('物理') || response.includes('物理')) {
         suggestions.push({ text: '推荐一个物理力学实验', category: 'experiment' }, { text: '物理实验常见误差来源', category: 'knowledge' });
     }
@@ -570,22 +499,21 @@ function generateSuggestions(query, response) {
     else if (query.includes('生物') || response.includes('生物')) {
         suggestions.push({ text: '显微镜使用方法', category: 'experiment' }, { text: '植物细胞观察实验', category: 'experiment' });
     }
-    // 返回建议 (最多5个)
     return [...suggestions, ...defaultSuggestions].slice(0, 5);
 }
-// 错误处理中间件
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: '服务器内部错误' });
 });
-// 404处理
 app.use('*', (req, res) => {
     res.status(404).json({ error: '未找到请求的资源' });
 });
-// 启动服务器
-server.listen(PORT, () => {
+const HOST = '0.0.0.0';
+server.listen(PORT, HOST, () => {
     console.log(`🚀 后端服务器启动成功！`);
-    console.log(`📍 地址: http://localhost:${PORT}`);
+    console.log(`📍 本地地址: http://localhost:${PORT}`);
+    console.log(`🌐 外部地址: http://${HOST}:${PORT}（监听所有接口）`);
     console.log(`🎓 版本: 普教版 (K12基础教育)`);
     console.log(`🕐 时间: ${new Date().toLocaleString()}`);
 });
+//# sourceMappingURL=server.js.map

@@ -37,7 +37,7 @@ const DEBUG = false;
 // 日志函数
 const log = (message, ...args) => {
   if (DEBUG) {
-    console.log(`[ServiceWorker] ${message}`, ...args);
+    // console.log removed
   }
 };
 
@@ -525,3 +525,4 @@ self.addEventListener('message', (event) => {
 });
 
 log('Service Worker loaded - Version', CACHE_VERSION);
+

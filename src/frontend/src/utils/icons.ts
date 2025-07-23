@@ -8,6 +8,9 @@ export { default as CloseIcon } from '@mui/icons-material/Close';
 export { default as AddIcon } from '@mui/icons-material/Add';
 export { default as EditIcon } from '@mui/icons-material/Edit';
 export { default as DeleteIcon } from '@mui/icons-material/Delete';
+export { default as GroupWorkIcon } from '@mui/icons-material/GroupWork';
+export { default as GroupIcon } from '@mui/icons-material/Group';
+export { default as PeopleIcon } from '@mui/icons-material/People';
 export { default as SearchIcon } from '@mui/icons-material/Search';
 export { default as FilterListIcon } from '@mui/icons-material/FilterList';
 export { default as MoreVertIcon } from '@mui/icons-material/MoreVert';
@@ -24,6 +27,7 @@ export { default as ScienceIcon } from '@mui/icons-material/Science';
 export { default as PsychologyIcon } from '@mui/icons-material/Psychology';
 export { default as StorageIcon } from '@mui/icons-material/Storage';
 export { default as PeopleIcon } from '@mui/icons-material/People';
+export { default as PersonIcon } from '@mui/icons-material/Person';
 export { default as SettingsIcon } from '@mui/icons-material/Settings';
 export { default as NotificationsIcon } from '@mui/icons-material/Notifications';
 export { default as AccountCircleIcon } from '@mui/icons-material/AccountCircle';
@@ -93,12 +97,13 @@ export { default as WaterDropIcon } from '@mui/icons-material/WaterDrop';
 
 // Communication icons
 export { default as EmailIcon } from '@mui/icons-material/Email';
+export { default as MarkEmailReadIcon } from '@mui/icons-material/MarkEmailRead';
+export { default as MarkEmailUnreadIcon } from '@mui/icons-material/MarkEmailUnread';
 export { default as ChatIcon } from '@mui/icons-material/Chat';
 export { default as ShareIcon } from '@mui/icons-material/Share';
 export { default as PhoneIcon } from '@mui/icons-material/Phone';
 
 // User and security icons
-export { default as PersonIcon } from '@mui/icons-material/Person';
 export { default as SecurityIcon } from '@mui/icons-material/Security';
 export { default as LockIcon } from '@mui/icons-material/Lock';
 export { default as GroupIcon } from '@mui/icons-material/Group';
@@ -291,6 +296,7 @@ export { default as ContentCutIcon } from '@mui/icons-material/ContentCut';
 export { default as FormatPaintIcon } from '@mui/icons-material/FormatPaint';
 export { default as ColorLensIcon } from '@mui/icons-material/ColorLens';
 export { default as ColorPaletteIcon } from '@mui/icons-material/Palette';
+export { default as QrCodeIcon } from '@mui/icons-material/QrCode';
 
 // Additional icons for enhanced settings
 export { default as PhotoCameraIcon } from '@mui/icons-material/PhotoCamera';

@@ -1,0 +1,302 @@
+{
+  "timestamp": "2025-07-23T02:35:51.748Z",
+  "summary": {
+    "totalTests": 38,
+    "passedTests": 24,
+    "failedTests": 14,
+    "successRate": 63.16
+  },
+  "deviceResults": [
+    {
+      "deviceName": "CH-7000",
+      "totalTests": 8,
+      "passedTests": 3,
+      "failedTests": 5,
+      "successRate": 37.5
+    },
+    {
+      "deviceName": "GX-5000",
+      "totalTests": 7,
+      "passedTests": 7,
+      "failedTests": 0,
+      "successRate": 100
+    },
+    {
+      "deviceName": "MC-3000",
+      "totalTests": 8,
+      "passedTests": 3,
+      "failedTests": 5,
+      "successRate": 37.5
+    },
+    {
+      "deviceName": "OS-2500",
+      "totalTests": 7,
+      "passedTests": 3,
+      "failedTests": 4,
+      "successRate": 42.86
+    },
+    {
+      "deviceName": "TH-1200",
+      "totalTests": 8,
+      "passedTests": 8,
+      "failedTests": 0,
+      "successRate": 100
+    }
+  ],
+  "detailedResults": [
+    {
+      "deviceName": "CH-7000",
+      "testName": "基本连接测试",
+      "success": true,
+      "message": "成功连接到设备 (20ms)",
+      "responseTime": 20
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "设备识别测试",
+      "success": false,
+      "message": "发送识别指令失败",
+      "error": {}
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "断开连接测试",
+      "success": true,
+      "message": "成功断开连接"
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "命令测试: ANALYZE:PH?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "命令测试: ANALYZE:CONDUCTIVITY?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "命令测试: ANALYZE:OXYGEN?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "命令测试: CALIBRATION:STATUS?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "CH-7000",
+      "testName": "无效命令测试",
+      "success": true,
+      "message": "设备正确拒绝了无效命令"
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "基本连接测试",
+      "success": true,
+      "message": "成功连接到设备 (1ms)",
+      "responseTime": 1
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "设备识别测试",
+      "success": true,
+      "message": "收到设备标识: GX-5000,ACME,12345,v1.2.3"
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "断开连接测试",
+      "success": true,
+      "message": "成功断开连接"
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "命令测试: MEAS:VOLT:DC?",
+      "success": true,
+      "message": "响应: 4.982 (61ms)",
+      "responseTime": 61
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "命令测试: MEAS:CURR:DC?",
+      "success": true,
+      "message": "响应: 0.521 (63ms)",
+      "responseTime": 63
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "命令测试: MEAS:RES?",
+      "success": true,
+      "message": "响应: 1023.45 (46ms)",
+      "responseTime": 46
+    },
+    {
+      "deviceName": "GX-5000",
+      "testName": "无效命令测试",
+      "success": true,
+      "message": "收到错误响应: ERROR: Invalid command"
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "基本连接测试",
+      "success": true,
+      "message": "成功连接到设备 (1ms)",
+      "responseTime": 1
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "设备识别测试",
+      "success": false,
+      "message": "发送识别指令失败",
+      "error": {}
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "断开连接测试",
+      "success": true,
+      "message": "成功断开连接"
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "命令测试: READ:TEMP?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "命令测试: READ:HUMID?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "命令测试: READ:PRESS?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "命令测试: STATUS?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "MC-3000",
+      "testName": "无效命令测试",
+      "success": true,
+      "message": "设备正确拒绝了无效命令"
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "基本连接测试",
+      "success": true,
+      "message": "成功连接到设备 (2ms)",
+      "responseTime": 2
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "设备识别测试",
+      "success": false,
+      "message": "发送识别指令失败",
+      "error": {}
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "断开连接测试",
+      "success": true,
+      "message": "成功断开连接"
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "命令测试: MEAS:WAVE?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "命令测试: MEAS:POWER?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "命令测试: MEAS:SPEC?",
+      "success": false,
+      "message": "命令执行失败",
+      "error": {}
+    },
+    {
+      "deviceName": "OS-2500",
+      "testName": "无效命令测试",
+      "success": true,
+      "message": "设备正确拒绝了无效命令"
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "基本连接测试",
+      "success": true,
+      "message": "成功连接到设备 (1ms)",
+      "responseTime": 1
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "设备识别测试",
+      "success": true,
+      "message": "收到设备标识: TH-1200,ThermalControl,12501,v1.0.7"
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "断开连接测试",
+      "success": true,
+      "message": "成功断开连接"
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "命令测试: GET:TEMP?",
+      "success": true,
+      "message": "响应: 37.2 (44ms)",
+      "responseTime": 44
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "命令测试: GET:SETPOINT?",
+      "success": true,
+      "message": "响应: 37.0 (47ms)",
+      "responseTime": 47
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "命令测试: GET:POWER?",
+      "success": true,
+      "message": "响应: 42.5 (62ms)",
+      "responseTime": 62
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "命令测试: GET:STATUS?",
+      "success": true,
+      "message": "响应: HEATING (62ms)",
+      "responseTime": 62
+    },
+    {
+      "deviceName": "TH-1200",
+      "testName": "无效命令测试",
+      "success": true,
+      "message": "收到错误响应: ERROR_INVALID_COMMAND"
+    }
+  ]
+}

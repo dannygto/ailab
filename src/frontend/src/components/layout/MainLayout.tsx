@@ -25,6 +25,7 @@ import {
   ScienceIcon,
   DevicesIcon,
   SettingsIcon,
+  GroupWorkIcon,
 } from '../../utils/icons';
 
 interface MainLayoutProps {
@@ -63,6 +64,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     { text: '仪表板', icon: <DashboardIcon />, path: '/dashboard' },
     { text: '实验管理', icon: <ScienceIcon />, path: '/experiments' },
     { text: '设备管理', icon: <DevicesIcon />, path: '/devices' },
+    { text: '团队管理', icon: <GroupWorkIcon />, path: '/teams' },
     { text: '设置', icon: <SettingsIcon />, path: '/settings' },
   ];
 
@@ -97,7 +99,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           >
             <MenuIcon />
           </IconButton>
-          
+
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
               AICAM 实验管理系统
@@ -110,7 +112,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="用户菜单">
               <IconButton
                 size="large"
@@ -125,7 +127,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
                 </Avatar>
               </IconButton>
             </Tooltip>
-            
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}

@@ -1,0 +1,68 @@
+{
+  "id": "dev-actual-002",
+  "name": "数据采集器-DL500",
+  "host": "192.168.1.121",
+  "port": 9000,
+  "protocol": "tcp",
+  "connectionTimeout": 5000,
+  "responseTimeout": 3000,
+  "reconnectAttempts": 3,
+  "reconnectDelay": 2000,
+  "commandDelimiter": "\n",
+  "responseDelimiter": "\n",
+  "authentication": {
+    "enabled": true,
+    "username": "admin",
+    "password": "admin123"
+  },
+  "encryption": {
+    "enabled": false,
+    "type": "none"
+  },
+  "commands": {
+    "login": {
+      "command": "LOGIN:admin:admin123",
+      "expectedResponse": "LOGIN_SUCCESS",
+      "responseTimeout": 2000
+    },
+    "deviceInfo": {
+      "command": "DEVICE_INFO",
+      "expectedResponse": "DL500",
+      "responseTimeout": 2000
+    },
+    "channelStatus": {
+      "command": "CHANNEL_STATUS:ALL",
+      "expectedResponse": "CHANNEL_STATUS:",
+      "responseTimeout": 3000
+    },
+    "startLogging": {
+      "command": "START_LOG:1000:ALL",
+      "expectedResponse": "LOGGING_STARTED",
+      "responseTimeout": 2000
+    },
+    "getSample": {
+      "command": "GET_SAMPLE:ALL",
+      "expectedResponse": "SAMPLE_DATA:",
+      "responseTimeout": 3000
+    },
+    "stopLogging": {
+      "command": "STOP_LOG",
+      "expectedResponse": "LOGGING_STOPPED",
+      "responseTimeout": 2000
+    },
+    "logout": {
+      "command": "LOGOUT",
+      "expectedResponse": "LOGOUT_SUCCESS",
+      "responseTimeout": 2000
+    }
+  },
+  "testSequence": [
+    "login",
+    "deviceInfo",
+    "channelStatus",
+    "startLogging",
+    "getSample",
+    "stopLogging",
+    "logout"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "host": "192.168.1.103",
+  "port": 7001,
+  "deviceType": "chemical",
+  "commandDelimiter": "\r",
+  "responseTimeout": 4000,
+  "secure": true,
+  "secureOptions": {
+    "rejectUnauthorized": false,
+    "ca": "certs/ch-7000-ca.crt"
+  },
+  "reconnectAttempts": 3,
+  "reconnectDelay": 1000,
+  "connectionTimeout": 5000,
+  "bufferSize": 32768,
+  "idleTimeout": 180000,
+  "keepAlive": true,
+  "noDelay": true,
+  "protocolSignatures": [
+    {
+      "pattern": "^CH-7000",
+      "type": "chemical",
+      "source": "identification"
+    }
+  ],
+  "notes": "CH-7000化学分析设备，使用安全连接，用于TCP/Socket协议适配器集成测试"
+}

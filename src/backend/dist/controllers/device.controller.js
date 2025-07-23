@@ -1,24 +1,19 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deviceController = exports.DeviceController = void 0;
-const device_model_1 = require("../models/device.model");
-// 模拟数据
+import { DeviceType, DeviceConnectionStatus } from '../models/device.model.js';
 const devices = new Map();
 const deviceSessions = new Map();
 const deviceReservations = new Map();
 const deviceDataPoints = new Map();
 const deviceCommands = new Map();
-// 初始化一些示例设备
 function initializeDevices() {
     const sampleDevices = [
         {
             id: 'dev-001',
             name: '数字显微镜-A1',
-            type: device_model_1.DeviceType.MICROSCOPE,
+            type: DeviceType.MICROSCOPE,
             model: 'DigitalScope X500',
             manufacturer: '光科技器材有限公司',
             description: '高精度数字显微镜，支持远程控制和实时图像传输',
-            connectionStatus: device_model_1.DeviceConnectionStatus.ONLINE,
+            connectionStatus: DeviceConnectionStatus.ONLINE,
             location: '实验室A-101',
             ipAddress: '192.168.1.101',
             macAddress: '00:1B:44:11:3A:B7',
@@ -43,11 +38,11 @@ function initializeDevices() {
         {
             id: 'dev-002',
             name: '多功能数据采集器-S2',
-            type: device_model_1.DeviceType.DATALOGGER,
+            type: DeviceType.DATALOGGER,
             model: 'DataCollect Pro',
             manufacturer: '教育科技股份有限公司',
             description: '支持多种传感器的数据采集设备，适用于物理、化学、生物等多学科实验',
-            connectionStatus: device_model_1.DeviceConnectionStatus.ONLINE,
+            connectionStatus: DeviceConnectionStatus.ONLINE,
             location: '实验室B-203',
             ipAddress: '192.168.1.102',
             macAddress: '00:1B:44:22:5C:D9',
@@ -72,11 +67,11 @@ function initializeDevices() {
         {
             id: 'dev-003',
             name: '光谱分析仪-P5',
-            type: device_model_1.DeviceType.SPECTROSCOPE,
+            type: DeviceType.SPECTROSCOPE,
             model: 'SpectrumMaster 2000',
             manufacturer: '精密仪器研究院',
             description: '高精度光谱分析仪，可用于物质成分分析和光学实验',
-            connectionStatus: device_model_1.DeviceConnectionStatus.MAINTENANCE,
+            connectionStatus: DeviceConnectionStatus.MAINTENANCE,
             location: '实验室C-305',
             ipAddress: '192.168.1.103',
             macAddress: '00:1B:44:33:7E:F1',
@@ -99,27 +94,22 @@ function initializeDevices() {
             updatedAt: '2025-05-22T10:15:00Z'
         }
     ];
-    // 将示例设备添加到Map中
     sampleDevices.forEach(device => {
         devices.set(device.id, device);
         deviceDataPoints.set(device.id, []);
         deviceCommands.set(device.id, []);
     });
 }
-// 初始化示例数据
 initializeDevices();
-class DeviceController {
+export class DeviceController {
     constructor() {
-        // 获取所有设备
         this.getAllDevices = (req, res) => {
             try {
                 const allDevices = Array.from(devices.values());
-                // 支持过滤和分页
                 const type = req.query.type;
                 const status = req.query.status;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 10;
-                // 应用过滤
                 let filteredDevices = allDevices;
                 if (type) {
                     filteredDevices = filteredDevices.filter(d => d.type === type);
@@ -127,7 +117,6 @@ class DeviceController {
                 if (status) {
                     filteredDevices = filteredDevices.filter(d => d.connectionStatus === status);
                 }
-                // 应用分页
                 const startIndex = (page - 1) * limit;
                 const endIndex = startIndex + limit;
                 const paginatedDevices = filteredDevices.slice(startIndex, endIndex);
@@ -149,7 +138,6 @@ class DeviceController {
                 });
             }
         };
-        // 获取单个设备
         this.getDeviceById = (req, res) => {
             try {
                 const { id } = req.params;
@@ -172,19 +160,16 @@ class DeviceController {
                 });
             }
         };
-        // 更新设备状态
         this.updateDeviceStatus = (req, res) => {
             try {
                 const { id } = req.params;
                 const { status } = req.body;
-                // 验证参数
-                if (!status || !Object.values(device_model_1.DeviceConnectionStatus).includes(status)) {
+                if (!status || !Object.values(DeviceConnectionStatus).includes(status)) {
                     return res.status(400).json({
                         success: false,
                         message: '无效的设备状态'
                     });
                 }
-                // 检查设备是否存在
                 const device = devices.get(id);
                 if (!device) {
                     return res.status(404).json({
@@ -192,7 +177,6 @@ class DeviceController {
                         message: '未找到指定的设备'
                     });
                 }
-                // 更新状态
                 device.connectionStatus = status;
                 device.updatedAt = new Date().toISOString();
                 devices.set(id, device);
@@ -209,19 +193,16 @@ class DeviceController {
                 });
             }
         };
-        // 发送命令到设备
         this.sendCommand = (req, res) => {
             try {
                 const { id } = req.params;
                 const { command, parameters } = req.body;
-                // 验证参数
                 if (!command) {
                     return res.status(400).json({
                         success: false,
                         message: '命令不能为空'
                     });
                 }
-                // 检查设备是否存在
                 const device = devices.get(id);
                 if (!device) {
                     return res.status(404).json({
@@ -229,14 +210,12 @@ class DeviceController {
                         message: '未找到指定的设备'
                     });
                 }
-                // 检查设备是否在线
-                if (device.connectionStatus !== device_model_1.DeviceConnectionStatus.ONLINE) {
+                if (device.connectionStatus !== DeviceConnectionStatus.ONLINE) {
                     return res.status(400).json({
                         success: false,
                         message: `设备当前不可用，状态: ${device.connectionStatus}`
                     });
                 }
-                // 创建命令记录
                 const commandId = `cmd-${Date.now()}`;
                 const newCommand = {
                     id: commandId,
@@ -246,12 +225,9 @@ class DeviceController {
                     timestamp: new Date().toISOString(),
                     status: 'sent'
                 };
-                // 存储命令
                 const deviceCommandsList = deviceCommands.get(id) || [];
                 deviceCommandsList.push(newCommand);
                 deviceCommands.set(id, deviceCommandsList);
-                // 在实际应用中，这里会调用设备API发送命令
-                // 这里我们模拟一个成功的响应
                 setTimeout(() => {
                     newCommand.status = 'executed';
                     newCommand.executedAt = new Date().toISOString();
@@ -274,31 +250,24 @@ class DeviceController {
                 });
             }
         };
-        // 获取设备命令历史
         this.getDeviceCommands = (req, res) => {
             try {
                 const { id } = req.params;
-                // 检查设备是否存在
                 if (!devices.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的设备'
                     });
                 }
-                // 获取命令历史
                 const commands = deviceCommands.get(id) || [];
-                // 支持过滤和分页
                 const status = req.query.status;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 10;
-                // 应用过滤
                 let filteredCommands = commands;
                 if (status) {
                     filteredCommands = filteredCommands.filter(c => c.status === status);
                 }
-                // 排序 - 最新的命令优先
                 filteredCommands.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-                // 应用分页
                 const startIndex = (page - 1) * limit;
                 const endIndex = startIndex + limit;
                 const paginatedCommands = filteredCommands.slice(startIndex, endIndex);
@@ -320,20 +289,16 @@ class DeviceController {
                 });
             }
         };
-        // 获取设备数据
         this.getDeviceData = (req, res) => {
             try {
                 const { id } = req.params;
-                // 检查设备是否存在
                 if (!devices.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的设备'
                     });
                 }
-                // 获取数据点
                 const dataPoints = deviceDataPoints.get(id) || [];
-                // 支持时间范围过滤
                 const startTime = req.query.startTime;
                 const endTime = req.query.endTime;
                 let filteredDataPoints = dataPoints;
@@ -361,19 +326,16 @@ class DeviceController {
                 });
             }
         };
-        // 创建设备会话
         this.createSession = (req, res) => {
             try {
                 const { id } = req.params;
                 const { userId, experimentId, settings } = req.body;
-                // 验证参数
                 if (!userId) {
                     return res.status(400).json({
                         success: false,
                         message: '用户ID不能为空'
                     });
                 }
-                // 检查设备是否存在
                 const device = devices.get(id);
                 if (!device) {
                     return res.status(404).json({
@@ -381,14 +343,12 @@ class DeviceController {
                         message: '未找到指定的设备'
                     });
                 }
-                // 检查设备是否可用
-                if (device.connectionStatus !== device_model_1.DeviceConnectionStatus.ONLINE) {
+                if (device.connectionStatus !== DeviceConnectionStatus.ONLINE) {
                     return res.status(400).json({
                         success: false,
                         message: `设备当前不可用，状态: ${device.connectionStatus}`
                     });
                 }
-                // 创建会话
                 const sessionId = `session-${Date.now()}`;
                 const newSession = {
                     id: sessionId,
@@ -401,10 +361,8 @@ class DeviceController {
                     dataPoints: [],
                     settings: settings || {}
                 };
-                // 存储会话
                 deviceSessions.set(sessionId, newSession);
-                // 生成一些初始数据点
-                if (device.type === device_model_1.DeviceType.MICROSCOPE) {
+                if (device.type === DeviceType.MICROSCOPE) {
                     const initialDataPoint = {
                         id: `dp-${Date.now()}`,
                         deviceId: id,
@@ -439,11 +397,9 @@ class DeviceController {
                 });
             }
         };
-        // 结束设备会话
         this.endSession = (req, res) => {
             try {
                 const { sessionId } = req.params;
-                // 检查会话是否存在
                 const session = deviceSessions.get(sessionId);
                 if (!session) {
                     return res.status(404).json({
@@ -451,17 +407,14 @@ class DeviceController {
                         message: '未找到指定的设备会话'
                     });
                 }
-                // 检查会话是否已结束
                 if (session.status !== 'active') {
                     return res.status(400).json({
                         success: false,
                         message: `会话已${session.status === 'ended' ? '结束' : '发生错误'}`
                     });
                 }
-                // 结束会话
                 session.status = 'ended';
                 session.endTime = new Date().toISOString();
-                // 更新会话
                 deviceSessions.set(sessionId, session);
                 res.json({
                     success: true,
@@ -482,26 +435,22 @@ class DeviceController {
                 });
             }
         };
-        // 创建设备预约
         this.createReservation = (req, res) => {
             try {
                 const { id } = req.params;
                 const { userId, title, purpose, startTime, endTime } = req.body;
-                // 验证参数
                 if (!userId || !title || !startTime || !endTime) {
                     return res.status(400).json({
                         success: false,
                         message: '缺少必要的预约信息'
                     });
                 }
-                // 检查设备是否存在
                 if (!devices.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的设备'
                     });
                 }
-                // 检查日期格式
                 const start = new Date(startTime);
                 const end = new Date(endTime);
                 if (isNaN(start.getTime()) || isNaN(end.getTime())) {
@@ -516,7 +465,6 @@ class DeviceController {
                         message: '结束时间必须晚于开始时间'
                     });
                 }
-                // 创建预约
                 const reservationId = `rsv-${Date.now()}`;
                 const newReservation = {
                     id: reservationId,
@@ -530,7 +478,6 @@ class DeviceController {
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 };
-                // 存储预约
                 deviceReservations.set(reservationId, newReservation);
                 res.status(201).json({
                     success: true,
@@ -545,28 +492,22 @@ class DeviceController {
                 });
             }
         };
-        // 获取设备预约列表
         this.getDeviceReservations = (req, res) => {
             try {
                 const { id } = req.params;
-                // 检查设备是否存在
                 if (!devices.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的设备'
                     });
                 }
-                // 获取所有预约
                 const allReservations = Array.from(deviceReservations.values());
-                // 过滤指定设备的预约
                 const deviceReservationList = allReservations.filter(r => r.deviceId === id);
-                // 支持状态过滤
                 const status = req.query.status;
                 let filteredReservations = deviceReservationList;
                 if (status) {
                     filteredReservations = deviceReservationList.filter(r => r.status === status);
                 }
-                // 按开始时间排序
                 filteredReservations.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
                 res.json({
                     success: true,
@@ -582,5 +523,5 @@ class DeviceController {
         };
     }
 }
-exports.DeviceController = DeviceController;
-exports.deviceController = new DeviceController();
+export const deviceController = new DeviceController();
+//# sourceMappingURL=device.controller.js.map

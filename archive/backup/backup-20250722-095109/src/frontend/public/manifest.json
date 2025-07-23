@@ -1,0 +1,76 @@
+{
+  "name": "人工智能辅助实验平台",
+  "short_name": "人工智能辅助实验平台",
+  "description": "人工智能辅助实验平台",
+  "version": "1.0.1",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "lang": "zh-CN",
+  "categories": ["education", "science"],
+  "icons": [
+    {
+      "src": "favicon.ico?v=1",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo18060.png?v=1",
+      "type": "image/png",
+      "sizes": "180x60"
+    },
+    {
+      "src": "logo18060.png?v=1",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "logo18060.png?v=1", 
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新建实验",
+      "short_name": "新建实验",
+      "description": "快速创建新的实验项目",
+      "url": "/experiments/create",
+      "icons": [
+        {
+          "src": "logo18060.png?v=1",
+          "sizes": "180x60"
+        }
+      ]
+    },
+    {
+      "name": "设备监控",
+      "short_name": "设备监控", 
+      "description": "查看设备实时状态",
+      "url": "/devices",
+      "icons": [
+        {
+          "src": "logo18060.png?v=1",
+          "sizes": "180x60"
+        }
+      ]
+    },
+    {
+      "name": "AI助手",
+      "short_name": "AI助手",
+      "description": "获取智能学习指导",
+      "url": "/guidance",
+      "icons": [
+        {
+          "src": "logo18060.png?v=1", 
+          "sizes": "180x60"
+        }
+      ]
+    }
+  ]
+}

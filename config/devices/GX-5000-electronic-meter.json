@@ -1,0 +1,143 @@
+{
+  "deviceName": "GX-5000电子测量仪",
+  "deviceType": "electronic",
+  "description": "GX-5000系列高精度电子测量仪器，用于电压、电流、电阻等电学参数测量",
+  "manufacturer": "精密仪器研究院",
+  "connectionOptions": {
+    "host": "192.168.1.100",
+    "port": 4001,
+    "secure": false,
+    "timeout": 5000,
+    "reconnectAttempts": 3,
+    "reconnectDelay": 1000,
+    "bufferSize": 8192
+  },
+  "communicationSettings": {
+    "commandDelimiter": "\r\n",
+    "responseDelimiter": "\r\n",
+    "responseTimeout": 2000,
+    "encoding": "utf8",
+    "initialCommands": [
+      {
+        "command": "*IDN?",
+        "description": "获取设备标识信息",
+        "waitTime": 500
+      }
+    ]
+  },
+  "testCommands": [
+    {
+      "name": "获取设备信息",
+      "command": "*IDN?",
+      "expectedResponse": "pattern:GX-5000.*",
+      "description": "读取设备标识信息，确认设备型号和版本",
+      "timeout": 2000
+    },
+    {
+      "name": "获取设备状态",
+      "command": "STATUS?",
+      "expectedResponse": "pattern:STATUS.*",
+      "description": "查询设备当前工作状态",
+      "timeout": 2000
+    },
+    {
+      "name": "读取电压值",
+      "command": "MEASURE:VOLTAGE?",
+      "expectedResponse": "pattern:[+-]?\\d+\\.?\\d*V",
+      "description": "测量当前电压值",
+      "timeout": 3000,
+      "repeat": 5,
+      "interval": 1000
+    },
+    {
+      "name": "读取电流值",
+      "command": "MEASURE:CURRENT?",
+      "expectedResponse": "pattern:[+-]?\\d+\\.?\\d*A",
+      "description": "测量当前电流值",
+      "timeout": 3000,
+      "repeat": 5,
+      "interval": 1000
+    },
+    {
+      "name": "设置量程",
+      "command": "CONFIGURE:RANGE 10V",
+      "expectedResponse": "pattern:OK|DONE",
+      "description": "设置测量量程为10V",
+      "timeout": 2000
+    },
+    {
+      "name": "设置采样率",
+      "command": "CONFIGURE:SAMPLE:RATE 1000",
+      "expectedResponse": "pattern:OK|DONE",
+      "description": "设置采样率为1000Hz",
+      "timeout": 2000
+    },
+    {
+      "name": "启动连续测量",
+      "command": "MEASURE:CONTINUOUS START",
+      "expectedResponse": "pattern:STARTED|OK",
+      "description": "开始连续测量模式",
+      "timeout": 2000
+    },
+    {
+      "name": "停止连续测量",
+      "command": "MEASURE:CONTINUOUS STOP",
+      "expectedResponse": "pattern:STOPPED|OK",
+      "description": "停止连续测量模式",
+      "timeout": 2000,
+      "runAfter": "启动连续测量",
+      "delay": 5000
+    },
+    {
+      "name": "设置触发模式",
+      "command": "TRIGGER:MODE EXTERNAL",
+      "expectedResponse": "pattern:OK|DONE",
+      "description": "设置为外部触发模式",
+      "timeout": 2000
+    },
+    {
+      "name": "执行自校准",
+      "command": "CALIBRATION:AUTO",
+      "expectedResponse": "pattern:CALIBRATION.*COMPLETE",
+      "description": "执行设备自校准程序",
+      "timeout": 10000,
+      "optional": true
+    },
+    {
+      "name": "恢复出厂设置",
+      "command": "SYSTEM:RESET",
+      "expectedResponse": "pattern:RESET.*COMPLETE",
+      "description": "恢复设备出厂设置",
+      "timeout": 5000,
+      "runAtEnd": true
+    }
+  ],
+  "advancedTests": {
+    "stabilityTest": {
+      "duration": 1800,
+      "commandInterval": 5000,
+      "commands": ["MEASURE:VOLTAGE?", "MEASURE:CURRENT?"],
+      "description": "设备稳定性测试，连续运行30分钟，定期发送测量命令"
+    },
+    "performanceTest": {
+      "commandRate": 10,
+      "duration": 300,
+      "command": "MEASURE:VOLTAGE?",
+      "description": "性能测试，高频率发送命令测试设备响应能力"
+    },
+    "errorHandlingTest": {
+      "invalidCommands": [
+        "INVALID_COMMAND",
+        "MEASURE:VOLTAGE:INVALID",
+        "CONFIGURE:RANGE 999999V"
+      ],
+      "description": "错误处理测试，发送无效命令测试设备错误响应机制"
+    }
+  },
+  "reportSettings": {
+    "saveRawCommunication": true,
+    "generateCSV": true,
+    "includeTimestamps": true,
+    "includePerformanceMetrics": true
+  }
+}

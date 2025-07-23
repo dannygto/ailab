@@ -1,19 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.aiService = exports.AIService = void 0;
-const axios_1 = __importDefault(require("axios"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-class AIService {
+import axios from 'axios';
+import dotenv from 'dotenv';
+dotenv.config();
+export class AIService {
     constructor() {
         this.models = new Map();
         this.initializeModels();
     }
     initializeModels() {
-        // 只注册一个豆包模型
         this.models.clear();
         const arkKey = process.env.ARK_API_KEY;
         this.models.set('doubao-seed-1-6-thinking-250615', {
@@ -30,15 +23,12 @@ class AIService {
         console.log('【AIService模型注册表】', Array.from(this.models.entries()));
         console.log('【AIService初始化API Key】', arkKey);
     }
-    // 获取可用模型列表
     getAvailableModels() {
         return Array.from(this.models.values()).filter(model => model.available);
     }
-    // 获取指定模型配置
     getModelConfig(modelId) {
         return this.models.get(modelId);
     }
-    // 火山方舟API调用
     async callVolcanicArk(messages, config) {
         try {
             console.log('🔥 Ark API 请求参数:', {
@@ -55,7 +45,7 @@ class AIService {
                     stream: false
                 }
             });
-            const response = await axios_1.default.post(config.endpoint, {
+            const response = await axios.post(config.endpoint, {
                 model: 'doubao-seed-1-6-thinking-250615',
                 messages: messages,
                 max_tokens: config.maxTokens,
@@ -85,11 +75,10 @@ class AIService {
             throw new Error(`火山方舟API调用失败: ${error.response?.data?.error?.message || error.message}`);
         }
     }
-    // DeepSeek API调用
     async callDeepSeek(messages, config) {
         try {
-            const response = await axios_1.default.post(config.endpoint, {
-                model: config.id, // 支持 deepseek-chat 和 deepseek-reasoner
+            const response = await axios.post(config.endpoint, {
+                model: config.id,
                 messages: messages,
                 max_tokens: config.maxTokens,
                 temperature: config.temperature,
@@ -99,7 +88,7 @@ class AIService {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${config.apiKey}`
                 },
-                timeout: 60000 // 超时时间60秒
+                timeout: 60000
             });
             const data = response.data;
             return {
@@ -109,7 +98,7 @@ class AIService {
                     completionTokens: data.usage.completion_tokens,
                     totalTokens: data.usage.total_tokens
                 } : undefined,
-                reasoningContent: data.choices[0].reasoning_content, // Reasoner模型特有
+                reasoningContent: data.choices[0].reasoning_content,
                 model: config.id
             };
         }
@@ -117,14 +106,12 @@ class AIService {
             throw new Error('DeepSeek API调用失败: ' + (error.message || error.toString()));
         }
     }
-    // 主要聊天接口
     async chat(messages, modelId = 'doubao-seed-1-6-thinking-250615', options) {
         console.log('【AIService.chat调用】', { modelId, models: Array.from(this.models.keys()), options });
         const model = this.getModelConfig(modelId);
         if (!model) {
             throw new Error(`模型 ${modelId} 不存在`);
         }
-        // 如果有API密钥，动态更新模型配置
         if (options?.apiKey) {
             const updatedModel = { ...model, apiKey: options.apiKey, available: true };
             this.models.set(modelId, updatedModel);
@@ -133,13 +120,11 @@ class AIService {
         if (!model.available && !options?.apiKey) {
             throw new Error(`模型 ${modelId} 不可用，请检查API密钥配置`);
         }
-        // 应用选项参数
         const effectiveConfig = {
             ...model,
             temperature: options?.temperature ?? model.temperature,
             maxTokens: options?.maxTokens ?? model.maxTokens
         };
-        // 根据不同提供商调用相应的API
         switch (model.provider) {
             case '火山方舟':
                 try {
@@ -159,7 +144,6 @@ class AIService {
                 throw new Error(`不支持的AI提供商: ${model.provider}`);
         }
     }
-    // 测试模型连接
     async testModelConnection(modelId) {
         try {
             const model = this.getModelConfig(modelId);
@@ -175,7 +159,6 @@ class AIService {
                     message: `模型 ${modelId} 不可用，请检查API密钥配置`
                 };
             }
-            // 构建测试消息
             const testMessages = [
                 {
                     role: 'user',
@@ -183,7 +166,6 @@ class AIService {
                 }
             ];
             try {
-                // 尝试调用API
                 const response = await this.chat(testMessages, modelId, { maxTokens: 50 });
                 return {
                     success: true,
@@ -191,7 +173,6 @@ class AIService {
                 };
             }
             catch (error) {
-                // 如果API调用失败，但演示模式可用
                 throw new Error('模型连接失败');
             }
         }
@@ -202,7 +183,6 @@ class AIService {
             };
         }
     }
-    // 测试连接（批量测试所有模型）
     async testAllModels() {
         const results = {};
         for (const [modelId] of this.models) {
@@ -211,6 +191,5 @@ class AIService {
         return results;
     }
 }
-exports.AIService = AIService;
-// 导出单例实例
-exports.aiService = new AIService();
+export const aiService = new AIService();
+//# sourceMappingURL=ai.service.js.map

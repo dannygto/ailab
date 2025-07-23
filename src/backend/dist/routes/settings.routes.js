@@ -1,28 +1,19 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const settings_controller_1 = __importDefault(require("../controllers/settings.controller"));
-const router = express_1.default.Router();
-/**
- * 系统设置路由
- *
- * 提供系统设置相关的API端点
- * 包括: 通用设置、主题设置、数据设置的获取和更新
- */
-// 获取所有设置
-router.get('/', settings_controller_1.default.getAllSettings);
-// 通用设置
-router.get('/general', settings_controller_1.default.getGeneralSettings);
-router.put('/general', settings_controller_1.default.updateGeneralSettings);
-// 主题设置
-router.get('/theme', settings_controller_1.default.getThemeSettings);
-router.put('/theme', settings_controller_1.default.updateThemeSettings);
-// 数据设置
-router.get('/data', settings_controller_1.default.getDataSettings);
-router.put('/data', settings_controller_1.default.updateDataSettings);
-// 重置所有设置
-router.post('/reset', settings_controller_1.default.resetAllSettings);
-exports.default = router;
+import express from 'express';
+import settingsController from '../controllers/settings.controller.js';
+const router = express.Router();
+router.get('/', settingsController.getAllSettings);
+router.get('/general', settingsController.getGeneralSettings);
+router.put('/general', settingsController.updateGeneralSettings);
+router.post('/general', settingsController.updateGeneralSettings);
+router.get('/theme', settingsController.getThemeSettings);
+router.put('/theme', settingsController.updateThemeSettings);
+router.post('/theme', settingsController.updateThemeSettings);
+router.get('/data', settingsController.getDataSettings);
+router.put('/data', settingsController.updateDataSettings);
+router.get('/demo-data-stats', settingsController.getDemoDataStats);
+router.post('/generate-demo-data', settingsController.generateDemoData);
+router.post('/delete-demo-data', settingsController.deleteDemoData);
+router.post('/generate-deployment', settingsController.generateDockerDeployment);
+router.post('/reset', settingsController.resetAllSettings);
+export default router;
+//# sourceMappingURL=settings.routes.js.map

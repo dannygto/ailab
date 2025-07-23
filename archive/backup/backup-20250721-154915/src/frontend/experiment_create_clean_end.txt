@@ -1,0 +1,20 @@
+          <Button
+            variant="contained"
+            onClick={handleNext}
+            disabled={loading}
+          >
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : activeStep === steps.length - 1 ? (
+              '创建实验'
+            ) : (
+              '下一步'
+            )}
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
+  );
+}
+
+export default ExperimentCreate;

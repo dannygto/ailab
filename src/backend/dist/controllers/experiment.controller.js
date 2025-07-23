@@ -1,25 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const uuid_1 = require("uuid");
-// 实验数据存储
+import { v4 as uuidv4 } from 'uuid';
 const experiments = new Map();
-// 实验执行状态存储
 const experimentExecutions = new Map();
-/**
- * 实验控制器
- * 处理实验相关的API请求
- */
 class ExperimentController {
     constructor() {
-        /**
-         * 获取实验列表
-         */
         this.getAllExperiments = async (req, res) => {
             try {
                 const { page = 1, limit = 10, sort = 'createdAt', order = 'desc', status, type, search } = req.query;
-                // 从存储中获取所有实验
                 let items = Array.from(experiments.values());
-                // 过滤逻辑
                 if (status) {
                     items = items.filter(exp => exp.status === status);
                 }
@@ -31,7 +18,6 @@ class ExperimentController {
                     items = items.filter(exp => exp.title.toLowerCase().includes(searchTerm) ||
                         exp.description.toLowerCase().includes(searchTerm));
                 }
-                // 排序逻辑
                 items.sort((a, b) => {
                     const aValue = a[String(sort)] || '';
                     const bValue = b[String(sort)] || '';
@@ -42,13 +28,11 @@ class ExperimentController {
                         return aValue < bValue ? 1 : -1;
                     }
                 });
-                // 分页逻辑
                 const pageNum = Number(page);
                 const limitNum = Number(limit);
                 const startIndex = (pageNum - 1) * limitNum;
                 const endIndex = pageNum * limitNum;
                 const paginatedItems = items.slice(startIndex, endIndex);
-                // 构建响应
                 res.status(200).json({
                     success: true,
                     data: {
@@ -68,13 +52,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 获取单个实验
-         */
         this.getExperimentById = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -96,13 +76,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 创建实验
-         */
         this.createExperiment = async (req, res) => {
             try {
                 const { title, description, type, config, templateId } = req.body;
-                // 验证必要字段
                 if (!title || !type) {
                     res.status(400).json({
                         success: false,
@@ -110,10 +86,9 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 创建新实验
                 const now = new Date().toISOString();
                 const newExperiment = {
-                    id: (0, uuid_1.v4)(),
+                    id: uuidv4(),
                     title,
                     description: description || '',
                     status: 'draft',
@@ -124,7 +99,6 @@ class ExperimentController {
                     config: config || {},
                     templateId
                 };
-                // 保存实验
                 experiments.set(newExperiment.id, newExperiment);
                 res.status(201).json({
                     success: true,
@@ -139,14 +113,10 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 更新实验
-         */
         this.updateExperiment = async (req, res) => {
             try {
                 const { id } = req.params;
                 const { title, description, status, config, results } = req.body;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -155,7 +125,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 更新实验字段
                 const updatedExperiment = {
                     ...experiment,
                     title: title !== undefined ? title : experiment.title,
@@ -165,7 +134,6 @@ class ExperimentController {
                     results: results !== undefined ? { ...experiment.results, ...results } : experiment.results,
                     updatedAt: new Date().toISOString()
                 };
-                // 保存更新后的实验
                 experiments.set(id, updatedExperiment);
                 res.status(200).json({
                     success: true,
@@ -180,13 +148,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 删除实验
-         */
         this.deleteExperiment = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -195,7 +159,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 删除实验
                 experiments.delete(id);
                 res.status(200).json({
                     success: true,
@@ -210,13 +173,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 启动实验
-         */
         this.startExperiment = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -225,7 +184,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 检查是否可以启动
                 if (experiment.status === 'running') {
                     res.status(400).json({
                         success: false,
@@ -233,17 +191,14 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 更新实验状态
                 const updatedExperiment = {
                     ...experiment,
                     status: 'running',
                     updatedAt: new Date().toISOString()
                 };
-                // 保存更新后的实验
                 experiments.set(id, updatedExperiment);
-                // 创建执行记录
                 const execution = {
-                    id: (0, uuid_1.v4)(),
+                    id: uuidv4(),
                     experimentId: id,
                     status: 'running',
                     progress: 0,
@@ -276,13 +231,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 停止实验
-         */
         this.stopExperiment = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -291,7 +242,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 检查是否可以停止
                 if (experiment.status !== 'running' && experiment.status !== 'paused') {
                     res.status(400).json({
                         success: false,
@@ -299,15 +249,12 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 更新实验状态
                 const updatedExperiment = {
                     ...experiment,
                     status: 'stopped',
                     updatedAt: new Date().toISOString()
                 };
-                // 保存更新后的实验
                 experiments.set(id, updatedExperiment);
-                // 更新执行记录
                 const execution = experimentExecutions.get(id);
                 if (execution) {
                     execution.status = 'stopped';
@@ -332,14 +279,10 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 克隆实验
-         */
         this.cloneExperiment = async (req, res) => {
             try {
                 const { id } = req.params;
                 const { title } = req.body;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -348,18 +291,16 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 创建新实验
                 const now = new Date().toISOString();
                 const newExperiment = {
                     ...experiment,
-                    id: (0, uuid_1.v4)(),
+                    id: uuidv4(),
                     title: title || `${experiment.title} (复制)`,
                     status: 'draft',
                     createdAt: now,
                     updatedAt: now,
                     results: {},
                 };
-                // 保存新实验
                 experiments.set(newExperiment.id, newExperiment);
                 res.status(201).json({
                     success: true,
@@ -374,13 +315,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 获取实验结果
-         */
         this.getExperimentResults = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -402,13 +339,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 上传实验数据
-         */
         this.uploadExperimentData = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -417,7 +350,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 检查文件是否存在
                 if (!req.file) {
                     res.status(400).json({
                         success: false,
@@ -425,20 +357,16 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 这里应该处理上传的文件
-                // 模拟处理
                 const uploadResult = {
                     filename: req.file.filename,
                     size: req.file.size,
                     uploadedAt: new Date().toISOString()
                 };
-                // 更新实验
                 experiment.data = {
                     ...experiment.data,
                     uploadedFile: uploadResult
                 };
                 experiment.updatedAt = new Date().toISOString();
-                // 保存更新后的实验
                 experiments.set(id, experiment);
                 res.status(200).json({
                     success: true,
@@ -453,13 +381,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 获取实验执行状态
-         */
         this.getExperimentExecution = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -468,7 +392,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 获取执行状态
                 const execution = experimentExecutions.get(id);
                 if (!execution) {
                     res.status(404).json({
@@ -490,14 +413,10 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 获取实验日志
-         */
         this.getExperimentLogs = async (req, res) => {
             try {
                 const { id } = req.params;
                 const limit = parseInt(req.query.limit) || 100;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -506,7 +425,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 获取执行状态
                 const execution = experimentExecutions.get(id);
                 if (!execution) {
                     res.status(404).json({
@@ -515,7 +433,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 获取限制数量的日志
                 const logs = execution.logs.slice(-limit);
                 res.status(200).json({
                     success: true,
@@ -530,13 +447,9 @@ class ExperimentController {
                 });
             }
         };
-        /**
-         * 获取实验指标
-         */
         this.getExperimentMetrics = async (req, res) => {
             try {
                 const { id } = req.params;
-                // 从存储中获取实验
                 const experiment = experiments.get(id);
                 if (!experiment) {
                     res.status(404).json({
@@ -545,7 +458,6 @@ class ExperimentController {
                     });
                     return;
                 }
-                // 获取执行状态
                 const execution = experimentExecutions.get(id);
                 if (!execution) {
                     res.status(404).json({
@@ -569,4 +481,5 @@ class ExperimentController {
         };
     }
 }
-exports.default = new ExperimentController();
+export default new ExperimentController();
+//# sourceMappingURL=experiment.controller.js.map

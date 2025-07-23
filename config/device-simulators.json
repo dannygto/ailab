@@ -1,0 +1,28 @@
+{
+  "devices": [
+    {
+      "id": "proc001",
+      "name": "处理器模拟器",
+      "type": "generic",
+      "mode": "server",
+      "port": 8001,
+      "secure": false,
+      "useJson": false,
+      "responseDelay": 50,
+      "simulatedErrorRate": 0.01,
+      "autoReconnect": true
+    },
+    {
+      "id": "sens001",
+      "name": "传感器模拟器",
+      "type": "sensor",
+      "mode": "server",
+      "port": 8002,
+      "secure": false,
+      "useJson": true,
+      "responseDelay": 20,
+      "simulatedErrorRate": 0.02,
+      "autoReconnect": true
+    }
+  ]
+}

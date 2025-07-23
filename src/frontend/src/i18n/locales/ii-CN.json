@@ -1,0 +1,109 @@
+{
+  "app": {
+    "name": "ꆏꄮꑀꍓꋌꆱꌠꉐꂋꇯꁙꑷ",
+    "description": "ꂄꁏꁱꄻꀻꌠꉐꂋꇯꁙꑷ",
+    "version": "1.0.0"
+  },
+  "common": {
+    "loading": "ꃥꇁꃹꄺ...",
+    "error": "ꃅꄉꀋꅉꌐ",
+    "success": "ꃅꄉꀋꅉꌒ",
+    "save": "ꊐꄿ",
+    "cancel": "ꇤꌧ",
+    "confirm": "ꏊꄿ",
+    "delete": "ꎨꊐ",
+    "edit": "ꋊꍀ",
+    "view": "ꊂꅐ",
+    "search": "ꎎꋠ",
+    "filter": "ꏼꋠ",
+    "back": "ꏮꀏ",
+    "next": "ꊯꊁ",
+    "previous": "ꀊꂃ",
+    "submit": "ꉚꄻ",
+    "reset": "ꉪꏭ",
+    "add": "ꋨꋊ",
+    "remove": "ꎨꊐ",
+    "upload": "ꉐꇺ",
+    "download": "ꂿꋏ",
+    "import": "ꋍꊾ",
+    "export": "ꉎꇤ",
+    "more": "ꀕꃅ"
+  },
+  "auth": {
+    "login": "ꃼꂄ",
+    "logout": "ꉟꇫ",
+    "register": "ꄍꅮ",
+    "forgotPassword": "ꌍꏹꆰꏆ",
+    "resetPassword": "ꌍꏹꏭꆺ",
+    "username": "ꄾꀏꂓꃺ",
+    "password": "ꌍꏹ",
+    "email": "ꏧꁷꉙꏣ",
+    "rememberMe": "ꆍꉘꀋꃼ",
+    "loginSuccess": "ꃼꂄꌒꃅ",
+    "loginError": "ꃼꂄꀋꌒ",
+    "registerSuccess": "ꄍꅮꌒꃅ",
+    "registerError": "ꄍꅮꀋꌒ",
+    "resetPasswordSuccess": "ꌍꏹꏭꆺꌒꃅ",
+    "resetPasswordError": "ꌍꏹꏭꆺꀋꌒ"
+  },
+  "nav": {
+    "home": "ꇴꄂ",
+    "dashboard": "ꇯꁙꏂ",
+    "experiments": "ꉐꂋ",
+    "myExperiments": "ꉠꉐꂋ",
+    "templates": "ꑟꂵ",
+    "devices": "ꆱꌠ",
+    "monitoring": "ꏲꉜ",
+    "management": "ꌅꈜ",
+    "settings": "ꆖꀁ",
+    "help": "ꀞꎭ",
+    "profile": "ꀑꒌꅔꍊ"
+  },
+  "experiment": {
+    "create": "ꉐꂋꄻꄉ",
+    "list": "ꉐꂋꀿꂿ",
+    "detail": "ꉐꂋꂰꌊ",
+    "execution": "ꉐꂋꃅꇫ",
+    "results": "ꉐꂋꁏꋭ",
+    "history": "ꉐꂋꀊꆨ",
+    "config": "ꉐꂋꆖꀁ",
+    "start": "ꋀꄉ",
+    "stop": "ꆏꄡ",
+    "pause": "ꄢꋏ",
+    "resume": "ꃰꄽ",
+    "status": {
+      "draft": "ꁱꄹ",
+      "pending": "ꇗꂿ",
+      "running": "ꃰꄉ",
+      "paused": "ꄢꋏꀐ",
+      "completed": "ꌐꀐ",
+      "failed": "ꀋꌒ",
+      "cancelled": "ꇤꌧꀐ"
+    }
+  },
+  "device": {
+    "list": "ꆱꌠꀿꂿ",
+    "detail": "ꆱꌠꂰꌊ",
+    "status": "ꆱꌠꑞꌡ",
+    "management": "ꆱꌠꌅꈜ",
+    "configure": "ꆱꌠꆖꀁ",
+    "connect": "ꃷꁑ",
+    "disconnect": "ꊰꄮ"
+  },
+  "template": {
+    "create": "ꑟꂵꄻꄉ",
+    "list": "ꑟꂵꀿꂿ",
+    "detail": "ꑟꂵꂰꌊ",
+    "category": "ꑟꂵꌌꅩ",
+    "search": "ꑟꂵꎎꋠ",
+    "import": "ꑟꂵꋍꊾ",
+    "export": "ꑟꂵꉎꇤ"
+  },
+  "permission": {
+    "role": "ꅐꀋ",
+    "permission": "ꇯꍥ",
+    "grant": "ꇯꍥꄻ",
+    "revoke": "ꇯꍥꂾ",
+    "manage": "ꇯꍥꌅꈜ"
+  }
+}

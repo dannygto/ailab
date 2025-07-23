@@ -1,0 +1,114 @@
+[
+    {
+        "DeviceId": "DEV001",
+        "DeviceName": "数字多功能测量仪",
+        "DeviceType": "测量仪器",
+        "Manufacturer": "科泰仪器",
+        "Model": "DMM5000",
+        "IP": "192.168.1.101",
+        "Port": 5001,
+        "Protocol": "TCP纯文本",
+        "TestCommand": "*IDN?",
+        "CommandTerminator": "\r\n",
+        "ResponseTerminator": "\r\n",
+        "ExpectedResponse": "KETAI,DMM5000",
+        "InitCommands": [
+            "*RST",
+            "SYST:REM",
+            "CONF:VOLT:DC 10"
+        ],
+        "KeepaliveInterval": 30,
+        "KeepaliveCommand": "*OPC?",
+        "SpecialHandling": false
+    },
+    {
+        "DeviceId": "DEV002",
+        "DeviceName": "高精度示波器",
+        "DeviceType": "示波器",
+        "Manufacturer": "泰克科技",
+        "Model": "OS-2500",
+        "IP": "192.168.1.102",
+        "Port": 5002,
+        "Protocol": "TCP二进制",
+        "TestCommand": null,
+        "CommandTerminator": null,
+        "ResponseTerminator": null,
+        "ExpectedResponse": null,
+        "InitCommands": [],
+        "KeepaliveInterval": 0,
+        "KeepaliveCommand": null,
+        "SpecialHandling": true,
+        "BinaryCommandHeader": "AA55",
+        "BinaryCommandFooter": "55AA",
+        "IdCommand": {
+            "hex": "AA5501000001FFFF55AA"
+        }
+    },
+    {
+        "DeviceId": "DEV003",
+        "DeviceName": "环境监测系统",
+        "DeviceType": "监测系统",
+        "Manufacturer": "绿创科技",
+        "Model": "ENV-Monitor-2000",
+        "IP": "192.168.1.103",
+        "Port": 5003,
+        "Protocol": "TCP/JSON",
+        "TestCommand": "{\"action\":\"ping\"}",
+        "CommandTerminator": "\r\n",
+        "ResponseTerminator": "\r\n",
+        "ExpectedResponse": "{\"result\":\"pong\"}",
+        "InitCommands": [
+            "{\"action\":\"authenticate\",\"params\":{\"username\":\"admin\",\"password\":\"Test@2025\"}}"
+        ],
+        "KeepaliveInterval": 60,
+        "KeepaliveCommand": "{\"action\":\"ping\"}",
+        "SpecialHandling": false,
+        "UseTLS": true
+    },
+    {
+        "DeviceId": "DEV004",
+        "DeviceName": "工业控制器",
+        "DeviceType": "控制器",
+        "Manufacturer": "西门子",
+        "Model": "SIMATIC S7-1200",
+        "IP": "192.168.1.104",
+        "Port": 502,
+        "Protocol": "Modbus TCP",
+        "TestCommand": null,
+        "CommandTerminator": null,
+        "ResponseTerminator": null,
+        "ExpectedResponse": null,
+        "InitCommands": [],
+        "KeepaliveInterval": 0,
+        "KeepaliveCommand": null,
+        "SpecialHandling": true,
+        "ModbusUnitId": 1,
+        "TestRegisters": [
+            {
+                "type": "holding",
+                "address": 40001,
+                "value": 1
+            }
+        ]
+    },
+    {
+        "DeviceId": "DEV005",
+        "DeviceName": "机器人控制单元",
+        "DeviceType": "控制单元",
+        "Manufacturer": "ABB",
+        "Model": "IRC5",
+        "IP": "192.168.1.105",
+        "Port": 5005,
+        "Protocol": "TCP/XML",
+        "TestCommand": "<Command><Header><Name>Status</Name><SessionId>0</SessionId></Header><Body></Body></Command>",
+        "CommandTerminator": "\r\n",
+        "ResponseTerminator": "\r\n",
+        "ExpectedResponse": "<Response>",
+        "InitCommands": [
+            "<Command><Header><Name>Initialize</Name><SessionId>0</SessionId></Header><Body><Mode>Remote</Mode></Body></Command>"
+        ],
+        "KeepaliveInterval": 120,
+        "KeepaliveCommand": "<Command><Header><Name>Keepalive</Name><SessionId>0</SessionId></Header><Body></Body></Command>",
+        "SpecialHandling": false
+    }
+]

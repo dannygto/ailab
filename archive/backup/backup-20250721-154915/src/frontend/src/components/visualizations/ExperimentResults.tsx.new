@@ -1,0 +1,235 @@
+import React, { useState } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Alert, 
+  CircularProgress, 
+  Paper,
+  Tabs,
+  Tab
+} from '@mui/material';
+import { Experiment } from '../../types';
+import ConfusionMatrix from './ConfusionMatrix';
+import TrainingHistoryChart from './TrainingHistoryChart';
+import MetricsCard from './MetricsCard';
+
+interface ExperimentResultsProps {
+  experiment: Experiment;
+}
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+/**
+ * 标签页面板组件
+ */
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`results-tabpanel-${index}`}
+      aria-labelledby={`results-tab-${index}`}
+      {...other}
+      style={{ paddingTop: 20 }}
+    >
+      {value === index && children}
+    </div>
+  );
+}
+
+/**
+ * 实验结果可视化组件
+ */
+const ExperimentResults: React.FC<ExperimentResultsProps> = ({ experiment }) => {
+  // 如果没有结果数据
+  if (!experiment.results || Object.keys(experiment.results).length === 0) {
+    return (
+      <Box sx={{ p: 2 }}>
+        <Alert severity="info">尚无实验结果数据</Alert>
+      </Box>
+    );
+  }
+
+  // 如果实验正在运行
+  if (experiment.status === 'running') {
+    return (
+      <Box sx={{ p: 2, textAlign: 'center' }}>
+        <CircularProgress size={40} sx={{ mb: 2 }} />
+        <Typography>实验正在运行，结果将在完成后显示</Typography>
+      </Box>
+    );
+  }
+
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue);
+  };
+
+  return (
+    <Box>
+      <Paper elevation={0} sx={{ mb: 3 }}>
+        <Box sx={{ p: 2, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>结果摘要</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {experiment.results.accuracy !== undefined && (
+              <MetricsCard 
+                title="准确率" 
+                value={experiment.results.accuracy} 
+                format="percent" 
+                icon="accuracy" 
+              />
+            )}
+            
+            {experiment.results.loss !== undefined && (
+              <MetricsCard 
+                title="损失值" 
+                value={experiment.results.loss} 
+                format="decimal" 
+                icon="loss" 
+              />
+            )}
+            
+            {experiment.results.precision !== undefined && (
+              <MetricsCard 
+                title="精确率" 
+                value={experiment.results.precision} 
+                format="percent" 
+                icon="precision" 
+              />
+            )}
+            
+            {experiment.results.recall !== undefined && (
+              <MetricsCard 
+                title="召回率" 
+                value={experiment.results.recall} 
+                format="percent" 
+                icon="recall" 
+              />
+            )}
+            
+            {experiment.results.f1Score !== undefined && (
+              <MetricsCard 
+                title="F1分数" 
+                value={experiment.results.f1Score} 
+                format="percent" 
+                icon="f1" 
+              />
+            )}
+
+            {experiment.type === 'chemistry_experiment' && experiment.results.yield !== undefined && (
+              <MetricsCard 
+                title="收率" 
+                value={experiment.results.yield} 
+                format="percent" 
+                icon="yield" 
+              />
+            )}
+            
+            {experiment.type === 'physics_experiment' && experiment.results.error !== undefined && (
+              <MetricsCard 
+                title="误差" 
+                value={experiment.results.error} 
+                format="percent" 
+                icon="error" 
+              />
+            )}
+          </Box>
+        </Box>
+      </Paper>
+
+      <Paper elevation={0}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="实验结果标签页">
+            <Tab label="训练历史" />
+            {experiment.results.confusionMatrix && <Tab label="混淆矩阵" />}
+            {experiment.results.report && <Tab label="分析报告" />}
+          </Tabs>
+        </Box>
+        
+        <TabPanel value={tabIndex} index={0}>
+          <Box sx={{ p: 2 }}>
+            {experiment.results.trainingHistory ? (
+              <TrainingHistoryChart 
+                history={experiment.results.trainingHistory} 
+                height={400} 
+              />
+            ) : (
+              <Alert severity="info">无训练历史数据</Alert>
+            )}
+          </Box>
+        </TabPanel>
+        
+        {experiment.results.confusionMatrix && (
+          <TabPanel value={tabIndex} index={1}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                混淆矩阵
+              </Typography>
+              <ConfusionMatrix 
+                data={experiment.results.confusionMatrix} 
+                size={experiment.results.confusionMatrix.length} 
+              />
+            </Box>
+          </TabPanel>
+        )}
+        
+        {experiment.results.report && (
+          <TabPanel value={tabIndex} index={experiment.results.confusionMatrix ? 2 : 1}>
+            <Box sx={{ p: 2 }}>
+              <Paper elevation={1} sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  实验报告
+                </Typography>
+                
+                {experiment.results.report.summary && (
+                  <Typography paragraph>
+                    {experiment.results.report.summary}
+                  </Typography>
+                )}
+                
+                {experiment.results.report.keyFindings && experiment.results.report.keyFindings.length > 0 && (
+                  <>
+                    <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>
+                      关键发现
+                    </Typography>
+                    <ul>
+                      {experiment.results.report.keyFindings.map((finding: string, index: number) => (
+                        <li key={index}>
+                          <Typography>{finding}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {experiment.results.report.recommendations && experiment.results.report.recommendations.length > 0 && (
+                  <>
+                    <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>
+                      改进建议
+                    </Typography>
+                    <ul>
+                      {experiment.results.report.recommendations.map((rec: string, index: number) => (
+                        <li key={index}>
+                          <Typography>{rec}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </Paper>
+            </Box>
+          </TabPanel>
+        )}
+      </Paper>
+    </Box>
+  );
+};
+
+export default ExperimentResults;

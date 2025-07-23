@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ai-experiment-platform-v1.0.2';
+﻿const CACHE_NAME = 'ai-experiment-platform-v1.0.2';
 const STATIC_CACHE = 'static-v1.0.2';
 const DYNAMIC_CACHE = 'dynamic-v1.0.2';
 
@@ -21,16 +21,16 @@ const CACHE_API_PATTERNS = [
 
 // Service Worker安装事件
 self.addEventListener('install', (event) => {
-  console.log('[SW] 安装中... 版本 v1.0.2');
+  // console.log removed
   
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('[SW] 缓存静态资源...');
+        // console.log removed
         return cache.addAll(STATIC_ASSETS);
       })
       .then(() => {
-        console.log('[SW] 静态资源缓存完成');
+        // console.log removed
         return self.skipWaiting(); // 强制激活新的SW
       })
       .catch((error) => {
@@ -41,7 +41,7 @@ self.addEventListener('install', (event) => {
 
 // Service Worker激活事件
 self.addEventListener('activate', (event) => {
-  console.log('[SW] 激活中...');
+  // console.log removed
   
   event.waitUntil(
     caches.keys()
@@ -49,14 +49,14 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-              console.log('[SW] 删除旧缓存:', cacheName);
+              // console.log removed
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => {
-        console.log('[SW] 激活完成');
+        // console.log removed
         return self.clients.claim(); // 立即控制所有客户端
       })
   );
@@ -125,7 +125,7 @@ self.addEventListener('fetch', (event) => {
             })
             .catch(() => {
               // 失败时返回空响应而不是抛出错误
-              console.log('[SW] 无法获取资源:', request.url);
+              // console.log removed
               return new Response(null, {
                 status: 404,
                 statusText: 'Not Found'
@@ -185,4 +185,5 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-console.log('[SW] Service Worker 已加载');
+// console.log removed
+

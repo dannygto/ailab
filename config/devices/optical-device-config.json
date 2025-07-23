@@ -1,0 +1,60 @@
+{
+  "id": "dev-actual-001",
+  "name": "光学实验设备-OD200",
+  "host": "192.168.1.120",
+  "port": 8080,
+  "protocol": "tcp",
+  "connectionTimeout": 5000,
+  "responseTimeout": 3000,
+  "reconnectAttempts": 3,
+  "reconnectDelay": 2000,
+  "commandDelimiter": "\r\n",
+  "responseDelimiter": "\r\n",
+  "authentication": {
+    "enabled": false
+  },
+  "encryption": {
+    "enabled": false,
+    "type": "none"
+  },
+  "commands": {
+    "deviceInfo": {
+      "command": "GET_INFO",
+      "expectedResponse": "MODEL:OD200",
+      "responseTimeout": 2000
+    },
+    "deviceStatus": {
+      "command": "GET_STATUS",
+      "expectedResponse": "STATUS:",
+      "responseTimeout": 2000
+    },
+    "startMeasurement": {
+      "command": "START_MEASUREMENT",
+      "expectedResponse": "MEASUREMENT_STARTED",
+      "responseTimeout": 5000
+    },
+    "stopMeasurement": {
+      "command": "STOP_MEASUREMENT",
+      "expectedResponse": "MEASUREMENT_STOPPED",
+      "responseTimeout": 2000
+    },
+    "getSensorData": {
+      "command": "GET_SENSOR_DATA",
+      "expectedResponse": "DATA:",
+      "responseTimeout": 3000
+    },
+    "setParameter": {
+      "command": "SET_PARAM:INTENSITY=75",
+      "expectedResponse": "PARAM_SET",
+      "responseTimeout": 2000
+    }
+  },
+  "testSequence": [
+    "deviceInfo",
+    "deviceStatus",
+    "setParameter",
+    "startMeasurement",
+    "getSensorData",
+    "stopMeasurement"
+  ]
+}

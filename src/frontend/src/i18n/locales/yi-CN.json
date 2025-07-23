@@ -1,0 +1,130 @@
+{
+  "app": {
+    "name": "ꊨꇁꃅꋽꌤꑵꌩꏡ",
+    "description": "ꊰꒉꉐꁨꌤꑵꌩꏡ",
+    "version": "1.0.0"
+  },
+  "common": {
+    "loading": "ꐞꊈꇁꀐ...",
+    "error": "ꅐꉘꀋꈴ",
+    "success": "ꐥꃅꉆꀐ",
+    "save": "ꄻꆹ",
+    "cancel": "ꆏꌊ",
+    "confirm": "ꉬꀐ",
+    "delete": "ꋌꎭ",
+    "edit": "ꌧꂱ",
+    "view": "ꉜꄉ",
+    "search": "ꎹꄉ",
+    "filter": "ꌧꌊ",
+    "back": "ꀱꀋ",
+    "next": "ꊁꆈ",
+    "previous": "ꂴꆈ",
+    "submit": "ꄻꁧ",
+    "reset": "ꀱꌊ",
+    "add": "ꀉꆄ",
+    "remove": "ꌩꇫ",
+    "upload": "ꄮꄮ",
+    "download": "ꆹꆏ",
+    "import": "ꄮꐈ",
+    "export": "ꆏꎭ",
+    "more": "ꀉꁨ"
+  },
+  "auth": {
+    "login": "ꌤꑟ",
+    "logout": "ꁖꉍ",
+    "register": "ꁧꑟ",
+    "forgotPassword": "ꌧꅍꑽꀐ",
+    "resetPassword": "ꌧꅍꀱꄻ",
+    "username": "ꊿꂓ",
+    "password": "ꌧꅍ",
+    "email": "ꁱꄐ",
+    "rememberMe": "ꉢꃅꄻꇬ",
+    "loginSuccess": "ꃹꄮꉆꀐ",
+    "loginError": "ꃹꄮꀋꉆ",
+    "registerSuccess": "ꃅꄻꉆꀐ",
+    "registerError": "ꃅꄻꀋꉆ",
+    "resetPasswordSuccess": "ꌧꅍꀱꄻꉆꀐ",
+    "resetPasswordError": "ꌧꅍꀱꄻꀋꉆ"
+  },
+  "nav": {
+    "home": "ꇬꀋ",
+    "dashboard": "ꉜꐪ",
+    "experiments": "ꌩꏡ",
+    "myExperiments": "ꉠꌩꏡ",
+    "templates": "ꅉꀸ",
+    "devices": "ꇤꊭ",
+    "monitoring": "ꉪꄉ",
+    "management": "ꄻꇤ",
+    "settings": "ꂱꎭ",
+    "help": "ꌤꈀ",
+    "profile": "ꊨꄿꐨꅍ"
+  },
+  "experiment": {
+    "create": "ꐞꐳꏡꍮ",
+    "list": "ꐞꐳꃀꅉ",
+    "detail": "ꐞꐳꐯꊯ",
+    "execution": "ꐞꐳꃅꄉ",
+    "results": "ꐞꐳꁱꌐ",
+    "history": "ꐞꐳꂴꇬ",
+    "config": "ꐞꐳꌧꂱ",
+    "start": "ꐥꅐ",
+    "stop": "ꄡꄉ",
+    "pause": "ꄡꇤ",
+    "resume": "ꀱꌊ",
+    "status": {
+      "draft": "ꀕꀳ",
+      "pending": "ꇁꀐ",
+      "running": "ꃅꑟ",
+      "paused": "ꄡꇤꀐ",
+      "completed": "ꀱꌊꀐ",
+      "failed": "ꀋꉆ",
+      "cancelled": "ꆏꌊꀐ"
+    }
+  },
+  "device": {
+    "list": "ꇤꊭꂓꂷ",
+    "detail": "ꇤꊭꀕꆤ",
+    "status": "ꇤꊭꐯꊯ",
+    "management": "ꇤꊭꌤꅍ",
+    "configure": "ꇤꊭꌧꂱ",
+    "connect": "ꐮꄮ",
+    "disconnect": "ꁖꉍ"
+  },
+  "template": {
+    "create": "ꅉꀸꃅꄉ",
+    "list": "ꅉꀸꂓꂷ",
+    "detail": "ꅉꀸꀕꆤ",
+    "category": "ꅉꀸꑞꌠ",
+    "search": "ꅉꀸꎹꄉ",
+    "import": "ꅉꀸꄮꐈ",
+    "export": "ꅉꀸꆏꎭ"
+  },
+  "permission": {
+    "role": "ꐥꅐ",
+    "permission": "ꉬꄐ",
+    "grant": "ꉬꄐꀉꆄ",
+    "revoke": "ꉬꄐꄻꌊ",
+    "manage": "ꉬꄐꄻꇤ"
+  },
+  "ai": {
+    "assistant": "ꊨꇁꃅꋽꌤꈀ",
+    "chat": "ꅇꂷꅲꂿ",
+    "model": "ꊨꇁꃅꋽꅉꀸ",
+    "generateImage": "ꐪꊈꄻꐞ",
+    "generateCode": "ꂷꌠꄻꐞ",
+    "analyzeData": "ꀋꉬꐯꊯ",
+    "prompt": "ꅇꉙꉉꄉ",
+    "response": "ꅇꀱꇁꀐ",
+    "settings": "ꂱꎭꃅꄉ"
+  },
+  "dataAnalysis": {
+    "chart": "ꇐꁱꊈꐯ",
+    "table": "ꇐꁱꊈꂷ",
+    "visualization": "ꊈꐪꌠꉜ",
+    "statistics": "ꌗꁱꊈꂷ",
+    "export": "ꊈꂿꄻꎭ",
+    "import": "ꊈꂿꄮꐈ",
+    "filter": "ꊈꌧꌠꊊ",
+    "sort": "ꊈꉬꌠꄮ"
+  }
+}

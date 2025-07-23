@@ -1,0 +1,79 @@
+{
+  "devices": [
+    {
+      "id": "sensor_temp_hum_01",
+      "name": "温湿度传感器-01",
+      "ip": "192.168.1.101",
+      "port": 8001,
+      "protocol": "tcp",
+      "timeout": 5000,
+      "commandSet": {
+        "init": "AA5504010000FF",
+        "getData": "AA5501020000FF",
+        "control": "AA5503030000FF",
+        "reset": "AA5502040000FF",
+        "status": "AA5501050000FF"
+      }
+    },
+    {
+      "id": "sensor_light_01",
+      "name": "光照传感器-01",
+      "ip": "192.168.1.102",
+      "port": 8002,
+      "protocol": "tcp",
+      "timeout": 5000,
+      "commandSet": {
+        "init": "BB6601010000FF",
+        "getData": "BB6602020000FF",
+        "control": "BB6603030000FF",
+        "reset": "BB6604040000FF",
+        "status": "BB6605050000FF"
+      }
+    },
+    {
+      "id": "ctrl_switch_01",
+      "name": "电源控制器-01",
+      "ip": "192.168.1.103",
+      "port": 8003,
+      "protocol": "tcp",
+      "timeout": 5000,
+      "commandSet": {
+        "init": "CC7701010000FF",
+        "getData": "CC7702020000FF",
+        "control": "CC7703030100FF",
+        "reset": "CC7704040000FF",
+        "status": "CC7705050000FF"
+      }
+    },
+    {
+      "id": "ctrl_motor_01",
+      "name": "电机控制器-01",
+      "ip": "192.168.1.104",
+      "port": 8004,
+      "protocol": "tcp",
+      "timeout": 5000,
+      "commandSet": {
+        "init": "DD8801010000FF",
+        "getData": "DD8802020000FF",
+        "control": "DD8803030150FF",
+        "reset": "DD8804040000FF",
+        "status": "DD8805050000FF"
+      }
+    },
+    {
+      "id": "sensor_gas_01",
+      "name": "气体传感器-01",
+      "ip": "192.168.1.105",
+      "port": 8005,
+      "protocol": "tcp",
+      "timeout": 5000,
+      "commandSet": {
+        "init": "EE9901010000FF",
+        "getData": "EE9902020000FF",
+        "control": "EE9903030000FF",
+        "reset": "EE9904040000FF",
+        "status": "EE9905050000FF"
+      }
+    }
+  ]
+}

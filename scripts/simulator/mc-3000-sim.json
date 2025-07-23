@@ -1,0 +1,23 @@
+{
+  "deviceName": "MC-3000",
+  "host": "0.0.0.0",
+  "port": 4003,
+  "responses": {
+    "*IDN?": "MC-3000,MicroControl,30102,v3.1.5",
+    "READ:TEMP?": "25.4",
+    "READ:HUMID?": "45.2",
+    "READ:PRESS?": "1013.25",
+    "STATUS?": "READY",
+    "*": "ERR:COMMAND NOT RECOGNIZED"
+  },
+  "commandDelimiter": "\n",
+  "responseDelay": {
+    "min": 15,
+    "max": 80
+  },
+  "errorProbability": 0.02,
+  "connectionLifetime": 0,
+  "customHandlers": {
+    "SET:MODE": "const mode = command.split(' ')[1]; socket.write('MODE SET TO ' + mode + delimiter);"
+  }
+}

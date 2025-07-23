@@ -1,0 +1,22 @@
+{
+  "deviceName": "OS-2500",
+  "host": "0.0.0.0",
+  "port": 4002,
+  "responses": {
+    "*IDN?": "OS-2500,OpticsLab,25678,v2.1.0",
+    "MEAS:WAVE?": "532.45",
+    "MEAS:POWER?": "12.34",
+    "MEAS:SPEC?": "450.2,0.1;475.6,0.3;500.1,0.7;532.3,0.9;550.5,0.6;575.2,0.2;600.0,0.1",
+    "*": "ERROR: Unknown command"
+  },
+  "commandDelimiter": "\r\n",
+  "responseDelay": {
+    "min": 20,
+    "max": 100
+  },
+  "errorProbability": 0.03,
+  "connectionLifetime": 0,
+  "customHandlers": {
+    "SET:FILTER": "socket.write('FILTER SET OK' + delimiter);"
+  }
+}

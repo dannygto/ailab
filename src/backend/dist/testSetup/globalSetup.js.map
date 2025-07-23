@@ -1,0 +1,1 @@
+{"version":3,"file":"globalSetup.js","sourceRoot":"","sources":["../../src/testSetup/globalSetup.ts"],"names":[],"mappings":"AACA,MAAM,CAAC,OAAO,CAAC,KAAK,UAAU,WAAW;IACvC,OAAO,CAAC,GAAG,CAAC,gBAAgB,CAAC,CAAC;IAG9B,OAAO,CAAC,GAAG,CAAC,QAAQ,GAAG,MAAM,CAAC;IAK9B,OAAO,CAAC,GAAG,CAAC,cAAc,CAAC,CAAC;AAC9B,CAAC"}

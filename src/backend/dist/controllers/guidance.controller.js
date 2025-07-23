@@ -1,22 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.guidanceController = exports.GuidanceController = void 0;
-const guidance_model_1 = require("../models/guidance.model");
-// 模拟数据库
+import { GuidanceSuggestionType, LearningProgressStatus } from '../models/guidance.model.js';
 const guidanceSuggestions = new Map();
 const guidanceSessions = new Map();
-// 初始化一些示例数据
 function initializeExampleData() {
-    // 示例指导建议
     const suggestions = [
         {
             id: 'gs-001',
-            type: guidance_model_1.GuidanceSuggestionType.CONCEPT,
+            type: GuidanceSuggestionType.CONCEPT,
             title: '理解磁铁的基本性质',
             content: '磁铁具有两个磁极（北极和南极），同名磁极相互排斥，异名磁极相互吸引。磁力线从北极出发，经过外部空间，再回到南极，形成闭合曲线。',
             importance: 4,
             triggerConditions: {
-                progressStatus: [guidance_model_1.LearningProgressStatus.BEGINNING],
+                progressStatus: [LearningProgressStatus.BEGINNING],
                 errorPatterns: [],
                 timeTrigger: true,
                 manualTrigger: true
@@ -33,12 +27,12 @@ function initializeExampleData() {
         },
         {
             id: 'gs-002',
-            type: guidance_model_1.GuidanceSuggestionType.SAFETY,
+            type: GuidanceSuggestionType.SAFETY,
             title: '使用酸碱试剂的安全注意事项',
             content: '处理酸碱溶液时，必须佩戴护目镜和手套。稀释浓酸时，应该将酸慢慢倒入水中，而不是将水倒入酸中，以避免剧烈反应和飞溅。',
             importance: 5,
             triggerConditions: {
-                progressStatus: [guidance_model_1.LearningProgressStatus.BEGINNING, guidance_model_1.LearningProgressStatus.PROGRESSING],
+                progressStatus: [LearningProgressStatus.BEGINNING, LearningProgressStatus.PROGRESSING],
                 errorPatterns: ['未佩戴防护装备', '错误的稀释方法'],
                 timeTrigger: false,
                 manualTrigger: true
@@ -55,37 +49,32 @@ function initializeExampleData() {
         },
         {
             id: 'gs-003',
-            type: guidance_model_1.GuidanceSuggestionType.NEXT_STEP,
+            type: GuidanceSuggestionType.NEXT_STEP,
             title: '下一步：记录植物细胞观察结果',
             content: '请在显微镜下找到3-5个完整的洋葱表皮细胞，并绘制它们的结构图。标记出细胞壁、细胞膜、细胞核和液泡。注意观察细胞的形状和排列方式。',
             importance: 3,
             triggerConditions: {
-                progressStatus: [guidance_model_1.LearningProgressStatus.PROGRESSING],
+                progressStatus: [LearningProgressStatus.PROGRESSING],
                 timeTrigger: true,
                 manualTrigger: false
             },
             createdAt: new Date().toISOString()
         }
     ];
-    // 将示例数据添加到Map中
     suggestions.forEach(suggestion => {
         guidanceSuggestions.set(suggestion.id, suggestion);
     });
 }
-// 初始化示例数据
 initializeExampleData();
-class GuidanceController {
+export class GuidanceController {
     constructor() {
-        // 获取所有指导建议
         this.getAllGuidanceSuggestions = (req, res) => {
             try {
                 const suggestions = Array.from(guidanceSuggestions.values());
-                // 支持过滤和分页
                 const type = req.query.type;
                 const importance = req.query.importance;
                 const page = parseInt(req.query.page) || 1;
                 const limit = parseInt(req.query.limit) || 10;
-                // 应用过滤
                 let filteredSuggestions = suggestions;
                 if (type) {
                     filteredSuggestions = filteredSuggestions.filter(s => s.type === type);
@@ -94,7 +83,6 @@ class GuidanceController {
                     const importanceLevel = parseInt(importance);
                     filteredSuggestions = filteredSuggestions.filter(s => s.importance === importanceLevel);
                 }
-                // 应用分页
                 const startIndex = (page - 1) * limit;
                 const endIndex = startIndex + limit;
                 const paginatedSuggestions = filteredSuggestions.slice(startIndex, endIndex);
@@ -116,7 +104,6 @@ class GuidanceController {
                 });
             }
         };
-        // 获取单个指导建议
         this.getGuidanceSuggestionById = (req, res) => {
             try {
                 const { id } = req.params;
@@ -139,20 +126,16 @@ class GuidanceController {
                 });
             }
         };
-        // 创建指导建议
         this.createGuidanceSuggestion = (req, res) => {
             try {
                 const suggestionData = req.body;
-                // 验证必要字段
                 if (!suggestionData.title || !suggestionData.content || !suggestionData.type) {
                     return res.status(400).json({
                         success: false,
                         message: '缺少必要字段'
                     });
                 }
-                // 生成唯一ID
                 const id = 'gs-' + Date.now().toString();
-                // 创建新的指导建议
                 const newSuggestion = {
                     id,
                     type: suggestionData.type,
@@ -166,7 +149,6 @@ class GuidanceController {
                     relatedResources: suggestionData.relatedResources || [],
                     createdAt: new Date().toISOString()
                 };
-                // 保存到模拟数据库
                 guidanceSuggestions.set(id, newSuggestion);
                 res.status(201).json({
                     success: true,
@@ -181,27 +163,22 @@ class GuidanceController {
                 });
             }
         };
-        // 更新指导建议
         this.updateGuidanceSuggestion = (req, res) => {
             try {
                 const { id } = req.params;
                 const suggestionData = req.body;
-                // 检查指导建议是否存在
                 if (!guidanceSuggestions.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的指导建议'
                     });
                 }
-                // 获取现有数据
                 const existingSuggestion = guidanceSuggestions.get(id);
-                // 更新数据
                 const updatedSuggestion = {
                     ...existingSuggestion,
                     ...suggestionData,
-                    id // 确保ID不变
+                    id
                 };
-                // 保存更新后的数据
                 guidanceSuggestions.set(id, updatedSuggestion);
                 res.json({
                     success: true,
@@ -216,18 +193,15 @@ class GuidanceController {
                 });
             }
         };
-        // 删除指导建议
         this.deleteGuidanceSuggestion = (req, res) => {
             try {
                 const { id } = req.params;
-                // 检查指导建议是否存在
                 if (!guidanceSuggestions.has(id)) {
                     return res.status(404).json({
                         success: false,
                         message: '未找到指定的指导建议'
                     });
                 }
-                // 从模拟数据库中删除
                 guidanceSuggestions.delete(id);
                 res.json({
                     success: true,
@@ -242,18 +216,15 @@ class GuidanceController {
                 });
             }
         };
-        // 生成AI指导建议
         this.generateAIGuidance = async (req, res) => {
             try {
                 const { experimentId, experimentType, studentId, currentStage, learningStatus, context } = req.body;
-                // 验证必要字段
                 if (!experimentType || !currentStage) {
                     return res.status(400).json({
                         success: false,
                         message: '缺少必要参数'
                     });
                 }
-                // 准备AI提示
                 const messages = [
                     {
                         role: 'system',
@@ -270,7 +241,6 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
 请给我一些指导建议，帮助我顺利完成这个阶段的实验。`
                     }
                 ];
-                // 简单模拟AI响应，避免直接调用AI服务
                 const aiResponse = {
                     content: `以下是关于${experimentType}实验在"${currentStage}"阶段的指导建议：
 
@@ -288,12 +258,9 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                     },
                     model: 'simulation-model'
                 };
-                // 创建一个新的会话ID或使用现有的
                 const sessionId = req.body.sessionId || `session-${Date.now()}`;
-                // 记录交互
                 let session = guidanceSessions.get(sessionId);
                 if (!session) {
-                    // 创建新会话
                     session = {
                         id: sessionId,
                         studentId: studentId || 'anonymous',
@@ -305,7 +272,6 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                     };
                     guidanceSessions.set(sessionId, session);
                 }
-                // 添加新交互
                 session.interactions.push({
                     timestamp: new Date().toISOString(),
                     source: 'system',
@@ -313,13 +279,12 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                     content: aiResponse.content,
                     relatedStage: currentStage
                 });
-                // 返回AI生成的指导建议
                 res.json({
                     success: true,
                     data: {
                         sessionId,
                         guidance: aiResponse.content,
-                        type: guidance_model_1.GuidanceSuggestionType.NEXT_STEP,
+                        type: GuidanceSuggestionType.NEXT_STEP,
                         timestamp: new Date().toISOString(),
                         usage: aiResponse.usage
                     }
@@ -333,7 +298,6 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                 });
             }
         };
-        // 获取指导会话历史
         this.getGuidanceSessionHistory = (req, res) => {
             try {
                 const { sessionId } = req.params;
@@ -356,19 +320,16 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                 });
             }
         };
-        // 添加学生问题到会话
         this.addStudentQuestion = (req, res) => {
             try {
                 const { sessionId } = req.params;
                 const { question, stage } = req.body;
-                // 验证必要字段
                 if (!question) {
                     return res.status(400).json({
                         success: false,
                         message: '问题内容不能为空'
                     });
                 }
-                // 获取会话
                 let session = guidanceSessions.get(sessionId);
                 if (!session) {
                     return res.status(404).json({
@@ -376,7 +337,6 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
                         message: '未找到指定的指导会话'
                     });
                 }
-                // 添加学生问题
                 session.interactions.push({
                     timestamp: new Date().toISOString(),
                     source: 'student',
@@ -402,5 +362,5 @@ ${learningStatus ? `我的学习进度是：${learningStatus}` : ''}
         };
     }
 }
-exports.GuidanceController = GuidanceController;
-exports.guidanceController = new GuidanceController();
+export const guidanceController = new GuidanceController();
+//# sourceMappingURL=guidance.controller.js.map

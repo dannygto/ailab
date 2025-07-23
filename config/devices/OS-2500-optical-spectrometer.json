@@ -1,0 +1,193 @@
+{
+  "deviceName": "OS-2500光谱分析仪",
+  "deviceType": "optical",
+  "description": "OS-2500高精度光谱分析仪，用于光谱测量和分析",
+  "manufacturer": "光学科技研究所",
+  "connectionOptions": {
+    "host": "192.168.1.101",
+    "port": 5001,
+    "secure": true,
+    "timeout": 8000,
+    "reconnectAttempts": 5,
+    "reconnectDelay": 2000,
+    "bufferSize": 16384,
+    "certificate": "config/ssl/os-2500-cert.pem"
+  },
+  "communicationSettings": {
+    "commandDelimiter": "\n",
+    "responseDelimiter": "\n",
+    "responseTimeout": 5000,
+    "encoding": "utf8",
+    "initialCommands": [
+      {
+        "command": "ID",
+        "description": "获取设备标识信息",
+        "waitTime": 1000
+      },
+      {
+        "command": "INITIALIZE",
+        "description": "初始化设备",
+        "waitTime": 3000
+      }
+    ]
+  },
+  "testCommands": [
+    {
+      "name": "获取设备信息",
+      "command": "ID",
+      "expectedResponse": "pattern:OS-2500.*",
+      "description": "读取设备标识信息，确认设备型号和版本",
+      "timeout": 3000
+    },
+    {
+      "name": "获取设备状态",
+      "command": "STATUS",
+      "expectedResponse": "pattern:STATUS:.*",
+      "description": "查询设备当前工作状态",
+      "timeout": 3000
+    },
+    {
+      "name": "设置波长范围",
+      "command": "SET WAVELENGTH 400 700",
+      "expectedResponse": "pattern:WAVELENGTH SET",
+      "description": "设置光谱测量波长范围为400nm-700nm",
+      "timeout": 4000
+    },
+    {
+      "name": "设置积分时间",
+      "command": "SET INTEGRATION 500",
+      "expectedResponse": "pattern:INTEGRATION TIME SET",
+      "description": "设置积分时间为500ms",
+      "timeout": 3000
+    },
+    {
+      "name": "设置分辨率",
+      "command": "SET RESOLUTION 0.5",
+      "expectedResponse": "pattern:RESOLUTION SET",
+      "description": "设置分辨率为0.5nm",
+      "timeout": 3000
+    },
+    {
+      "name": "设置平均次数",
+      "command": "SET AVERAGE 10",
+      "expectedResponse": "pattern:AVERAGE SET",
+      "description": "设置平均次数为10次",
+      "timeout": 3000
+    },
+    {
+      "name": "执行暗背景采集",
+      "command": "ACQUIRE DARK",
+      "expectedResponse": "pattern:DARK ACQUIRED",
+      "description": "采集暗背景光谱",
+      "timeout": 10000
+    },
+    {
+      "name": "执行参考背景采集",
+      "command": "ACQUIRE REFERENCE",
+      "expectedResponse": "pattern:REFERENCE ACQUIRED",
+      "description": "采集参考光谱",
+      "timeout": 10000
+    },
+    {
+      "name": "执行单次测量",
+      "command": "MEASURE SINGLE",
+      "expectedResponse": "pattern:MEASUREMENT COMPLETE",
+      "description": "执行单次光谱测量",
+      "timeout": 15000
+    },
+    {
+      "name": "获取光谱数据",
+      "command": "GET SPECTRUM",
+      "expectedResponse": "pattern:DATA:.*",
+      "description": "获取最近一次测量的光谱数据",
+      "timeout": 10000,
+      "runAfter": "执行单次测量",
+      "delay": 1000
+    },
+    {
+      "name": "执行峰值检测",
+      "command": "ANALYZE PEAKS",
+      "expectedResponse": "pattern:PEAKS:.*",
+      "description": "执行峰值检测分析",
+      "timeout": 5000,
+      "runAfter": "获取光谱数据"
+    },
+    {
+      "name": "启动连续测量",
+      "command": "MEASURE CONTINUOUS START",
+      "expectedResponse": "pattern:CONTINUOUS MEASUREMENT STARTED",
+      "description": "开始连续测量模式",
+      "timeout": 5000
+    },
+    {
+      "name": "停止连续测量",
+      "command": "MEASURE CONTINUOUS STOP",
+      "expectedResponse": "pattern:CONTINUOUS MEASUREMENT STOPPED",
+      "description": "停止连续测量模式",
+      "timeout": 5000,
+      "runAfter": "启动连续测量",
+      "delay": 10000
+    },
+    {
+      "name": "执行波长校准",
+      "command": "CALIBRATE WAVELENGTH",
+      "expectedResponse": "pattern:WAVELENGTH CALIBRATION.*COMPLETE",
+      "description": "执行波长校准程序",
+      "timeout": 30000,
+      "optional": true
+    },
+    {
+      "name": "保存当前配置",
+      "command": "SAVE CONFIG USER1",
+      "expectedResponse": "pattern:CONFIG SAVED",
+      "description": "将当前配置保存为用户配置1",
+      "timeout": 5000
+    },
+    {
+      "name": "恢复出厂设置",
+      "command": "RESTORE FACTORY",
+      "expectedResponse": "pattern:FACTORY SETTINGS RESTORED",
+      "description": "恢复设备出厂设置",
+      "timeout": 10000,
+      "runAtEnd": true
+    }
+  ],
+  "advancedTests": {
+    "stabilityTest": {
+      "duration": 3600,
+      "commandInterval": 60000,
+      "commands": ["STATUS", "MEASURE SINGLE", "GET SPECTRUM"],
+      "description": "设备稳定性测试，连续运行1小时，定期执行测量命令"
+    },
+    "performanceTest": {
+      "commandRate": 1,
+      "duration": 300,
+      "command": "MEASURE SINGLE",
+      "description": "性能测试，测试设备在高频率测量下的性能"
+    },
+    "errorHandlingTest": {
+      "invalidCommands": [
+        "UNKNOWN_COMMAND",
+        "SET WAVELENGTH 100 1000",
+        "SET INTEGRATION 10000"
+      ],
+      "description": "错误处理测试，发送无效命令测试设备错误响应机制"
+    },
+    "dataQualityTest": {
+      "command": "MEASURE SINGLE",
+      "repeat": 20,
+      "interval": 5000,
+      "analysisMetrics": ["snr", "repeatability", "drift"],
+      "description": "数据质量测试，多次测量同一样本分析数据稳定性和质量"
+    }
+  },
+  "reportSettings": {
+    "saveRawCommunication": true,
+    "generateCSV": true,
+    "generateJSON": true,
+    "saveSpectrumData": true,
+    "includeTimestamps": true,
+    "includePerformanceMetrics": true,
+    "generatePlots": true
+  }
+}

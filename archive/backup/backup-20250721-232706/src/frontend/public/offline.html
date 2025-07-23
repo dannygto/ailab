@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AICAM平台 - 离线模式</title>
+  <style>
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 600px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    .logo {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 16px;
+    }
+    
+    p {
+      color: #5d6778;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    
+    .offline-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      color: #3498db;
+    }
+    
+    .button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .button:hover {
+      background-color: #2980b9;
+    }
+    
+    .tips {
+      margin-top: 24px;
+      background-color: #f8f9fa;
+      padding: 16px;
+      border-radius: 4px;
+      border-left: 4px solid #3498db;
+    }
+    
+    .tips h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    
+    .tips ul {
+      text-align: left;
+      padding-left: 20px;
+    }
+    
+    .tips li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="offline-icon">📶</div>
+    <h1>您当前处于离线状态</h1>
+    <p>无法连接到AICAM平台服务器。请检查您的网络连接并重试。</p>
+    
+    <button class="button" onclick="window.location.reload()">重新连接</button>
+    
+    <div class="tips">
+      <h3>离线状态提示</h3>
+      <ul>
+        <li>检查您的网络连接是否正常</li>
+        <li>确认您的设备是否已连接到Wi-Fi或移动网络</li>
+        <li>服务器可能暂时不可用，请稍后再试</li>
+        <li>如果问题持续存在，请联系系统管理员</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    // 检测网络状态变化
+    window.addEventListener('online', function() {
+      window.location.reload();
+    });
+    
+    // 定期检查连接状态
+    setInterval(function() {
+      if (navigator.onLine) {
+        fetch('/api/health', { method: 'HEAD' })
+          .then(function() {
+            window.location.reload();
+          })
+          .catch(function() {
+            console.log('服务器仍不可用');
+          });
+      }
+    }, 5000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+import { Request, Response } from 'express';
+export declare const getSettings: (req: Request, res: Response) => Promise<void>;
+export declare const getGeneralSettings: (req: Request, res: Response) => Promise<void>;
+export declare const updateGeneralSettings: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const getThemeSettings: (req: Request, res: Response) => Promise<void>;
+export declare const updateThemeSettings: (req: Request, res: Response) => Promise<void>;
+export declare const getSchoolInfo: (req: Request, res: Response) => Promise<void>;
+export declare const updateSchoolInfo: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+export declare const resetSettings: (req: Request, res: Response) => Promise<void>;
+export declare const getVersionInfo: (req: Request, res: Response) => Promise<void>;
+export declare const getDemoDataStats: (req: Request, res: Response) => Promise<void>;
+export declare const generateDemoData: (req: Request, res: Response) => Promise<void>;
+export declare const deleteDemoData: (req: Request, res: Response) => Promise<void>;
+export declare const generateDockerDeployment: (req: Request, res: Response) => Promise<void>;
+export declare const resetAllSettings: (req: Request, res: Response) => Promise<void>;
+declare const _default: {
+    getSettings: (req: Request, res: Response) => Promise<void>;
+    getGeneralSettings: (req: Request, res: Response) => Promise<void>;
+    updateGeneralSettings: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    getThemeSettings: (req: Request, res: Response) => Promise<void>;
+    updateThemeSettings: (req: Request, res: Response) => Promise<void>;
+    getSchoolInfo: (req: Request, res: Response) => Promise<void>;
+    updateSchoolInfo: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    resetSettings: (req: Request, res: Response) => Promise<void>;
+    getVersionInfo: (req: Request, res: Response) => Promise<void>;
+    getDemoDataStats: (req: Request, res: Response) => Promise<void>;
+    generateDemoData: (req: Request, res: Response) => Promise<void>;
+    deleteDemoData: (req: Request, res: Response) => Promise<void>;
+    generateDockerDeployment: (req: Request, res: Response) => Promise<void>;
+    resetAllSettings: (req: Request, res: Response) => Promise<void>;
+    getAllSettings: (req: Request, res: Response) => Promise<void>;
+    getDataSettings: (req: Request, res: Response) => Promise<void>;
+    updateDataSettings: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+};
+export default _default;
+//# sourceMappingURL=settings.controller.d.ts.map
